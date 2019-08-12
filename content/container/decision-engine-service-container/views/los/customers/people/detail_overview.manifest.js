@@ -221,7 +221,7 @@ module.exports = {
                           label: 'Home Address',
                           'errorIcon': 'fa fa-exclamation',
                         }, {
-                          type: 'singleDatePicker',
+                          type: 'text',
                           name: 'dob',
                           label: 'Date of Birth',
                           leftIcon: 'fas fa-calendar-alt',
