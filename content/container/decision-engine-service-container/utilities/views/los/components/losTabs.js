@@ -1,6 +1,6 @@
 'use strict';
 
-/** Create Lending CRM tabs  */
+/** Create Loan Acquisition Platform tabs  */
 
 const appGlobalTabs = require('../../shared/component/appGlobalTabs').appGlobalTabs;
 
@@ -61,6 +61,9 @@ module.exports = function (tabname) {
       }, {
         name: 'Application Labels',
         location: '/los/others/applicationlabels',
+      }, {
+        name: 'Application Statuses & Rejection Types',
+        location: '/los/others/applicationstatuses',
       },
       ],
     },

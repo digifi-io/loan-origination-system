@@ -7,31 +7,24 @@ const randomKey = Math.random;
 
 module.exports = {
   'containers': {
-    '/los/statuses/:id': {
+    '/los/applicationrejectiontypes/new': {
       layout: {
         privileges: [ 101, 102, 103 ],
         component: 'Container',
         props: {},
         children: [ {
           component: 'ResponsiveForm',
-          asyncprops: {
-            formdata: [ 'statusdata', 'losstatus' ],
-          },
           props: {
+            // blockPageUI: true,
+            // blockPageUILayout: styles.modalBlockPageUILayout,
             flattenFormData: true,
             footergroups: false,
-            setInitialValues: false,
-            useFormOptions: true,
             'onSubmit': {
-              url: '/los/api/statuses/:id',
+              url: '/los/api/applicationrejectiontypes',
               options: {
                 headers: {},
-                method: 'PUT',
+                method: 'POST',
               },
-              params: [ {
-                key: ':id',
-                val: '_id',
-              } ],
               responseCallback: 'func:window.setHeaders',
               successCallback: [ 'func:window.closeModalAndCreateNotification', 'func:this.props.refresh' ],
               successProps: [ {
@@ -40,15 +33,24 @@ module.exports = {
                 type: 'success',
               }, {} ]
             },
-            validations: [],
+            validations: [ {
+              'name': 'value',
+              'constraints': {
+                'value': {
+                  'presence': {
+                    'message': '^Rejection Type is required.',
+                  },
+                },
+              },
+            }, ],
             formgroups: [ {
               gridProps: {
                 key: randomKey(),
               },
               formElements: [ {
-                name: 'name',
-                label: 'Status Name',
-              }, ],
+                name: 'value',
+                label: 'Rejection Type',
+              },],
             }, {
               gridProps: {
                 key: randomKey(),
@@ -56,21 +58,18 @@ module.exports = {
               },
               formElements: [ {
                 type: 'submit',
-                value: 'SAVE CHANGES',
+                value: 'CREATE STATUS',
                 passProps: {
-                  color: 'isPrimary',
+                  color: 'isSuccess',
                 },
                 layoutProps: {},
-              },
-              ],
-            },
-            ],
+              }, ],
+            },],
           },
         },
         ],
       },
       'resources': {
-        statusdata: '/los/api/statuses/:id?',
         checkdata: {
           url: '/auth/run_checks',
           options: {

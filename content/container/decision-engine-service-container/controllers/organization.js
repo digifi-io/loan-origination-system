@@ -103,6 +103,16 @@ async function createOrg(req, res, next) {
           pricing_per_month: 0,
           payment_type: 'auto',
         },
+        los: {
+          statuses: [],
+          "rejection_types" : [ 
+            "The application was rejected", 
+            "The customer did not respond", 
+            "The customer declined the offer", 
+            "Unable to verify required information", 
+            "Other reason"
+          ]
+        },
       }),
   })
     .then(async org => {
@@ -430,161 +440,6 @@ async function checkOrganizationBalance(req, res, next) {
   else next();
 }
 
-// function for seeding Example Strategy (Mark's)
-// async function seedNewOrganization(req, res, next) {
-//   req.controllerData = req.controllerData || {};
-//   try {
-//     let { org, user, } = req.controllerData;
-
-//     let seedVariables = JSON.parse(JSON.stringify(require('../seed_documents/seed_variables.js').variables));
-//     let seedVariableMap = {};
-//     seedVariables.forEach(variable => {
-//       seedVariableMap[ variable.id_number ] = variable;
-//     });
-//     let seedRules = JSON.parse(JSON.stringify(require('../seed_documents/seed_rules.js').rules));
-//     let seedStrategy = JSON.parse(JSON.stringify(require('../seed_documents/seed_strategy.js').strategy));
-
-//     const Variable = periodic.datas.get('standard_variable');
-//     const Rule = periodic.datas.get('standard_rule');
-//     const Strategy = periodic.datas.get('standard_strategy');
-
-//     seedVariables = seedVariables.map(subvariable => {
-//       subvariable.organization = mongoose.Types.ObjectId(org._id);
-//       subvariable.createdat = new Date().toISOString();
-//       subvariable.updatedat = new Date().toISOString();
-//       return subvariable;
-//     });
-//     let createdVariables = await Promise.all(seedVariables.map(subvariable => {
-//       let createOptions = {
-//         newdoc: subvariable,
-//         bulk_create: true,
-//       };
-//       return Variable.create(createOptions);
-//     }));
-//     let variableMap = {};
-//     createdVariables.forEach(variable => {
-//       variableMap[ variable.title ] = variable;
-//     });
-
-//     seedRules = seedRules.map(rule => {
-//       if (rule.multiple_rules && rule.multiple_rules.length) {
-//         rule.multiple_rules = rule.multiple_rules.map(subrule => {
-//           let { state_property_attribute, } = subrule;
-//           let seedVariable = seedVariableMap[ state_property_attribute ];
-//           let updatedId = variableMap[ seedVariable.title ];
-//           subrule.state_property_attribute = mongoose.Types.ObjectId(updatedId._id);
-//           if (subrule.state_property_attribute_value_comparison_type === 'variable') {
-//             let oldVariable = seedVariableMap[ subrule.state_property_attribute_value_comparison ];
-//             let newVariable = variableMap[ oldVariable.title ];
-//             subrule.state_property_attribute_value_comparison = newVariable._id;
-//           }
-//           return subrule;
-//         });
-//       }
-//       if (rule.calculation_inputs && rule.calculation_inputs.length) {
-//         rule.calculation_inputs = rule.calculation_inputs.map(subrule => {
-//           let seedVariable = seedVariableMap[ subrule ];
-//           let updatedId = variableMap[ seedVariable.title ];
-//           return mongoose.Types.ObjectId(updatedId._id);
-//         });
-//       }
-//       if (rule.calculation_outputs && rule.calculation_outputs.length) {
-//         rule.calculation_outputs = rule.calculation_outputs.map(subrule => {
-//           let seedVariable = seedVariableMap[ subrule ];
-//           let updatedId = variableMap[ seedVariable.title ];
-//           return mongoose.Types.ObjectId(updatedId._id);
-//         });
-//       }
-//       rule.organization = mongoose.Types.ObjectId(org._id);
-//       rule.name = `${rule.rule_type}_${rule.type}_${rule.id_number}_${org._id}`;
-//       rule.title = `${rule.rule_type}_${rule.type}_${rule.id_number}_${org._id}`;
-//       return rule;
-//     });
-
-//     let createdRulesArray = seedRules.map(subrule => {
-//       let createOptions = {
-//         newdoc: subrule,
-//         bulk_create: true,
-//       };
-//       return Rule.create(createOptions);
-//     });
-//     let createdRules = await Promise.all(createdRulesArray);
-
-//     let createdRulesMap = {};
-//     createdRules.forEach(rule => {
-//       let ruleSplit = rule.title.split('_');
-//       let id_number = ruleSplit[ 2 ];
-//       createdRulesMap[ id_number ] = rule;
-//     });
-
-//     let modules = JSON.parse(JSON.stringify(seedStrategy.modules));
-//     for (var key in modules) {
-//       let currentRules = modules[ key ];
-//       currentRules = currentRules.map(subrule => {
-//         if (subrule.ruleset) {
-//           subrule.ruleset = subrule.ruleset.map(ruleid => {
-//             return mongoose.Types.ObjectId(createdRulesMap[ ruleid ]._id);
-//           });
-//         }
-
-//         if (subrule.conditions) {
-//           subrule.conditions = subrule.conditions.map(ruleid => {
-//             return mongoose.Types.ObjectId(createdRulesMap[ ruleid ]._id);
-//           });
-//         }
-
-//         if (subrule.output_variable) {
-//           let oldVariable = seedVariableMap[ subrule.output_variable ];
-//           let newVariable = variableMap[ oldVariable.title ];
-//           subrule.output_variable = mongoose.Types.ObjectId(newVariable._id);
-//         }
-
-//         if (subrule.state_property_attribute_value_comparison_type === 'variable') {
-//           let oldVariable = seedVariableMap[ subrule.state_property_attribute_value_comparison ];
-//           let newVariable = variableMap[ oldVariable.title ];
-//           subrule.state_property_attribute_value_comparison = mongoose.Types.ObjectId(newVariable._id);
-//         }
-//         return subrule;
-//       });
-//       modules[ key ] = currentRules;
-//     }
-
-//     seedStrategy.modules = modules;
-//     seedStrategy.organization = mongoose.Types.ObjectId(org._id);
-//     let createdStrategy = await Strategy.create({
-//       newdoc: seedStrategy,
-//     });
-//     createdRules.forEach(subrule => {
-//       Rule.update({
-//         id: subrule._id,
-//         updatedoc: {
-//           'strategy': mongoose.Types.ObjectId(createdStrategy._id),
-//         },
-//         isPatch: true,
-//       });
-//     });
-
-//     createdVariables.forEach(subvariable => {
-//       let arrOfStrategies = [];
-//       for (var i = 0; i < subvariable.strategies_count; i++) {
-//         arrOfStrategies.push(mongoose.Types.ObjectId(createdStrategy._id), );
-//       }
-//       Variable.update({
-//         id: subvariable._id,
-//         updatedoc: {
-//           'strategies': arrOfStrategies,
-//         },
-//         isPatch: true,
-//       });
-//     });
-//     next();
-//   } catch (err) {
-//     console.log({ err, });
-//     logger.warn(err.message);
-//     next();
-//   }
-// }
-
 async function seedNewOrganization(req, res, next) {
   req.controllerData = req.controllerData || {};
   try {
@@ -768,12 +623,8 @@ async function createLosDependencies(req, res, next) {
       updater: `${user.first_name} ${user.last_name}`
     }
     // creating Los Statuses
-    let statusObjects = await Promise.all([ 'New Opportunities', 'Data Gathering', 'Loan Underwriting', 'Negotiations', 'Legal Documentation', 'Approved', 'Rejected' ].map(status => LosStatus.create({ newdoc: { name: status, organization: org._id.toString() } })));
+    let statusObjects = await Promise.all([ 'New Opportunities', 'Data Gathering', 'Loan Underwriting', 'Negotiations', 'Legal Documentation', 'Approved', 'Rejected' ].map(status => LosStatus.create({ newdoc: { name: status, organization: org._id.toString(), active: (status !== 'Approved' && status !== 'Rejected') } })));
     statusObjects = statusObjects || [];
-    statusObjects = statusObjects.filter(statusObj => {
-      statusObj = statusObj.toJSON ? statusObj.toJSON() : statusObj;
-      return statusObj.name !== 'Approved' && statusObj.name !== 'Rejected'
-    })
     await Org.update({ isPatch: true, id: org._id.toString(), updatedoc: { 'los.statuses': statusObjects.map(statusObj => statusObj._id.toString()) } });
 
     // creating Los Customer Templates
@@ -822,6 +673,44 @@ async function createLosDependencies(req, res, next) {
   }
 }
 
+async function updateRejectionType(req, res, next) {
+  try {
+    const Org = periodic.datas.get('standard_organization');
+    const user = req.user;
+    const rejectionTypes = user.association && user.association.organization && user.association.organization.los && user.association.organization.los.rejection_types || [];
+    const { index, orgid } = req.params;
+    if (req.body) {
+      if (req.query && req.query.method === 'edit') {
+        rejectionTypes[index] = req.body.value;
+      } else if (req.query && req.query.method === 'delete'){
+        rejectionTypes.splice(index, 1);
+      } else if (req.query && req.query.method === 'add'){
+        rejectionTypes.push(req.body.value);
+      }
+      await Org.model.updateOne({ _id: orgid }, { $set: { 'los.rejection_types': rejectionTypes}});
+    }
+    return next();
+  } catch(e) {
+    logger.warn(e.message);
+    next();
+  }
+}
+
+async function createRejectionType(req, res, next) {
+  try {
+    const Org = periodic.datas.get('standard_organization');
+    const user = req.user;
+    const organization = user.association && user.association.organization && user.association.organization._id ?  user.association.organization._id.toString() : 'organization';
+    if (req.body) {
+      await Org.model.updateOne({ _id: organization }, { $push: { 'los.rejection_types': req.body.value }});
+    }
+    return next();
+  } catch(e) {
+    logger.warn(e.message);
+    next();
+  }
+}
+
 module.exports = {
   createOrg,
   createLosDependencies,
@@ -838,4 +727,6 @@ module.exports = {
   getActivityLogs,
   seedNewOrganization,
   checkOrganizationBalance,
+  updateRejectionType,
+  createRejectionType,
 };
