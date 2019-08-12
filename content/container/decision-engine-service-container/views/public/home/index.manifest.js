@@ -35,31 +35,7 @@ module.exports = {
         subtitle: [{
           component: 'p',
           children: 'Create your account',
-        }, {
-          component: 'ul',
-          props: {
-            className: 'check-list',
-            style: {
-              marginTop: '30px',
-            }
-          },
-          children: [{
-            component: 'li',
-            children: 'Instant access to all products',
-          }, {
-            component: 'li',
-            children: 'No credit card required to sign up',
-          }, {
-            component: 'li',
-            children: 'World-class decision automation',
-          }, {
-            component: 'li',
-            children: 'No technical setup required',
-          }, {
-            component: 'li',
-            children: 'Collaborate with your entire team',
-          }]
-        }],
+        }, ],
         subtitleStyle: {
           padding: '20px 30px 0',
         },
