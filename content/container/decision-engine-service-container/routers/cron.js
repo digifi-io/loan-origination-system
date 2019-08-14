@@ -7,15 +7,9 @@ const authController = controllers.auth;
 const isClientAuthenticated = periodic.controllers.extension.get('periodicjs.ext.oauth2server').auth.isClientAuthenticated;
 const ensureApiAuthenticated = periodic.controllers.extension.get('periodicjs.ext.oauth2server').auth.ensureApiAuthenticated;
 const paymentCron = require('../crons/run_payments.cron');
-const hourlyExportCron = require('../crons/hourly_export.cron');
 
 CronRouter.get('/payment',
   paymentCron(periodic),
   authController.handleControllerDataResponse);
-
-CronRouter.get('/hourly',
-  hourlyExportCron(periodic),
-  authController.handleControllerDataResponse);
-
 
 module.exports = CronRouter;

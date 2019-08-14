@@ -63,9 +63,7 @@ module.exports = () => {
     periodic.app.locals.redisClient.on('connect', () => {
       logger.silly('REDIS CONNECTED');
     });
-    let updateGlobalRulesVariables = require('./crons/update_rules_variables.cron')(periodic);
-    let hourlyExportCron = require('./crons/hourly_export.cron')(periodic);
-    
+    let updateGlobalRulesVariables = require('./crons/update_rules_variables.cron')(periodic);    
     updateGlobalRulesVariables();
 
     let basename = periodic.settings.extensions[ 'periodicjs.ext.reactapp' ].basename;
@@ -189,18 +187,6 @@ module.exports = () => {
         // }, 5000);
 
       }, machineLearningSettings.cron_interval || 60000);
-    }
-
-    if (periodic.settings.application.environment === 'cloud') {
-      try {
-        new CronJob('0 * * * *', function () {
-          hourlyExportCron();
-        }, null, true, 'America/New_York');
-      } catch (err) {
-        console.log({
-          err,
-        });
-      }
     }
 
     exec('npm run sass', (err, stdout, stderr) => {

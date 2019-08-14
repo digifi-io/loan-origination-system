@@ -22,7 +22,7 @@ const scheme = {
   phone: String,
   email: String,
   address: String,
-  dob: Date,
+  dob: String,
   ssn: String,
   key_information: Schema.Types.Mixed,
   company: {
