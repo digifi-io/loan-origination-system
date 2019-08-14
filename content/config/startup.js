@@ -140,7 +140,7 @@ function customExpressConfiguration() {
        */
 
       /**TODO move aws config to db */
-      const loggerCredentials = periodic.settings && periodic.settings.extensions && periodic.settings.extensions['periodicjs.ext.packagecloud'] ? periodic.settings.extensions['periodicjs.ext.packagecloud'].logger : {};
+      const loggerCredentials = periodic.settings && periodic.settings.extensions && periodic.settings.extensions['periodicjs.ext.packagecloud'] && periodic.settings.extensions['periodicjs.ext.packagecloud'].logger ? periodic.settings.extensions['periodicjs.ext.packagecloud'].logger : {};
       this.logger.add(winstonSNS, {
         "aws_key": loggerCredentials.aws_key,
         "aws_secret": loggerCredentials.aws_secret,
