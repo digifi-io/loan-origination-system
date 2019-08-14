@@ -35,6 +35,14 @@ module.exports = {
       decision.strategy.generateReceivedIntegrationVariablesModal,
       decision.strategy.generateDocumentCreationVariablesModal,
     ],
+    '/decision/api/standard_strategies/:id/variable_assignment/:index': [
+      decision.strategy.generateVariableFormOptions,
+      decision.strategy.generateRequiredMLVariablesModal,
+      decision.strategy.generateReceivedMLVariablesModal,
+      decision.strategy.generateRequiredIntegrationVariablesModal,
+      decision.strategy.generateReceivedIntegrationVariablesModal,
+      decision.strategy.generateDocumentCreationVariablesModal,
+    ],
     '/decision/api/:collection/:id/changelog': [
       decision.populateAllVariablesMap,
       decision.populateBeforeAfterChanges,
@@ -553,11 +561,23 @@ module.exports = {
     '/los/api/applicationlabels': [
       los.formatApplicationLabelsIndexTable,
     ],
+    '/los/api/applicationstatuses': [
+      los.formatApplicationStatusesIndexTable,
+    ],
+    '/los/api/applications/:id/reject_application': [
+      los.formatApplicationRejectionDetail,
+    ],
+    '/los/api/applicationrejectiontypes/:orgid/:index': [
+      los.formatApplicationRejectionTypeDetail,
+    ],
     '/los/api/applications/:id/run_automation/decision/:strategy': [
       los.formatRunAutomatedDecisionForm,
     ],
     '/los/api/applications/:id/run_automation/ml/:mlmodel': [
       los.formatRunAutomatedMLForm,
+    ],
+    '/los/api/statuses/:id': [
+      los.generateLosStatusEditDetail,
     ],
     '/api/v2/lap/applications': [
       // lap.formatApplicationLookup,

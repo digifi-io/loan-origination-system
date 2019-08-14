@@ -17,6 +17,15 @@ const scheme = {
     index: true,
     type: String,
   },
+  description: String,
+  active: {
+    default: false,
+    type: Boolean,
+  },
+  user: {
+    creator: String,
+    updater: String,
+  },
   organization: {
     index: true,
     type: ObjectId,

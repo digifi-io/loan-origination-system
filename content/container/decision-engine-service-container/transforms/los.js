@@ -462,13 +462,13 @@ async function formatApplicationDetail(req) {
           });
           orgApplicationStatus.forEach(statusId => {
             const status = statusMap[ statusId ];
-            if (status.name !== 'Approved' && status.name !== 'Rejected') {
+            if (status && status.active && status.name !== 'Approved' && status.name !== 'Rejected') {
               statusOptions.push({
                 stepProps: {
-                  disabled: (application_status.name === 'Approved' || application_status.name === 'Rejected') ? true : null,
-                  className: (application_status.name === 'Approved')
+                  disabled: (application_status && (application_status.name === 'Approved' || application_status.name === 'Rejected')) ? true : null,
+                  className: (application_status && application_status.name === 'Approved')
                     ? 'approved'
-                    : (application_status.name === 'Rejected')
+                    : (application_status && application_status.name === 'Rejected')
                       ? 'rejected'
                       : '',
                 },
@@ -698,7 +698,7 @@ async function formatApplicationSwimlane(req) {
     const applications = req.controllerData.applications || [];
     const los_statuses = req.controllerData.los_statuses || [];
     const userImageMap = req.controllerData.userImageMap || {};
-    const droppableList = los_statuses.map(losStatusObj => ({
+    const droppableList = los_statuses.filter(losStatus => losStatus.active).map(losStatusObj => ({
       cardProps: cardprops({
         cardProps: {
           className: 'orange-card-gradient swim-lane-card',
@@ -709,7 +709,7 @@ async function formatApplicationSwimlane(req) {
             onClick: 'func:this.props.createModal',
             onclickProps: {
               title: 'Edit Status',
-              pathname: `/los/statuses/${losStatusObj._id.toString()}`,
+              pathname: `/los/applicationstatuses/${losStatusObj._id.toString()}`,
             },
           },
           children: losStatusObj.name,
@@ -894,20 +894,6 @@ async function formatApplicationSwimlane(req) {
             }, ],
           }, ],
         },
-          // {
-          //   component: 'ResponsiveButton',
-          //   props: {
-          //     onClick: 'func:this.props.createModal',
-          //     onclickProps: {
-          //       title: 'Machine Learning - Tutorial',
-          //       pathname: '/ml/tutorial',
-          //     },
-          //     buttonProps: {
-          //       color: 'isPrimary',
-          //     },
-          //   },
-          //   children: 'DOWNLOAD',
-          // }, 
         ],
       }), {
         component: 'Container',
@@ -3011,6 +2997,104 @@ async function formatApplicationLabelsIndexTable(req) {
   }
 }
 
+// coded specifically for backwards compatibility
+async function formatApplicationStatusesIndexTable(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const user = req.user || {};
+    const organization = user.association.organization;
+    const organizationStatuses = organization && organization.los && organization.los.statuses;
+    const organizationRejectionTypes = organization && organization.los && organization.los.rejection_types || [];
+    const orderedStatusMap = {};
+    organizationStatuses.forEach((status, order) => orderedStatusMap[status.toString()] = order);
+    const ordered = new Array(req.controllerData.los_statuses.length);
+    if (organizationStatuses && req.controllerData.los_statuses) {
+      let orderedLength = organizationStatuses.length;
+      req.controllerData.los_statuses.forEach(row => {
+        row.updatedat = transformhelpers.formatDateNoTime(row.updatedat, req.user.time_zone);
+        row.active = (row.active) ? 'Active' : 'Disabled';
+        row.buttons = [ {
+          component: 'ResponsiveButton',
+          props: {
+            style: {
+              width: 'auto',
+            },
+            buttonProps: {
+              className: '__icon_button icon-pencil-content',
+            },
+            onClick: 'func:this.props.createModal',
+            onclickProps: {
+              pathname: `/los/applicationstatuses/${row._id.toString()}`,
+              title: 'Edit Status',
+            },
+          },
+        },];
+
+        if (row.name !== 'Approved' && row.name !== 'Rejected') {
+          row.buttons.push({
+            component: 'ResponsiveButton',
+            props: {
+              onclickProps: {
+                title: 'Delete Status',
+              },
+              buttonProps: {
+                color: 'isDanger',
+                className: '__icon_button icon-trash-content',
+              },
+              onClick: 'func:this.props.fetchAction',
+              onclickBaseUrl: `/los/api/applicationstatuses/${row._id.toString()}`,
+              fetchProps: {
+                method: 'DELETE',
+              },
+              successProps: {
+                success: {
+                  notification: {
+                    text: 'Changes saved successfully!',
+                    timeout: 10000,
+                    type: 'success',
+                  },
+                },
+                successCallback: 'func:this.props.refresh',
+              },
+              confirmModal: Object.assign({}, styles.defaultconfirmModalStyle, {
+                title: 'Delete Rule',
+                textContent: [ {
+                  component: 'p',
+                  children: 'Do you want to permanently delete this status?',
+                  props: {
+                    style: {
+                      textAlign: 'left',
+                      marginBottom: '1.5rem',
+                    },
+                  },
+                },
+                ],
+              }),
+            },
+          })
+        }
+        if (orderedStatusMap[row._id.toString()] !== undefined) {
+          let order = orderedStatusMap[row._id.toString()];
+          row.order = String(order + 1);
+          ordered[order] = row;
+        } else {
+          row.order = String(orderedLength + 1);
+          ordered[orderedLength] = row;
+          orderedLength++;
+        }
+      });
+      req.controllerData = Object.assign({}, req.controllerData, { statusrows: ordered, numPages: Math.ceil(ordered.length / 50), numItems: ordered.length})
+    }
+
+    const rejectionrows = organizationRejectionTypes.map((type, i) => ({ type , index: i, orgid: organization._id.toString() }));
+    req.controllerData = Object.assign({}, req.controllerData, { rejectionrows, rejectionNumPages: Math.ceil(rejectionrows.length / 50), rejectionNumItems: rejectionrows.length})
+    return req;
+  } catch (e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
 async function formatRunAutomatedMLForm(req) {
   try {
     req.controllerData = req.controllerData || {};
@@ -3598,7 +3682,7 @@ async function formatIntermediaryApplicationSwimlane(req) {
     const applications = req.controllerData.applications || [];
     const los_statuses = req.controllerData.los_statuses || [];
     const userImageMap = req.controllerData.userImageMap || {};
-    const droppableList = los_statuses.map(losStatusObj => ({
+    const droppableList = los_statuses.filter(losStatus => losStatus.active).map(losStatusObj => ({
       cardProps: cardprops({
         cardProps: {
           className: 'orange-card-gradient swim-lane-card',
@@ -3821,20 +3905,6 @@ async function formatIntermediaryApplicationSwimlane(req) {
             }, ],
           }, ],
         },
-          // {
-          //   component: 'ResponsiveButton',
-          //   props: {
-          //     onClick: 'func:this.props.createModal',
-          //     onclickProps: {
-          //       title: 'Machine Learning - Tutorial',
-          //       pathname: '/ml/tutorial',
-          //     },
-          //     buttonProps: {
-          //       color: 'isPrimary',
-          //     },
-          //   },
-          //   children: 'DOWNLOAD',
-          // }, 
         ],
       }), {
         component: 'Container',
@@ -4388,6 +4458,132 @@ async function formatTaskBotsIndexTable(req) {
   }
 }
 
+async function formatApplicationRejectionTypeDetail(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const user = req.user || {};
+    const { index, orgid } = req.params;
+    const organization = user && user.association && user.association.organization;
+    req.controllerData.rejectiontype = { index, orgid, value: organization.los && organization.los.rejection_types && organization.los.rejection_types[index] || '' };
+    return req;
+  } catch (e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
+async function formatApplicationRejectionDetail(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const user = req.user || {};
+    const organization = user && user.association && user.association.organization;
+    let rejectionTypes = organization.los && organization.los.rejection_types || [];
+    rejectionTypes = ['', ...rejectionTypes];
+    req.controllerData.formoptions = { reason: rejectionTypes.map(type => ({ label: type, value: type})) }
+    req.controllerData._id = req.params.id;
+    return req;
+  } catch (e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
+async function generateLosStatusEditDetail(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const status = req.controllerData.losstatus;
+    req.controllerData._children = [ {
+      component: 'ResponsiveForm',
+      asyncprops: {
+        formdata: [ 'statusdata', 'losstatus' ],
+      },
+      props: {
+        flattenFormData: true,
+        footergroups: false,
+        setInitialValues: false,
+        'onSubmit': {
+          url: '/los/api/statuses/:id',
+          options: {
+            headers: {},
+            method: 'PUT',
+          },
+          params: [ {
+            key: ':id',
+            val: '_id',
+          } ],
+          responseCallback: 'func:window.setHeaders',
+          successCallback: [ 'func:window.closeModalAndCreateNotification', 'func:this.props.refresh' ],
+          successProps: [ {
+            text: 'Changes saved successfully!',
+            timeout: 10000,
+            type: 'success',
+          }, {} ]
+        },
+        validations: [],
+        formgroups: [ {
+          gridProps: {
+            key: randomKey(),
+          },
+          formElements: [ {
+            name: 'name',
+            label: 'Status Name',
+            passProps: {
+              state: (status.name === 'Approved' || status.name === 'Rejected') ? 'isDisabled' : null
+            },
+          },],
+        }, {
+          gridProps: {
+            key: randomKey(),
+          },
+          formElements: [{
+            name: 'active',
+            type: 'dropdown',
+            label: 'Active',
+            passProps: {
+              selection: true,
+              fluid: true,
+            },
+            options: [{
+              value: true,
+              label: 'True'
+            }, {
+              value: false,
+              label: 'False'
+            }]
+          },],
+        }, {
+          gridProps: {
+            key: randomKey(),
+          },
+          formElements: [{
+            name: 'description',
+            label: 'Description',
+          },],
+        }, {
+          gridProps: {
+            key: randomKey(),
+            className: 'modal-footer-btns',
+          },
+          formElements: [ {
+            type: 'submit',
+            value: 'SAVE CHANGES',
+            passProps: {
+              color: 'isPrimary',
+            },
+            layoutProps: {},
+          },
+          ],
+        },
+        ],
+      },
+    },];
+    return req;
+  } catch(e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
 module.exports = {
   setCompanyDisplayTitle,
   setPersonDisplayTitle,
@@ -4455,4 +4651,8 @@ module.exports = {
   formatDocuSignTemplates,
   formatDocuSignTemplateDetail,
   formatTaskBotsIndexTable,
+  formatApplicationStatusesIndexTable,
+  formatApplicationRejectionTypeDetail,
+  formatApplicationRejectionDetail,
+  generateLosStatusEditDetail,
 };

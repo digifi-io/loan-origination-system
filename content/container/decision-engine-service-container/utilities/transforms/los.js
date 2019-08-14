@@ -1620,7 +1620,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
           },
           getInputLink({
             label: 'Customer',
-            leftIcon: 'fas fa-usd-circle',
+            leftIcon: 'fas fa-user',
             baseurl: '/los/:customer_baseurl',
             thisprop: [ 'formdata', ],
             displayprop: 'customer_name',
@@ -1633,7 +1633,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
           }),
           getInputLink({
             label: 'Co-Applicant',
-            leftIcon: 'fas fa-usd-circle',
+            leftIcon: 'fas fa-user',
             baseurl: '/los/:customer_baseurl',
             thisprop: [ 'formdata', ],
             displayprop: 'coapplicant',

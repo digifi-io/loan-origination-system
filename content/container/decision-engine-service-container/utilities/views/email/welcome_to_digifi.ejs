@@ -10,37 +10,30 @@
   <tr>
     <td align="left" style="color: #000000; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 150%;">
       <p>Hi <%- user.first_name %>, </p>
-      <p>Congratulations on creating your account. DigiFi helps lenders take their loan origination to the next level with streamlined borrower acquisition, automated underwriting and integrated machine learning. Here's some information to help you get started.</p>
+      <p>Congratulations on creating your account. Here's some information to help you get started.</p>
       
       <p>
-        <b>1) DigiFi Support:</b>
-        <br>Our amazing support team is available to answer any questions and assist with certain elements of implementation. Our standard support hours are 9am to 6pm EST Monday-Friday. Please feel welcome to reach out!
+        <b>1) User Guide</b>
+        <br>Our <a href="https://docs.digifi.io/">User Guide</a> can help you get started and answer common questions.
+      </p>
+
+      <p>
+        <b>2) DigiFi Support</b>
+        <br>Our support team is happy to assist! Our standard support hours are 9am to 6pm EST Monday-Friday.
         <ul style="margin-top: 0px; padding-top: 0px; margin-before: 0px;">
           <li>Email: support@digifi.io</li>
           <li>Phone: (646) 663-3392</li>
         </ul>
+        <br>Please note that a subscription to a paid <a href="https://digifi.io/plans-and-pricing/">Support Plan</a> is required.
       </p>
       
-      <p>
-        <b>2) User Guide & API Reference:</b>
-        <br>DigiFi's <a href="https://docs.digifi.io/docs">User Guide</a> can help you get started and answer common questions. If you'd like to know more about our API for real-time decisioning, see the <a href="https://docs.digifi.io/reference">API Reference</a>.
-      </p>
-
       <p>
         <b>3) Inviting Your Team:</b>
         <br>Add team members by inviting them in Company Settings > Users. (Only available to account owners).
       </p>
-
-      <p>
-        <b>4) Other Quick Reference:</b>
-        <ul style="margin-before: 0px;">
-          <li><a href="https://digifi.io/plans-and-pricing/">Plans & Pricing</a></li>
-          <li><a href="https://digifi.io/blog">DigiFi's Blog</a></li>
-        </ul>
-      </p>
       <br>
       <% const buttonLink = locals.protocol + locals.url + locals.basepath; %>
-      <%	const buttonLabel = 'Sign In To DigiFi'; %>
+      <%	const buttonLabel = 'Sign In'; %>
       <% include _button.ejs%>
     </td>
   </tr>
@@ -48,7 +41,5 @@
 
 <!-- body content -->
 <% include _add_space.ejs%>
-<% include _we_look_forward.ejs%>
-<% include _add_space.ejs%>
-<% include _warm_regards_with_digifi.ejs%>
+<% include _thank_you_text.ejs%>
 <% include _styled_footer_with_unsub_from_support.ejs %>
