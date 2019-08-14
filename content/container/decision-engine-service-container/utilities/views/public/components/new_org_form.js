@@ -24,7 +24,6 @@ function newOrgForm() {
   form.addFormElements(formElement.email());
   // form.addFormElements(formElement.phone());
   form.addFormElements(formElement.password());
-  form.addFormElements(formElement.consentBox());
   form.addFormElements(formElement.createAccount());
   form.addFormElements(Object.assign({}, formElement.text('Already have an account?'), formElement.signIn()));
   return form.getForm();

@@ -120,10 +120,6 @@ module.exports = {
       optimization.readCSVDataSource,
       optimization.generatePredictorVariableStatistics,
       optimization.transformDataSourceProviders,
-      // optimization.generateVariableNameMap,
-      // optimization.uploadMultipleProviderDataSources,
-      // optimization.uploadSplitFilesToS3,
-      // optimization.generateMLAssets,
     ],
     '/ml/api/models/:id/data_source': [
       ml.formatDataTypeColumns,
@@ -151,11 +147,6 @@ module.exports = {
     '/simulation/api/process_ocr_documents': [
       simulation.stageStrategyCompilation,
     ],
-    // with population tags
-    // '/simulation/api/run_simulation': [
-    //   decision.variable.generateVariableTitleMap,
-    //   simulation.setupStrategyAndTestCases,
-    // ],
     '/simulation/api/individual/run/:id': [
       decision.variable.generateVariableTitleMap,
       simulation.setupStrategyAndIndividualCase,

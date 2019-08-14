@@ -211,7 +211,8 @@ const scheme = {
     statuses: [{
       type: ObjectId,
       ref: 'Losstatus',
-    }]
+    }],
+    rejection_types: [String],
   },
   save_data: { // determines if data is saved
     type: Boolean,

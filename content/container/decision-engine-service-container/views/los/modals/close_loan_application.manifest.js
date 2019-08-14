@@ -16,10 +16,12 @@ module.exports = {
           component: 'ResponsiveForm',
           asyncprops: {
             formdata: ['pagedata'],
+            __formOptions: ['pagedata', 'formoptions']
           },
           props: {
             flattenFormData: true,
             footergroups: false,
+            useFormOptions: true,
             'onSubmit': {
               url: '/los/api/applications/:id?status=reject',
               params: [ { key: ':id', val: '_id', }, ],
@@ -66,25 +68,25 @@ module.exports = {
                   search: false,
                   selectOnBlur: false,
                 },
-                options: [ {
-                  label: '',
-                  value: '',
-                }, {
-                  label: 'The application was rejected',
-                  value: 'rejected',
-                }, {
-                  label: 'The customer did not respond',
-                  value: 'no_response',
-                }, {
-                  label: 'The customer declined the offer',
-                  value: 'declined_offer',
-                }, {
-                  label: 'Unable to verify required information',
-                  value: 'not_verified',
-                }, {
-                  label: 'Other reason',
-                  value: 'other',
-                }]
+                // options: [ {
+                //   label: '',
+                //   value: '',
+                // }, {
+                //   label: 'The application was rejected',
+                //   value: 'rejected',
+                // }, {
+                //   label: 'The customer did not respond',
+                //   value: 'no_response',
+                // }, {
+                //   label: 'The customer declined the offer',
+                //   value: 'declined_offer',
+                // }, {
+                //   label: 'Unable to verify required information',
+                //   value: 'not_verified',
+                // }, {
+                //   label: 'Other reason',
+                //   value: 'other',
+                // }]
               }, ],
             }, {
               gridProps: {
@@ -135,7 +137,7 @@ module.exports = {
         ],
       },
       'resources': {
-        pagedata: '/los/api/get_parsed_url?parsed_id=2',
+        pagedata: '/los/api/applications/:id/reject_application',
         checkdata: {
           url: '/auth/run_checks',
           options: {

@@ -15,7 +15,7 @@ module.exports = {
     '/los/others/products': {
       layout: {
         component: 'div',
-        privileges: [ 101, ],
+        privileges: [ 101, 102, 103],
         props: {
           style: styles.pageContainer,
         },

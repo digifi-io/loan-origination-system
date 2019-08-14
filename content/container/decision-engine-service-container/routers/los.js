@@ -8,6 +8,7 @@ const transformController = controllers.transform;
 const losController = controllers.los;
 const integrationController = controllers.integration;
 const apiController = controllers.api;
+const orgController = controllers.organization;
 const LosRouter = periodic.express.Router();
 const ensureApiAuthenticated = periodic.controllers.extension.get('periodicjs.ext.oauth2server').auth.ensureApiAuthenticated;
 
@@ -135,6 +136,11 @@ LosRouter.get('/applications/swimlane',
   losController.application.getApplications,
   losController.application.getTeamMembers,
   losController.status.retrieveLosStatusesFromOrg,
+  transformController.posttransform,
+  losController.handleControllerDataResponse)
+
+LosRouter.get('/applications/:id/reject_application',
+  ensureApiAuthenticated,
   transformController.posttransform,
   losController.handleControllerDataResponse)
 
@@ -765,6 +771,7 @@ LosRouter.delete('/notes/:id',
 LosRouter.get('/statuses/:id',
   ensureApiAuthenticated,
   losController.status.getLosStatus,
+  transformController.posttransform,
   losController.handleControllerDataResponse);
 
 // LOSSTATUS PUT
@@ -802,6 +809,51 @@ LosRouter.put('/applicationlabels/:id',
 LosRouter.delete('/applicationlabels/:id',
   ensureApiAuthenticated,
   losController.label.deleteLabel,
+  losController.handleControllerDataResponse);
+
+// APPLICATIONREJECTION GET
+LosRouter.get('/applicationrejectiontypes/:orgid/:index',
+  ensureApiAuthenticated,
+  transformController.posttransform,
+  losController.handleControllerDataResponse)
+
+// APPLICATIONREJECTION PUT
+LosRouter.put('/applicationrejectiontypes/:orgid/:index',
+  ensureApiAuthenticated,
+  orgController.updateRejectionType,
+  losController.handleControllerDataResponse)
+
+// APPLICATIONREJECTION POST
+LosRouter.post('/applicationrejectiontypes',
+  ensureApiAuthenticated,
+  orgController.createRejectionType,
+  losController.handleControllerDataResponse)
+
+// APPLICATIONSTATUS GET 
+LosRouter.get('/applicationstatuses',
+  ensureApiAuthenticated,
+  losController.status.getLosStatuses,
+  transformController.posttransform,
+  losController.handleControllerDataResponse);
+
+// APPLICATIONSTATUS POST 
+LosRouter.post('/applicationstatuses',
+  ensureApiAuthenticated,
+  losController.status.createStatus,
+  losController.status.addStatusToOrganization,
+  losController.handleControllerDataResponse);
+
+// APPLICATIONSTATUS PUT 
+LosRouter.put('/applicationstatuses/configure_application_statuses',
+  ensureApiAuthenticated,
+  losController.status.updateLosStatusPipelines,
+  losController.handleControllerDataResponse)
+
+// APPLICATIONSTATUS DELETE
+LosRouter.delete('/applicationstatuses/:id',
+  ensureApiAuthenticated,
+  losController.status.deleteStatus,
+  losController.status.removeStatusFromOrganization,
   losController.handleControllerDataResponse);
 
 //Intermediary GET
@@ -894,7 +946,7 @@ LosRouter.put('/intermediaries/:id',
   losController.handleControllerDataResponse);
 
 
-// APPLICATIONLABELS DELETE
+// Intermediary DELETE
 LosRouter.delete('/intermediaries/:id',
   ensureApiAuthenticated,
   losController.intermediary.deleteIntermediary,
