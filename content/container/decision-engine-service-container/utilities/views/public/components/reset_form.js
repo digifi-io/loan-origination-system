@@ -29,6 +29,7 @@ module.exports ={
           type: 'success',
         },
       },
+      errorCallback: 'func:this.props.createNotification',
       successCallback: 'func:this.props.reduxRouter.push',
       successProps: '/auth/login',
     },

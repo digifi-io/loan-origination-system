@@ -18,6 +18,7 @@ module.exports = {
         },
       },
       successCallback: 'func:this.props.refresh',
+      errorCallback: 'func:this.props.createNotification',
     },
     hiddenFields: [
       {
