@@ -402,7 +402,7 @@ async function forgot(req, res, next) {
       sendEmail: true,
       ra: req.query.ra,
     })
-    if (emailResult.email && emailResult.email.aws_ses_config_error) return next('Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.')
+    if (emailResult && emailResult.email && emailResult.email.aws_ses_config_error) return next('Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.')
     if (!emailResult || !emailResult.email) return next('Invalid credentials. Please confirm your organization and email.');
     else return next();
   } catch(e) {
