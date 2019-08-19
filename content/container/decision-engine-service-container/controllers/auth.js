@@ -404,7 +404,7 @@ async function forgotAccountPassword(req, res, next) {
     })
     if (emailResult && emailResult.email && emailResult.email.aws_ses_config_error) return next('Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.')
     if (!emailResult || !emailResult.email) return next('Invalid credentials. Please confirm your organization and email.');
-    else return next();
+    return next();
   } catch(e) {
     logger.error('forgot password error', err);
     next(err);
@@ -456,7 +456,7 @@ async function sendOrganizationRecoveryEmail(req, res, next) {
         organizations: req.controllerData.organizations,
       },
     };
-    let emailSend = await periodic.core.mailer.sendEmail(email);
+    const emailSend = await periodic.core.mailer.sendEmail(email);
     next();
   } catch(e) {
     if (e.message === 'The security token included in the request is invalid.' || e.code === 'InvalidCodeTokenId' || e.statusCode === 403) return next('Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.')
