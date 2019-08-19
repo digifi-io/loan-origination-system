@@ -390,81 +390,78 @@ function generateNewCredentials(req, res, next) {
  * @param {Object} res express response object
  * @param {function} next express next function
  */
-function forgot(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const entitytype = passportUtilities.auth.getEntityTypeFromReq({ req, accountPath: passportUtilities.paths.account_auth_forgot, userPath: passportUtilities.paths.user_auth_forgot, });
-  utilControllers.auth.forgotPassword({
-    req,
-    organization: req.body.name,
-    email: req.body.username,
-    entitytype,
-    sendEmail: true,
-    ra: req.query.ra,
-  })
-    .then((result) => {
-      if (!result || !result.email) return next('Invalid credentials. Please confirm your organization and email.');
-      else return next();
+async function forgot(req, res, next) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const entitytype = passportUtilities.auth.getEntityTypeFromReq({ req, accountPath: passportUtilities.paths.account_auth_forgot, userPath: passportUtilities.paths.user_auth_forgot, });
+    const emailResult = await utilControllers.auth.forgotPassword({
+      req,
+      organization: req.body.name,
+      email: req.body.username,
+      entitytype,
+      sendEmail: true,
+      ra: req.query.ra,
     })
-    .catch(err => {
-      logger.error('forgot password error', err);
-      next(err);
-    });
+    if (emailResult.email && emailResult.email.aws_ses_config_error) return next('Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.')
+    if (!emailResult || !emailResult.email) return next('Invalid credentials. Please confirm your organization and email.');
+    else return next();
+  } catch(e) {
+    logger.error('forgot password error', err);
+    next(err);
+  }
 }
 
-function recoverOrganizations(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const User = periodic.datas.get('standard_user');
-  let rb = req.body;
-  User.model.find({ email: rb.username, }).populate('association.organization')
-    .then(users => {
-      if (!users.length) return res.status(400).send({ message: 'Unable to find any user with this email', });
+async function recoverOrganizations(req, res, next) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const User = periodic.datas.get('standard_user');
+    let rb = req.body;
+    const users = await User.model.find({ email: rb.username, }).populate('association.organization')
+    if (!users.length) {
+      return res.status(400).send({ message: 'Unable to find any user with this email', });
+    } else {
       req.controllerData.organizations = [];
       req.controllerData.first_name;
       users.forEach(user => {
-        if (user.email === rb.username) req.controllerData.organizations.push(user.association.organization.name);
+        const organizationName = user && user.association && user.association.organization && user.association.organization.name;
+        if (organizationName && user.email === rb.username) req.controllerData.organizations.push(user.association.organization.name);
         req.controllerData.first_name = user.first_name;
       });
       next();
-    })
-    .catch(err => {
-      return res.status(400).send({
-        message: 'Unable to find user in our organization',
-      });
+    }
+  } catch(e) {
+    return res.status(400).send({
+      message: 'Unable to find user in our organization',
     });
+  }
 }
 
 async function sendOrganizationRecoveryEmail(req, res, next) {
   req.controllerData = req.controllerData || {};
-  const email = {
-    from: periodic.settings.periodic.emails.server_from_address,
-    // to: 'mark@digifi.io',
-    to: req.body.username,
-    bcc: periodic.settings.periodic.emails.notification_address,
-    subject: 'Recover Your Organization',
-    generateTextFromHTML: true,
-    emailtemplatefilepath: path.resolve(periodic.config.app_root, 'content/container/decision-engine-service-container/utilities/views/email/organization_recovery.ejs'),
-    emailtemplatedata: {
-      appname: periodic.settings.name,
-      hostname: periodic.settings.application.hostname || periodic.settings.name,
-      basepath: '/auth/sign-in',
-      url: periodic.settings.application.url,
-      protocol: periodic.settings.application.protocol,
-      first_name: req.controllerData.first_name,
-      organizations: req.controllerData.organizations,
-      // appname: periodic.settings.name,
-      // hostname: periodic.settings.application.hostname || periodic.settings.name,
-      // url: periodic.settings.application.url,
-      // protocol: periodic.settings.application.protocol,
-      // amount_paid: Numeral(charge.amount / 100).format('$0,0.00'),
-      // taxable_amount: Numeral(currentOrg.taxable_amount).format('$0,0.00'),
-      // non_taxable_amount: Numeral(currentOrg.non_taxable_amount).format('$0,0.00'),
-      // date_paid: moment().format('L'),
-      // total_tax_owed: Numeral(currentOrg.total_tax_owed).format('$0,0.00'),
-      // payment_method: `${charge.source.card.brand} - ${charge.source.card.last4}`,
-    },
-  };
-  let emailSend = await periodic.core.mailer.sendEmail(email);
-  next();
+  try {
+    const email = {
+      from: periodic.settings.periodic.emails.server_from_address,
+      to: req.body.username,
+      bcc: periodic.settings.periodic.emails.notification_address,
+      subject: 'Recover Your Organization',
+      generateTextFromHTML: true,
+      emailtemplatefilepath: path.resolve(periodic.config.app_root, 'content/container/decision-engine-service-container/utilities/views/email/organization_recovery.ejs'),
+      emailtemplatedata: {
+        appname: periodic.settings.name,
+        hostname: periodic.settings.application.hostname || periodic.settings.name,
+        basepath: '/auth/sign-in',
+        url: periodic.settings.application.url,
+        protocol: periodic.settings.application.protocol,
+        first_name: req.controllerData.first_name,
+        organizations: req.controllerData.organizations,
+      },
+    };
+    let emailSend = await periodic.core.mailer.sendEmail(email);
+    next();
+  } catch(e) {
+    if (e.message === 'The security token included in the request is invalid.' || e.code === 'InvalidCodeTokenId' || e.statusCode === 403) return next('Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.')
+    else return next(e.message);
+  }
 }
 
 /**
@@ -488,7 +485,8 @@ function resetPassword(req, res, next) {
         sendEmail: false,
       });
     })
-    .then(() => {
+    .then((result) => {
+      if (result.email && result.email.aws_ses_config_error) return next('Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.')
       next();
     })
     .catch(err => {

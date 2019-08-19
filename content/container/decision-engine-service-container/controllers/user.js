@@ -96,12 +96,9 @@ function activateUser(req, res, next) {
           },
         });
       }
+      req.controllerData.user.status = req.controllerData.user.status || {};
+      req.controllerData.user.status.active = true;
       req.controllerData.user = Object.assign({}, req.controllerData.user, {
-        status: {
-          active: true,
-          mfa: false,
-          email_verified: false,
-        },
         association: {
           organization: req.controllerData.org._id.toString(),
         },
@@ -390,19 +387,22 @@ function getUser(req, res, next) {
   }
 }
 
-function resendInvitiationEmail(req, res, next) {
+async function resendInvitiationEmail(req, res, next) {
   req.body.username = req.controllerData.user.email;
-  return utilControllers.auth.emailUser({ user: Object.assign({}, req.controllerData.user, { company: req.controllerData.user.association.organization.name, }), ra: {}, basepath: '/auth/accept-invite', subject: 'Invitation To Join', emailtemplatefilepath: passportSettings.emails.new_user, })
-    .then(() => {
+  try {
+    const emailResult = await utilControllers.auth.emailUser({ user: Object.assign({}, req.controllerData.user, { company: req.controllerData.user.association.organization.name, }), ra: {}, basepath: '/auth/accept-invite', subject: 'Invitation To Join', emailtemplatefilepath: passportSettings.emails.new_user, })
+    if (emailResult && emailResult.aws_ses_config_error) {
+      return res.status(500).send({ message: 'Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.'})
+    } else {
       return res.status(200).send({
         status: 200,
         result: 'success',
       });
-    })
-    .catch(err => {
-      logger.error({ err });
-      next(err);
-    })
+    }
+  } catch(e) {
+    logger.error({ e });
+    next(e);
+  }
 }
 
 /**
@@ -533,7 +533,7 @@ function formatUser(req, res, next) {
  * @param {Object} res Express response object.
  * @param {function} next express next function
  */
-function changeEmail(req, res, next) {
+async function changeEmail(req, res, next) {
   if (req.body) {
     let user = req.user;
     req.controllerData = req.controllerData || {};
@@ -547,10 +547,13 @@ function changeEmail(req, res, next) {
     });
     let millisecondsPerDay = 86400000;
     if (user.extensionattributes && user.extensionattributes.passport && user.extensionattributes.passport.user_activation_token && user.extensionattributes.passport.user_activation_token_link && user.extensionattributes.passport.reset_activation_expires_millis && (user.extensionattributes.passport.reset_activation_expires_millis > (new Date().getTime() - millisecondsPerDay))) {
-      return utilControllers.auth.emailUser({ user: user, basepath: '/auth/complete_registration', subject: 'Verify Your Email Address', emailtemplatefilepath: passportSettings.emails.welcome, })
-        .then(() => {
+      const emailResult = await utilControllers.auth.emailUser({ user: user, basepath: '/auth/complete_registration', subject: 'Verify Your Email Address', emailtemplatefilepath: passportSettings.emails.welcome, })
+      try {
+        if (emailResult && emailResult.aws_ses_config_error) {
+          res.status(500).send({ message: 'Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.' });
+        } else {
           let redisClient = periodic.app.locals.redisClient;
-          return new Promise((resolve, reject) => {
+          await new Promise((resolve, reject) => {
             redisClient.set(req.body.username, req.headers['x-access-token'], (err, reply) => {
               if (err) {
                 logger.warn('putSessionOnRedis - Error setting user: ', err);
@@ -559,8 +562,7 @@ function changeEmail(req, res, next) {
               resolve(reply);
             });
           });
-        })
-        .then(() => {
+
           req.controllerData = Object.assign({}, req.controllerData, {
             status: 200,
             result: 'success',
@@ -569,19 +571,20 @@ function changeEmail(req, res, next) {
             timeout: 10000,
           });
           next();
-        })
-        .catch(err => {
-          logger.error('Unable to send email to user', err);
-          next(err);
-        });   
+        }
+      } catch(e) {
+        logger.error('Unable to send email to user', err);
+        next(err);
+      }   
     } else {
-      return passportUtilities.token.generateUserActivationData({ user: req.controllerData.user, })
-        .then(validatedUser => {
-          return utilControllers.auth.emailUser({ user: validatedUser, basepath: '/auth/complete_registration', subject: 'Verify Your Email Address', emailtemplatefilepath: passportSettings.emails.welcome, });
-        })
-        .then(() => {
+      const validatedUser = await passportUtilities.token.generateUserActivationData({ user: req.controllerData.user, })
+      const emailResult = await utilControllers.auth.emailUser({ user: validatedUser, basepath: '/auth/complete_registration', subject: 'Verify Your Email Address', emailtemplatefilepath: passportSettings.emails.welcome, })
+      try {
+        if (emailResult && emailResult.aws_ses_config_error) {
+          res.status(500).send({ message: 'Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.' });
+        } else {
           let redisClient = periodic.app.locals.redisClient;
-          return new Promise((resolve, reject) => {
+          await new Promise((resolve, reject) => {
             redisClient.set(req.body.username, req.headers['x-access-token'], (err, reply) => {
               if (err) {
                 logger.warn('putSessionOnRedis - Error setting user: ', err);
@@ -590,8 +593,7 @@ function changeEmail(req, res, next) {
               resolve(reply);
             });
           });
-        })
-        .then(() => {
+
           req.controllerData = Object.assign({}, req.controllerData, {
             status: 200,
             result: 'success',
@@ -600,11 +602,11 @@ function changeEmail(req, res, next) {
             timeout: 10000,
           });
           next();
-        })
-        .catch(err => {
-          logger.error('Unable to send email to user', err);
-          next(err);
-        });    
+        }
+      } catch(e) {
+        logger.error('Unable to send email to user', err);
+        next(err);
+      }      
     }
   } else {
     next();

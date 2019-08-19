@@ -26,31 +26,32 @@ try {
  * @param {Object} options Contains user information and reactadmin query.
  * @return {Object} Returns a promise that resolves after calling mailgun.
  */
-function emailUser(options) {
-  return new Promise((resolve, reject) => {
-    try {
-      const { subject, user, basepath, emailtemplatefilepath, } = options;
-      const email = {
-        from: periodic.settings.periodic.emails.server_from_address,
-        to: user.email,
-        bcc: periodic.settings.periodic.emails.notification_address,
-        subject,
-        generateTextFromHTML: true,
-        emailtemplatefilepath: path.resolve(periodic.config.app_root, emailtemplatefilepath),
-        emailtemplatedata: {
-          appname: periodic.settings.name,
-          hostname: periodic.settings.application.hostname || periodic.settings.name,
-          basepath,
-          url: periodic.settings.application.url,
-          protocol: periodic.settings.application.protocol,
-          user,
-        },
-      };
-      return resolve(periodic.core.mailer.sendEmail(email));
-    } catch (e) {
-      reject(e);
+async function emailUser(options) {
+  try {
+    const { subject, user, basepath, emailtemplatefilepath, } = options;
+    const email = {
+      from: periodic.settings.periodic.emails.server_from_address,
+      to: user.email,
+      bcc: periodic.settings.periodic.emails.notification_address,
+      subject,
+      generateTextFromHTML: true,
+      emailtemplatefilepath: path.resolve(periodic.config.app_root, emailtemplatefilepath),
+      emailtemplatedata: {
+        appname: periodic.settings.name,
+        hostname: periodic.settings.application.hostname || periodic.settings.name,
+        basepath,
+        url: periodic.settings.application.url,
+        protocol: periodic.settings.application.protocol,
+        user,
+      },
+    };
+    return await periodic.core.mailer.sendEmail(email);
+  } catch (e) {
+    if (e.message === 'The security token included in the request is invalid.' || e.code === 'InvalidClientTokenId' || e.statusCode === 403) {
+      return { aws_ses_config_error: true };
     }
-  });
+    return e;
+  }
 }
 
 /**
@@ -83,6 +84,10 @@ function fastRegister(options) {
           }
         })
         .then(emailStatus => {
+          if (emailStatus && emailStatus.aws_ses_config_error){
+            dbCreatedUser.status = dbCreatedUser.status || {};
+            dbCreatedUser.status.email_verified = true;
+          }
           resolve(dbCreatedUser);
         })
         .catch(reject);
@@ -121,6 +126,10 @@ function newUserRegister(options) {
           }
         })
         .then(emailStatus => {
+          if (emailStatus && emailStatus.aws_ses_config_error){
+            dbCreatedUser.status = dbCreatedUser.status || {};
+            dbCreatedUser.status.email_verified = true;
+          }
           resolve(dbCreatedUser);
         })
         .catch(reject);
@@ -248,7 +257,7 @@ function forgotPassword(options) {
           let user;
           users.forEach(userAcc => {
             userAcc = userAcc.toJSON ? userAcc.toJSON() : userAcc;
-            if (userAcc.association && userAcc.association.organization.name && userAcc.association.organization.name.toString().toLowerCase() === organization.toString().toLowerCase()) user = userAcc;
+            if (userAcc.association && userAcc.association.organization && userAcc.association.organization.name && userAcc.association.organization.name.toString().toLowerCase() === organization.toString().toLowerCase()) user = userAcc;
           });
 
           if (!user) {
@@ -342,48 +351,34 @@ function invalidateToken(options) {
  * @param {Object} options Contains token.
  * @return {Object} Promise that resolves with reset token and user.
  */
-function resetPassword(options) {
+async function resetPassword(options) {
   const { req, user, sendEmail, ra, } = options;
-  return new Promise((resolve, reject) => {
-    try {
-      const User = periodic.datas.get('standard_user');
-      let updatedUserAccount = {};
-      invalidateToken({ user, })
-        .then(updatedUser => {
-          updatedUser.password = req.body.password;
-          updatedUser[ passportSettings.registration.matched_password_field ] = req.body[ passportSettings.registration.matched_password_field ];
-          updatedUserAccount = updatedUser;
-          return passportUtilities.account.validate({ user: updatedUser, });
-        })
-        .then(validatedUser => {
-          updatedUserAccount = validatedUser;
-          User.update({
-            updatedoc: validatedUser,
-            depopulate: false,
-          })
-            .then(changedPWUser => {
-              return changedPWUser;
-            })
-            .catch(reject);
-        })
-        .then(updatedUser => {
-          if (sendEmail) {
-            return emailUser({ user: updatedUserAccount, ra, basepath: '/auth/user/reset', subject: 'Password reset notification', emailtemplatefilepath: passportSettings.emails.forgot, });
-          } else {
-            return true;
-          }
-        })
-        .then(emailStatus => {
-          resolve({
-            email: emailStatus,
-            user: updatedUserAccount,
-          });
-        })
-        .catch(reject);
-    } catch (e) {
-      reject(e);
+  try {
+    const User = periodic.datas.get('standard_user');
+    let emailResult = {};
+    let updatedUserAccount = {};
+    const updatedUser = await invalidateToken({ user });
+    updatedUser.password = req.body.password;
+    updatedUser[ passportSettings.registration.matched_password_field ] = req.body[ passportSettings.registration.matched_password_field ];
+    updatedUserAccount = updatedUser;
+    const validatedUser = await passportUtilities.account.validate({ user: updatedUser, });
+    updatedUserAccount = validatedUser;
+    if (sendEmail) {
+      emailResult = await emailUser({ user: updatedUserAccount, ra, basepath: '/auth/user/reset', subject: 'Password reset notification', emailtemplatefilepath: passportSettings.emails.forgot, });
     }
-  });
+    if (!emailResult.aws_ses_config_error) {
+      await User.update({
+        updatedoc: validatedUser,
+        depopulate: false,
+      })
+    }
+    return {
+      email: emailResult,
+      user: updatedUserAccount
+    };
+  } catch (e) {
+    return e;
+  }
 }
 
 /**
