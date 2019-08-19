@@ -81,7 +81,7 @@ AuthRouter.post('/organization/new',
 
 AuthRouter.post('/forgot_password',
   transformController.pretransform,
-  authController.forgot,
+  authController.forgotAccountPassword,
   authController.handleControllerDataResponse);
 
 AuthRouter.post('/recover_organization',

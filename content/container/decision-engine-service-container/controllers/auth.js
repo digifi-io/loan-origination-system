@@ -390,7 +390,7 @@ function generateNewCredentials(req, res, next) {
  * @param {Object} res express response object
  * @param {function} next express next function
  */
-async function forgot(req, res, next) {
+async function forgotAccountPassword(req, res, next) {
   try {
     req.controllerData = req.controllerData || {};
     const entitytype = passportUtilities.auth.getEntityTypeFromReq({ req, accountPath: passportUtilities.paths.account_auth_forgot, userPath: passportUtilities.paths.user_auth_forgot, });
@@ -1363,7 +1363,7 @@ module.exports = {
   setEmailVerify,
   verifyPassword,
   generateNewCredentials,
-  forgot,
+  forgotAccountPassword,
   recoverOrganizations,
   sendOrganizationRecoveryEmail,
   resetPassword,
