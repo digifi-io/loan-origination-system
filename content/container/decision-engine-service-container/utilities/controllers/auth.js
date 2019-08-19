@@ -356,25 +356,22 @@ async function resetPassword(options) {
   try {
     const User = periodic.datas.get('standard_user');
     let emailResult = {};
-    let updatedUserAccount = {};
-    const updatedUser = await invalidateToken({ user });
+    let updatedUser = await invalidateToken({ user });
     updatedUser.password = req.body.password;
     updatedUser[ passportSettings.registration.matched_password_field ] = req.body[ passportSettings.registration.matched_password_field ];
-    updatedUserAccount = updatedUser;
-    const validatedUser = await passportUtilities.account.validate({ user: updatedUser, });
-    updatedUserAccount = validatedUser;
+    updatedUser = await passportUtilities.account.validate({ user: updatedUser, });
     if (sendEmail) {
-      emailResult = await emailUser({ user: updatedUserAccount, ra, basepath: '/auth/user/reset', subject: 'Password reset notification', emailtemplatefilepath: passportSettings.emails.forgot, });
+      emailResult = await emailUser({ user: updatedUser, ra, basepath: '/auth/user/reset', subject: 'Password reset notification', emailtemplatefilepath: passportSettings.emails.forgot, });
     }
     if (!emailResult.aws_ses_config_error) {
       await User.update({
-        updatedoc: validatedUser,
+        updatedoc: updatedUser,
         depopulate: false,
       })
     }
     return {
       email: emailResult,
-      user: updatedUserAccount
+      user: updatedUser
     };
   } catch (e) {
     return e;

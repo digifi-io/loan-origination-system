@@ -390,7 +390,15 @@ function getUser(req, res, next) {
 async function resendInvitiationEmail(req, res, next) {
   req.body.username = req.controllerData.user.email;
   try {
-    const emailResult = await utilControllers.auth.emailUser({ user: Object.assign({}, req.controllerData.user, { company: req.controllerData.user.association.organization.name, }), ra: {}, basepath: '/auth/accept-invite', subject: 'Invitation To Join', emailtemplatefilepath: passportSettings.emails.new_user, })
+    const emailResult = await utilControllers.auth.emailUser({ 
+      user: Object.assign({}, req.controllerData.user, { 
+        company: req.controllerData.user.association.organization.name, 
+      }), 
+      ra: {}, 
+      basepath: '/auth/accept-invite', 
+      subject: 'Invitation To Join', 
+      emailtemplatefilepath: passportSettings.emails.new_user, 
+    })
     if (emailResult && emailResult.aws_ses_config_error) {
       return res.status(500).send({ message: 'Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.'})
     } else {
@@ -545,68 +553,52 @@ async function changeEmail(req, res, next) {
         email_verified: false,
       }),
     });
-    let millisecondsPerDay = 86400000;
+    const millisecondsPerDay = 86400000;
+    let emailResult = {};
     if (user.extensionattributes && user.extensionattributes.passport && user.extensionattributes.passport.user_activation_token && user.extensionattributes.passport.user_activation_token_link && user.extensionattributes.passport.reset_activation_expires_millis && (user.extensionattributes.passport.reset_activation_expires_millis > (new Date().getTime() - millisecondsPerDay))) {
-      const emailResult = await utilControllers.auth.emailUser({ user: user, basepath: '/auth/complete_registration', subject: 'Verify Your Email Address', emailtemplatefilepath: passportSettings.emails.welcome, })
-      try {
-        if (emailResult && emailResult.aws_ses_config_error) {
-          res.status(500).send({ message: 'Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.' });
-        } else {
-          let redisClient = periodic.app.locals.redisClient;
-          await new Promise((resolve, reject) => {
-            redisClient.set(req.body.username, req.headers['x-access-token'], (err, reply) => {
-              if (err) {
-                logger.warn('putSessionOnRedis - Error setting user: ', err);
-                reject(err);
-              }
-              resolve(reply);
-            });
-          });
-
-          req.controllerData = Object.assign({}, req.controllerData, {
-            status: 200,
-            result: 'success',
-            type: 'success',
-            text:  `Verfication email sent to ${req.body.username}.`,
-            timeout: 10000,
-          });
-          next();
-        }
-      } catch(e) {
-        logger.error('Unable to send email to user', err);
-        next(err);
-      }   
+      emailResult = await utilControllers.auth.emailUser({ 
+        user: user, 
+        basepath: '/auth/complete_registration', 
+        subject: 'Verify Your Email Address', 
+        emailtemplatefilepath: passportSettings.emails.welcome, 
+      })
     } else {
       const validatedUser = await passportUtilities.token.generateUserActivationData({ user: req.controllerData.user, })
-      const emailResult = await utilControllers.auth.emailUser({ user: validatedUser, basepath: '/auth/complete_registration', subject: 'Verify Your Email Address', emailtemplatefilepath: passportSettings.emails.welcome, })
-      try {
-        if (emailResult && emailResult.aws_ses_config_error) {
-          res.status(500).send({ message: 'Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.' });
-        } else {
-          let redisClient = periodic.app.locals.redisClient;
-          await new Promise((resolve, reject) => {
-            redisClient.set(req.body.username, req.headers['x-access-token'], (err, reply) => {
-              if (err) {
-                logger.warn('putSessionOnRedis - Error setting user: ', err);
-                reject(err);
-              }
-              resolve(reply);
-            });
-          });
+      emailResult = await utilControllers.auth.emailUser({ 
+        user: validatedUser, 
+        basepath: '/auth/complete_registration', 
+        subject: 'Verify Your Email Address', 
+        emailtemplatefilepath: passportSettings.emails.welcome, 
+      })
+    }
 
-          req.controllerData = Object.assign({}, req.controllerData, {
-            status: 200,
-            result: 'success',
-            type: 'success',
-            text:  `Verfication email sent to ${req.body.username}.`,
-            timeout: 10000,
+    try {
+      if (emailResult && emailResult.aws_ses_config_error) {
+        res.status(500).send({ message: 'Invalid AWS SES email configuration. You need to add a valid AWS SES accessKeyId and secret to access this functionality.' });
+      } else {
+        const redisClient = periodic.app.locals.redisClient;
+        await new Promise((resolve, reject) => {
+          redisClient.set(req.body.username, req.headers['x-access-token'], (err, reply) => {
+            if (err) {
+              logger.warn('putSessionOnRedis - Error setting user: ', err);
+              reject(err);
+            }
+            resolve(reply);
           });
-          next();
-        }
-      } catch(e) {
-        logger.error('Unable to send email to user', err);
-        next(err);
-      }      
+        });
+
+        req.controllerData = Object.assign({}, req.controllerData, {
+          status: 200,
+          result: 'success',
+          type: 'success',
+          text:  `Verfication email sent to ${req.body.username}.`,
+          timeout: 10000,
+        });
+        next();
+      }
+    } catch(e) {
+      logger.error('Unable to send email to user', err);
+      next(err);
     }
   } else {
     next();
