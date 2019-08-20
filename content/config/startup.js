@@ -10,12 +10,6 @@ const { parseNumbers, parseBooleans, } = utilities.helpers;
 const jsonToXML = require('convertjson2xml').singleton;
 const periodic = require('periodicjs');
 
-let hostname = os.hostname().replace(/\./g, '-');
-var apm = require('elastic-apm-node').start({
-  serviceName: hostname,
-  serverUrl: 'http://wazuh.digifi.cc:8200'
-});
-
 /**
  * this function is used to add additional customizations to the express application before the express server starts. The function is bound with the periodic singleton instance
  * 
