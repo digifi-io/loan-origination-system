@@ -44,10 +44,10 @@ Connect other systems and build amazing digital experiences on top of DigiFi’s
 
 *   [DigiFi Website](https://www.digifi.io)
 *   [DigiFi Blog](https://digifi.io/blog/)
-*   [Installation Guide](https://docs.digifi.io/v3.0/docs/system-requirements)
-*   [Developer Guide](https://docs.digifi.io/v3.0/docs/decision-engine)
-*   [User Manual Guide](https://docs.digifi.io/v3.0/docs/overview-of-my-account)
-*   [API Reference](https://docs.digifi.io/v3.0/reference)
+*   [Installation Guide](https://docs.digifi.io/docs/platform-installation)
+*   [Developer Guide](https://docs.digifi.io/docs/decision-engine)
+*   [User Manual Guide](https://docs.digifi.io/docs/overview-of-my-account)
+*   [API Reference](https://docs.digifi.io/reference)
 
 # License
 
