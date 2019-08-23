@@ -54,7 +54,6 @@ function promisifyClientConnect(uri, db) {
 module.exports = () => {
   periodic.status.on('configuration-complete', async (status) => {
     await promisifyClientConnect(THEMESETTINGS.gridfs.uri, THEMESETTINGS.gridfs.db);
-    // let updateBalanceCron = require('./crons/update_balance_aggregation.cron')(periodic);
     let reactAppSettings = periodic.settings.extensions[ '@digifi-los/reactapp' ];
     let port = reactAppSettings.session.port;
     let host = reactAppSettings.session.host;
@@ -71,9 +70,6 @@ module.exports = () => {
       basename,
     });
     periodic.app.locals.strategiesCache = {};
-
-    // This overrides default profile picture
-    // periodic.settings.extensions[ 'periodicjs.ext.reactapp' ].default_user_image = THEMESETTINGS.company_logo;
 
     let servers = periodic.servers;
     let httpServer = servers.get('http')
@@ -112,19 +108,6 @@ module.exports = () => {
     periodic.aws.machinelearning = machinelearning;
 
     if (machineLearningSettings.use_mlcrons) {
-      // for debugging purposes
-      // let active = setInterval(async () => {
-      //   const redisClient = periodic.app.locals.redisClient;
-      //   const getAllKeys = Promisie.promisify(redisClient.keys).bind(redisClient);
-      //   const getValues = Promisie.promisify(redisClient.hgetall).bind(redisClient);
-      //   const allLLKeys = await getAllKeys(`${periodic.environment}_ml_sagemaker_ll:*`);
-      //   // const allLLValues = await Promise.all(allLLKeys.map(key => getValues(key)));
-      //   const allAWSKeys = await getAllKeys(`${periodic.environment}_ml_aws:*`);
-      //   const allAWSValues = await Promise.all(allAWSKeys.map(key => getValues(key)));
-      //   const allXGBKeys = await getAllKeys(`${periodic.environment}_ml_sagemaker_xgb:*`);
-      //   // const allXGBValues = await Promise.all(allXGBKeys.map(key => getValues(key)));
-      //   // redisClient.del('development_ml_aws:5c424f53940423bc336e3a90');
-      // }, 5000);
       mlcrons.sageMaker();
       mlcrons.digifi();
       mlcrons.modelSelectionUpdater();
@@ -184,8 +167,6 @@ module.exports = () => {
             mlcrons.modelUpdater();
           }
         });
-        // }, 5000);
-
       }, machineLearningSettings.cron_interval || 60000);
     }
 
