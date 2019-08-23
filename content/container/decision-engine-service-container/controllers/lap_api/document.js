@@ -167,7 +167,7 @@ async function downloadDocument(req, res, next) {
         Key: los_file.fileurl,
       };
       const fileData = await s3.getObject(s3Params).promise();
-      const fileString = fileData.Body.toString('utf8');
+      const fileString = fileData.Body.toString(req.query && req.query.encoding_format || 'utf8');
       req.controllerData.fileBuffer = fileData.Body;
       req.controllerData.file = fileString;
     }
