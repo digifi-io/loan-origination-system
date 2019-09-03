@@ -610,24 +610,28 @@ async function populateArtificialIntelligenceAndDataIntegrationSegment(req) {
         let outputs = [];
         let _children = segment_manifests[ currentSegment.type ];
         if (currentSegment.type === 'dataintegration') {
-          inputs = currentSegment.inputs.map(input => {
+          inputs = currentSegment.inputs.map((input, index) => {
             if (variablesMap[ input.input_variable ]) {
               return {
                 input_variable: variablesMap[ input.input_variable ].display_title,
                 data_type: input.data_type,
                 display_name: input.display_name,
+                index,
+                id: parsedUrl[ 1 ],
               };
             } else return input;
           });
-          outputs = currentSegment.outputs.map(output => {
+          outputs = currentSegment.outputs.map((output, index) => {
             if (variablesMap[ output.output_variable ]) {
               return {
                 output_variable: variablesMap[ output.output_variable ].display_title,
                 data_type: output.data_type,
                 api_name: output.api_name,
                 display_name: output.display_name,
+                index,
+                id: parsedUrl[ 1 ],
               };
-            } else return output;
+            } else return { ...output, index, id: parsedUrl[ 1 ] };
           });
         }
         if (currentSegment.type === 'artificialintelligence') {
@@ -1552,15 +1556,18 @@ async function generateReceivedMLVariablesModal(req) {
   return req;
 }
 
-async function generateReceivedIntegrationVariablesModal(req) {
+async function generateReceivedIntegrationVariableModal(req) {
   req.controllerData = req.controllerData || {};
   let { collection, core, tabname, parsedUrl, } = helpers.findCollectionNameFromReq({ req, });
   if (tabname && req.controllerData.data && req.controllerData.data.modules && req.controllerData.data.modules[ tabname ] && req.query.type === 'dataintegration' && req.query.variable_type === 'output') {
     let strategy = req.controllerData.data;
     let currentSegment = strategy.modules[ tabname ];
     let outputs = currentSegment[ 0 ].outputs;
+    const index = req.params.index;
+    const output = outputs[ index ];
     let { numOutputOptions, boolOutputOptions, stringOutputOptions, dateOutputOptions, } = req.controllerData;
-
+    const formdata = {};
+    formdata[ `variables.${index}.output_variable` ] = output.output_variable ? output.output_variable : '',
     req.controllerData.receivedVariablesModal = [ {
       'component': 'ResponsiveForm',
       'thisprops': {},
@@ -1568,7 +1575,7 @@ async function generateReceivedIntegrationVariablesModal(req) {
       hasWindowFunc: true,
       'props': {
         'onSubmit': {
-          'url': `/decision/api/standard_strategies/${strategy._id.toString()}/edit_integration_variables?variables=required&variable_type=output`,
+          'url': `/decision/api/standard_strategies/${strategy._id.toString()}/edit_output_variables/?variables=required&variable_type=output&index=${index}&updateOne=${true}`,
           'errorCallback': 'func:this.props.createNotification',
           'options': {
             'method': 'PUT',
@@ -1580,147 +1587,106 @@ async function generateReceivedIntegrationVariablesModal(req) {
             timeout: 10000,
           },
           ],
-        },
-        formdata: outputs.reduce((acc, curr, idx) => {
-          acc[ `variables.${idx}.output_variable` ] = curr.output_variable ? curr.output_variable : '';
-          return acc;
-        }, {}),
-        'formgroups': outputs.map((output, idx) => {
-          return {
-            'gridProps': {
-              'key': randomKey(),
+          'params': [
+            {
+              'key': ':index',
+              'val': index,
             },
-            'formElements': [ {
-              'type': 'dropdown',
-              'name': `variables.${idx}.output_variable`,
-              customLabel: {
-                component: 'span',
-                props: {
-                  style: {
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                  },
+          ],
+        },
+        formdata,
+        'formgroups': [{
+          'gridProps': {
+            'key': randomKey(),
+          },
+          'formElements': [ {
+            'type': 'dropdown',
+            'name': `variables.${index}.output_variable`,
+            customLabel: {
+              component: 'span',
+              props: {
+                style: {
+                  display: 'flex',
+                  alignItems: 'flex-end',
                 },
-                children: idx === 0
-                  ? [ {
-                    component: 'span',
-                    props: {
-                      style: {
-                        flex: '1 1 auto',
-                      },
+              },
+              children: [ {
+                  component: 'span',
+                  props: {
+                    style: {
+                      flex: '1 1 auto',
                     },
-                    children: [ {
-                      component: 'span',
-                      children: output.display_name,
-                    }, {
-                      component: 'span',
-                      props: {
-                        style: {
-                          fontStyle: 'italic',
-                          fontWeight: 'normal',
-                          color: '#ccc',
-                          marginLeft: '7px',
-                        },
-                      },
-                      children: output.data_type,
-                    }, {
-                      component: 'span',
-                      props: {
-                        style: {
-                          display: 'block',
-                          fontWeight: 'normal',
-                        },
-                      },
-                      children: output.description,
-                    }, {
-                      component: 'span',
-                      props: {
-                        style: {
-                          display: 'block',
-                          fontWeight: 'normal',
-                        },
-                      },
-                      children: output.example ? `e.g. ${output.example}` : '',
-                    }, ],
+                  },
+                  children: [ {
+                    component: 'span',
+                    children: output.display_name,
                   }, {
                     component: 'span',
                     props: {
                       style: {
-                        flex: 'none',
+                        fontStyle: 'italic',
+                        fontWeight: 'normal',
+                        color: '#ccc',
+                        marginLeft: '7px',
+                      },
+                    },
+                    children: output.data_type,
+                  }, {
+                    component: 'span',
+                    props: {
+                      style: {
+                        display: 'block',
                         fontWeight: 'normal',
                       },
                     },
-                    children: [ {
-                      component: 'ResponsiveButton',
-                      props: {
-                        onClick: 'func:window.closeModalAndCreateNewModal',
-                        onclickProps: {
-                          title: 'Create New Variable',
-                          pathname: '/decision/variables/create',
-                        },
+                    children: output.description,
+                  }, {
+                    component: 'span',
+                    props: {
+                      style: {
+                        display: 'block',
+                        fontWeight: 'normal',
                       },
-                      children: 'Create New Variable',
-                    }, ],
-                  }, ]
-                  : [ {
-                    component: 'div',
-                    children: [ {
-                      component: 'div',
-                      children: [ {
-                        component: 'span',
-                        children: output.display_name,
-                      }, {
-                        component: 'span',
-                        props: {
-                          style: {
-                            fontStyle: 'italic',
-                            fontWeight: 'normal',
-                            color: '#ccc',
-                            marginLeft: '7px',
-                          },
-                        },
-                        children: output.data_type,
-                      },
-                      ],
-                    }, {
-                      component: 'div',
-                      props: {
-                        style: {
-                          fontWeight: 'normal',
-                        },
-                      },
-                      children: output.description,
-                    }, {
-                      component: 'span',
-                      props: {
-                        style: {
-                          display: 'block',
-                          fontWeight: 'normal',
-                        },
-                      },
-                      children: output.example ? `e.g. ${output.example}` : '',
                     },
-                    ],
+                    children: output.example ? `e.g. ${output.example}` : '',
+                  }, ],
+                }, {
+                  component: 'span',
+                  props: {
+                    style: {
+                      flex: 'none',
+                      fontWeight: 'normal',
+                    },
                   },
-                  ],
-              },
-              'passProps': {
-                'className': output.api_name.toLowerCase().replace(/[\W]+/g, '_'),
-                'fluid': true,
-                'selection': true,
-                search: true,
-              },
-              'options': output.data_type === 'Number'
-                ? numOutputOptions
-                : output.data_type === 'Boolean'
-                  ? boolOutputOptions
-                  : output.data_type === 'Date'
-                    ? dateOutputOptions
-                    : stringOutputOptions,
+                  children: [ {
+                    component: 'ResponsiveButton',
+                    props: {
+                      onClick: 'func:window.closeModalAndCreateNewModal',
+                      onclickProps: {
+                        title: 'Create New Variable',
+                        pathname: '/decision/variables/create',
+                      },
+                    },
+                    children: 'Create New Variable',
+                  }, ],
+                }, ]
             },
-            ],
-          };
-        }).concat([ {
+            'passProps': {
+              'className': output.api_name.toLowerCase().replace(/[\W]+/g, '_'),
+              'fluid': true,
+              'selection': true,
+              search: true,
+            },
+            'options': output.data_type === 'Number'
+              ? numOutputOptions
+              : output.data_type === 'Boolean'
+                ? boolOutputOptions
+                : output.data_type === 'Date'
+                  ? dateOutputOptions
+                  : stringOutputOptions,
+          },
+          ],
+        }, {
           'gridProps': {
             'key': randomKey(),
             'className': 'modal-footer-btns',
@@ -1739,8 +1705,8 @@ async function generateReceivedIntegrationVariablesModal(req) {
             },
           },
           ],
-        },
-        ]),
+        }
+        ],
       },
     },
     ];
@@ -3209,7 +3175,7 @@ module.exports = {
   generateRequiredMLVariablesModal,
   generateReceivedMLVariablesModal,
   generateRequiredIntegrationVariablesModal,
-  generateReceivedIntegrationVariablesModal,
+  generateReceivedIntegrationVariableModal,
   generateVariableDropdown,
   generateOutputVariablesOptions,
   generateRuleMap,

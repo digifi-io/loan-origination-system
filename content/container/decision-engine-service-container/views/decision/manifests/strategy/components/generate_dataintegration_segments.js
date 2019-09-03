@@ -248,36 +248,36 @@ const SEGMENT = [
                   label: 'Variable Assigned',
                   sortable: false,
                   sortid: 'output_variable',
-                }, ],
-              },
-              {
-                type: 'layout',
-                layoutProps: {
-                  size: 'isNarrow',
-                  style: {
-                    flex: 'none',
-                    display: 'inline-block',
-                  },
-                },
-                value: {
-                  component: 'ResponsiveButton',
-                  thisprops: {
-                    onclickPropObject: ['formdata',],
-                  },
-                  props: {
-                    onClick: 'func:this.props.createModal',
-                    onclickProps: {
-                      title: 'Variables Received from Integration',
-                      pathname: '/modal/received_integration_variables/:id',
-                      params: [{ key: ':id', val: '_id', },],
-                    },
-                    buttonProps: {
-                      color: 'isPrimary',
+                }, {
+                  'headerColumnProps': {
+                    style: {
+                      width: '45px',
                     },
                   },
-                  children: 'EDIT',
-                },  
-              },
+                  columnProps: {
+                    style: {
+                      whiteSpace: 'nowrap',
+                    },
+                  },
+                  label: ' ',
+                  buttons: [
+                    {                    
+                      passProps: {
+                        onClick: 'func:this.props.createModal',
+                        onclickProps: {
+                          title: 'Assign Output Variable',
+                          pathname: '/modal/received_integration_variables/:id/:index',
+                          params: [{ key: ':id', val: 'id', }, { key: ':index', val: 'index', }],
+                        },
+                        buttonProps: {
+                          icon: 'fa fa-pencil',
+                          className: '__icon_button',
+                        },
+                      },
+                    },
+                  ],
+                },],
+              },             
               {
                 type: 'Semantic.checkbox',
                 label: 'Run this integration for a specific population',

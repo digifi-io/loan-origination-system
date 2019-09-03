@@ -28,7 +28,7 @@ module.exports = {
       'callbacks': ['func:window.setHeaders', 'func:window.dynamicModalHeight'],
       'onFinish': 'render',
     },
-    '/modal/received_integration_variables/:id': {
+    '/modal/received_integration_variables/:id/:index': {
       layout: {
         component: 'div',
         props: {
@@ -38,7 +38,7 @@ module.exports = {
         },
       },
       'resources': {
-        modeldata: '/decision/api/standard_strategies/required_model_variables/:id?format=json&type=dataintegration&variable_type=output',
+        modeldata: '/decision/api/standard_strategies/:id/variable_assignment/:index?format=json&type=dataintegration&variable_type=output',
         checkdata: {
           url: '/auth/run_checks',
           options: {
