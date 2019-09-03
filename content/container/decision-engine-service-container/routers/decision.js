@@ -108,6 +108,8 @@ DecisionRouter.get('/api/standard_strategies/:id/addSegment', strategyController
 
 DecisionRouter.get('/api/standard_strategies/required_model_variables/:id', apiController.getVariables, strategyController.getStrategy, transformController.posttransform, decisionController.handleControllerDataResponse)
 
+DecisionRouter.get('/api/standard_strategies/:id/variable_assignment/:index', apiController.getVariables, strategyController.getStrategy, transformController.posttransform, decisionController.handleControllerDataResponse);
+
 DecisionRouter.get('/api/standard_strategies/:id/:type/createRule',
   transformController.pretransform,
   decisionController.getInitCreateFormData);
@@ -126,6 +128,11 @@ DecisionRouter.put('/api/standard_strategies/:id/:name/:segment_index/createRule
   ruleController.createRule,
   transformController.posttransform,
   strategyController.update);
+
+DecisionRouter.put('/api/standard_strategies/:id/edit_output_variables',
+  ensureApiAuthenticated,
+  authController.checkReadOnlyUser,
+  strategyController.updateStrategyVariables);
 
 DecisionRouter.put('/api/standard_strategies/:id/*',
   ensureApiAuthenticated,

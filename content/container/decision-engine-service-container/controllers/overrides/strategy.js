@@ -4,7 +4,11 @@ const logger = periodic.logger;
 const controller_helper = require('../../utilities/controllers/helper.js');
 const Promisie = require('promisie');
 const decisionController = require('../decision');
-const runRuleVariableUpdateCron = require('../../crons/update_rules_variables.cron')(periodic);
+const unflatten = require('flat').unflatten;
+const moment = require('moment');
+const mongoose = require('mongoose');
+const Types = mongoose.Types;
+const ObjectId = Types.ObjectId;
 
 function update(req, res, next) {
   const Strategy = periodic.datas.get('standard_strategy');
@@ -291,6 +295,59 @@ async function getChangeLog(req, res, next) {
   }
 }
 
+async function updateStrategyVariables(req, res, next) {
+  try {
+    const Strategy = periodic.datas.get('standard_strategy');
+    const Variable = periodic.datas.get('standard_variable');
+    const Change = periodic.datas.get('standard_change');
+    const original_strategy = await Strategy.model.findOne({ _id: req.params.id, });
+    const createdat = new Date();
+    const user = req.user;
+    const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
+    const updated_strategy = unflatten(req.body);
+    const variable_index = req.query.index;
+    const { tabname, } = controller_helper.findCollectionNameFromReq({ req, });
+    const oirignal_variable = original_strategy
+      && original_strategy.modules && original_strategy.modules[ tabname ]
+      && original_strategy.modules[ tabname ][ 0 ] && original_strategy.modules[ tabname ][ 0 ].outputs
+      && original_strategy.modules[ tabname ][ 0 ].outputs[ variable_index ]
+      ? original_strategy.modules[ tabname ][ 0 ].outputs[ variable_index ]
+      : {};
+    let [ module_name, ] = req.headers.referer.split('/').slice(-2);
+    const redirect_path = `/decision/strategies/${req.params.id}/${module_name}/${req.body.redirect_index}`;
+    if (req.query.updateOne && variable_index !== undefined) {
+      if (updated_strategy.variables && updated_strategy.variables[ variable_index ] && updated_strategy.variables[ variable_index ].output_variable && updated_strategy.variables[ variable_index ].output_variable !== oirignal_variable.output_variable) {
+        if (updated_strategy.variables[ variable_index ].output_type === 'value' && oirignal_variable.data_type === 'Date') {
+          updated_strategy.variables[ variable_index ].output_variable = moment(updated_strategy.variables[ variable_index ].output_variable).format('MM/DD/YYYY');
+        }  
+        const after = await Strategy.model.findOneAndUpdate({ _id: req.params.id, }, { $set: { [ `modules.${tabname}.0.outputs.${variable_index}.output_variable` ]: updated_strategy.variables[ variable_index ].output_variable, }, }, { new: true, useFindAndModify: false, }, );
+        await Variable.model.updateOne({ _id: updated_strategy.variables[ variable_index ].output_variable, }, { $push: { strategies: ObjectId(req.params.id), }, });
+        if (oirignal_variable.output_variable) {
+          const varible_to_remove_strategy_id_from = await Variable.model.findOne({ _id: oirignal_variable.output_variable, });
+          const strategy_index = varible_to_remove_strategy_id_from.strategies.indexOf(req.params.id);
+          varible_to_remove_strategy_id_from.strategies.splice(strategy_index, 1);
+          await Variable.model.updateOne({ _id: oirignal_variable.output_variable, }, { $set: { strategies: varible_to_remove_strategy_id_from.strategies, }, });
+        }        
+        let changeOptions = controller_helper.createChangeOptions({ result: original_strategy, collection: 'strategies', req, createdat, after, organization: (organization) ? organization.toString() : 'organization', });
+        await Change.create(changeOptions);
+      }
+    }
+    res.status(200).send({
+      status: 200,
+      timeout: 10000,
+      type: 'success',
+      text: 'Changes saved successfully!',
+      successProps: {
+        successCallback: 'func:window.pushToNewRoute',
+      },
+      pathname: redirect_path,
+    });
+  } catch (e) {
+    logger.error(e);
+    res.status(500).send({ message: e.message, });
+  }
+}
+
 
 module.exports = {
   index: decisionController.find,
@@ -301,6 +358,7 @@ module.exports = {
   getStrategies,
   getStrategy,
   initialCreateRuleModal,
+  updateStrategyVariables,
   getStrategyVersions,
   getChangeLogs,
   getChangeLog,

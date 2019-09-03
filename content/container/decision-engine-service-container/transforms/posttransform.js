@@ -32,7 +32,7 @@ module.exports = {
       decision.strategy.generateRequiredMLVariablesModal,
       decision.strategy.generateReceivedMLVariablesModal,
       decision.strategy.generateRequiredIntegrationVariablesModal,
-      decision.strategy.generateReceivedIntegrationVariablesModal,
+      decision.strategy.generateReceivedIntegrationVariableModal,
       decision.strategy.generateDocumentCreationVariablesModal,
     ],
     '/decision/api/standard_strategies/:id/variable_assignment/:index': [
@@ -40,7 +40,7 @@ module.exports = {
       decision.strategy.generateRequiredMLVariablesModal,
       decision.strategy.generateReceivedMLVariablesModal,
       decision.strategy.generateRequiredIntegrationVariablesModal,
-      decision.strategy.generateReceivedIntegrationVariablesModal,
+      decision.strategy.generateReceivedIntegrationVariableModal,
       decision.strategy.generateDocumentCreationVariablesModal,
     ],
     '/decision/api/:collection/:id/changelog': [
