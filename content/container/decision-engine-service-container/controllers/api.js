@@ -588,180 +588,6 @@ function sendSuccess(req, res) {
   return res.status(200).send({ message: 'Success' });
 }
 
-async function getModuleCounts(modules) {
-  let result = {
-    requirements_rule_count: 0,
-    scoring_model_count: 0,
-    rule_based_output_count: 0,
-    simple_output_count: 0,
-    calculation_scripts_count: 0,
-    data_integration_count: 0,
-    email_count: 0,
-    text_message_count: 0,
-    ai_model_count: 0,
-  };
-
-  modules.forEach(module => {
-    if (module.type === 'calculations') result.calculation_scripts_count += 1;
-    if (module.type === 'assignments') result.simple_output_count += 1;
-    if (module.type === 'requirements') result.requirements_rule_count += 1;
-    if (module.type === 'scorecard') result.scoring_model_count += 1;
-    if (module.type === 'output') result.rule_based_output_count += 1;
-    if (module.type === 'email') result.email_count += 1;
-    if (module.type === 'textmessage') result.text_message_count += 1;
-    if (module.type === 'dataintegration') result.data_integration_count += 1;
-    if (module.type === 'artificialintelligence') result.ai_model_count += 1;
-    if (module.type === 'documentocr') result.document_ocr_count += 1;
-    if (module.type === 'documentcreation') result.document_creation_count += 1;
-  });
-
-  return result;
-}
-
-async function createAPIRequestRecord(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const Request = periodic.datas.get('standard_request');
-  let moduleCounts = await getModuleCounts(req.controllerData.compiled_strategy.module_run_order);
-  let request_count = await getCollectionCounter('standard_request');
-  Request.create({
-    newdoc: Object.assign({}, {
-      client_id: req.body.client_id,
-      request_id: request_count,
-      client_transaction_id: req.body.client_transaction_id || null,
-      strategy_name: req.body.strategy_name,
-      strategy_version: req.controllerData.compiled_strategy.version,
-      strategy_status: req.body.strategy_status,
-      type: 'Rules Engine - API',
-      organization: req.user.association.organization._id,
-    }, moduleCounts, {
-        overall_count: 1,
-      }),
-  }).then(createdRequest => {
-    req.controllerData.request = createdRequest;
-    next();
-  });
-}
-
-async function createBatchAPIRequestRecord(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const Request = periodic.datas.get('standard_request');
-  // let moduleCounts = await getModuleCounts(req.controllerData.compiled_strategy.module_run_order);
-  let request_count = await getCollectionCounter('standard_request');
-  Request.create({
-    newdoc: Object.assign({}, {
-      client_id: req.body.client_id,
-      request_id: request_count,
-      client_transaction_id: req.body.client_transaction_id || null,
-      type: 'Rules Engine - API - Batch',
-      organization: req.user.association.organization._id,
-    }),
-  }).then(createdRequest => {
-    req.controllerData.request = createdRequest;
-    next();
-  });
-}
-
-async function createAPIMLRequestRecord(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const Request = periodic.datas.get('standard_request');
-  let request_count = await getCollectionCounter('standard_request');
-  let createdRequest = await Request.create({
-    newdoc: Object.assign({}, {
-      client_id: req.body.client_id,
-      request_id: request_count,
-      client_transaction_id: req.body.client_transaction_id || null,
-      type: 'Machine Learning - API',
-      organization: req.user.association.organization._id,
-    }),
-  });
-  req.controllerData.request = createdRequest;
-  next();
-}
-
-async function createAPIMLBatchRequestRecord(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const Request = periodic.datas.get('standard_request');
-  let request_count = await getCollectionCounter('standard_request');
-  let createdRequest = await Request.create({
-    newdoc: Object.assign({}, {
-      client_id: req.body.client_id,
-      request_id: request_count,
-      client_transaction_id: req.body.client_transaction_id || null,
-      type: 'Machine Learning - API - Batch',
-      organization: req.user.association.organization._id,
-    }),
-  });
-  req.controllerData.request = createdRequest;
-  next();
-}
-
-async function createSimulationRequestRecord(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const Request = periodic.datas.get('standard_request');
-  let moduleCounts = await getModuleCounts(req.controllerData.compiledStrategy.module_run_order);
-  let cs = req.controllerData.compiledStrategy;
-  let request_count = await getCollectionCounter('standard_request');
-  Request.create({
-    newdoc: Object.assign({}, {
-      client_id: req.body.client_id,
-      request_id: request_count,
-      client_transaction_id: req.body.client_transaction_id || null,
-      strategy_name: cs.title,
-      strategy_version: cs.version,
-      strategy_status: cs.status,
-      type: 'Online',
-      organization: req.user.association.organization._id,
-    }, moduleCounts, {
-        overall_count: (req.controllerData.testcases && req.controllerData.testcases.length) ? req.controllerData.testcases.length : 1,
-      }),
-  }).then(createdRequest => {
-    req.controllerData.request = createdRequest;
-    next();
-  });
-}
-
-async function updateAPIRequestRecord(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const Request = periodic.datas.get('standard_request');
-  let result = req.controllerData.results;
-  let updatedoc = {
-    status_code: result.status_code,
-    error: [],
-    response_date: result.response_date,
-  };
-  Request.update({
-    id: req.controllerData.request._id.toString(),
-    updatedoc,
-    isPatch: true,
-  })
-    .then(() => {
-      next();
-    })
-    .catch(err => {
-      next();
-    });
-}
-
-async function updateSimulationRequestRecord(req, res, next) {
-  req.controllerData = req.controllerData || {};
-  const Request = periodic.datas.get('standard_request');
-  let updatedoc = {
-    status_code: 200,
-    error: [],
-    response_date: Date.now(),
-  };
-  try {
-    await Request.update({
-      id: req.controllerData.request._id.toString(),
-      updatedoc,
-      isPatch: true,
-    });
-    return next();
-  } catch (err) {
-    return next(err);
-  }
-}
-
 async function fetchAllDocumentTemplatesFromAWS(req, res, next) {
   try {
     if (req.controllerData.compiled_strategy && req.controllerData.compiled_strategy.templates && req.controllerData.compiled_strategy.templates.length) {
@@ -1452,15 +1278,15 @@ module.exports = {
   sendSuccess,
   getApiStrategy,
   getBatchAPIStrategies,
-  createAPIRequestRecord,
-  createBatchAPIRequestRecord,
-  updateAPIRequestRecord,
-  createSimulationRequestRecord,
-  updateSimulationRequestRecord,
+  // createAPIRequestRecord,
+  // createBatchAPIRequestRecord,
+  // updateAPIRequestRecord,
+  // createSimulationRequestRecord,
+  // updateSimulationRequestRecord,
   fetchAllDocumentTemplatesFromAWS,
   initializeStrategyForApiCompilation,
-  createAPIMLRequestRecord,
-  createAPIMLBatchRequestRecord,
+  // createAPIMLRequestRecord,
+  // createAPIMLBatchRequestRecord,
   stageOCRRequest,
   mlVariableCheck,
   batchInitializeStrategiesForCompilation,

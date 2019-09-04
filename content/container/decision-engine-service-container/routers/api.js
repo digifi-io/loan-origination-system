@@ -81,16 +81,12 @@ APIRouter.post('/v2/ml_rules_engine',
   integrationController.getVMParsers,
   integrationController.assignVMParserToDataIntegrations,
   apiController.initializeStrategyForApiCompilation,
-  // apiController.checkStrategyExists,
   paymentController.checkOrganizationStatus,
   paymentController.setRequestTypeAndCost,
   apiController.stageRequest,
-  apiController.createAPIRequestRecord,
   apiController.fetchAllDocumentTemplatesFromAWS,
-  // apiController.runCreditEngine,
   apiController.runApiProcessEngine,
   apiController.formatResponse,
-  apiController.updateAPIRequestRecord,
   fileController.createFiles,
   paymentController.stageAPITransactionForCreation,
   paymentController.addTransaction,
@@ -101,100 +97,23 @@ APIRouter.post('/v2/ml_rules_engine',
 APIRouter.post('/v2/rules_engine_batch',
   isClientAuthenticated,
   transformController.pretransform,
-  // (req, res, next) => {
-  //   console.timeEnd('pretransform')
-  //   console.time('APIgetOrg')
-  //   next();
-  // },
   organizationController.APIgetOrg,
-  // (req, res, next) => {
-  //   console.timeEnd('APIgetOrg')
-  //   console.time('checkPublicKey')
-  //   next();
-  // },
   apiController.checkPublicKey,
-  // (req, res, next) => {
-  //   console.timeEnd('checkPublicKey')
-  //   console.time('limitMaxStrategies')
-  //   next();
-  // },
   apiController.limitMaxStrategies,
-  // (req, res, next) => {
-  //   console.timeEnd('limitMaxStrategies')
-  //   console.time('batchStageStrategies')
-  //   next();
-  // },
   apiController.batchStageStrategies,
-  apiController.createBatchAPIRequestRecord,
-  // (req, res, next) => {
-  //   console.timeEnd('batchStageStrategies');
-  //   console.time('getBatchAPIStrategies')
-  //   next();
-  // },
   apiController.getBatchAPIStrategies,
-  // (req, res, next) => {
-  //   console.timeEnd('getBatchAPIStrategies');
-  //   console.time('generateRulesAndVariableMap')
-  //   next();
-  // },
-  // (req, res, next) => {
-  //   console.timeEnd('generateRulesAndVariableMap');
-  //   console.time('batchInitializeStrategiesForCompilation')
-  //   next();
-  // },
   integrationController.getDataIntegrations,
   apiController.batchInitializeStrategiesForCompilation,
-  // (req, res, next) => {
-  //   console.timeEnd('batchInitializeStrategiesForCompilation');
-  //   console.time('checkOrganizationStatus')
-  //   next();
-  // },
   paymentController.checkOrganizationStatus,
-  // (req, res, next) => {
-  //   console.timeEnd('checkOrganizationStatus')
-  //   console.time('setRequestTypeAndCost')
-  //   next();
-  // },
   paymentController.setRequestTypeAndCost,
-  // (req, res, next) => {
-  //   console.timeEnd('setRequestTypeAndCost')
-  //   console.time('batchRunAPIProcessEngine')
-  //   next();
-  // },
-  // apiController.createBatchAPIRequestRecord,
   integrationController.getVMParsers,
   integrationController.assignVMParserToDataIntegrations,
   apiController.batchRunAPIProcessEngine,
-  // (req, res, next) => {
-  //   console.timeEnd('batchRunAPIProcessEngine')
-  //   console.time('batchFormatResponse')
-  //   next();
-  // },
   apiController.batchFormatResponse,
-  apiController.updateAPIRequestRecord,
-  // (req, res, next) => {
-  //   console.timeEnd('batchFormatResponse')
-  //   console.time('stageAPITransactionForCreation')
-  //   next();
-  // },
   apiController.createCasesAndBatchRecord,
   paymentController.stageAPITransactionForCreation,
-  // (req, res, next) => {
-  //   console.timeEnd('stageAPITransactionForCreation')
-  //   console.time('addTransaction')
-  //   next();
-  // },
   paymentController.addTransaction,
-  // (req, res, next) => {
-  //   console.timeEnd('addTransaction')
-  //   console.time('posttransform')
-  //   next();
-  // },
   transformController.posttransform,
-  // (req, res, next) => {
-  //   console.timeEnd('posttransform')
-  //   next();
-  // },
   apiController.sendResponse);
 
 APIRouter.post('/v2/machine_learning_batch',
@@ -205,15 +124,12 @@ APIRouter.post('/v2/machine_learning_batch',
   apiController.limitMaxStrategies,
   paymentController.checkOrganizationStatus,
   paymentController.setRequestTypeAndCost,
-  apiController.createAPIMLBatchRequestRecord,
   mlController.batchGetModels,
   mlController.getBatchApiScoreAnalysisDocs,
-  // apiController.batchMLVariableCheck,
   mlController.predictBatchMLCase,
   apiController.batchFormatMLResponse,
   paymentController.stageAPITransactionForCreation,
   paymentController.addTransaction,
-  apiController.updateAPIRequestRecord,
   transformController.posttransform,
   apiController.sendResponse);
 
@@ -224,14 +140,12 @@ APIRouter.post('/v2/ml_models',
   paymentController.checkOrganizationStatus,
   paymentController.setRequestTypeAndCost,
   transformController.pretransform,
-  apiController.createAPIMLRequestRecord,
   mlController.getModelByName,
   mlController.getScoreAnalysisDocument,
   apiController.mlVariableCheck,
   mlController.predictSingleMLCase,
   paymentController.stageAPITransactionForCreation,
   paymentController.addTransaction,
-  apiController.updateSimulationRequestRecord,
   transformController.posttransform,
   apiController.sendResponse);
 
@@ -269,13 +183,6 @@ APIRouter.post('/v2/ml_vision',
   paymentController.checkOrganizationStatus,
   paymentController.setRequestTypeAndCost,
   apiController.stageRequest,
-  // apiController.createAPIRequestRecord,
-  // apiController.fetchAllDocumentTemplatesFromAWS,
-  // apiController.runCreditEngine,
-  // apiController.formatResponse,
-  // transformController.posttransform,
-  // apiController.updateAPIRequestRecord,
-  // fileController.createFiles,
   paymentController.stageAPITransactionForCreation,
   paymentController.addTransaction,
   apiController.sendResponse);
@@ -287,10 +194,6 @@ APIRouter.post('/v2/los/customers',
   apiController.checkPublicKey,
   losController.customer.createCustomer,
   losController.customer.updatePrimaryContact,
-  // paymentController.checkOrganizationStatus,
-  // paymentController.setRequestTypeAndCost,
-  // paymentController.stageAPITransactionForCreation,
-  // paymentController.addTransaction,
   apiController.sendResponse);
 
 APIRouter.post('/v2/los/applications',
@@ -301,10 +204,6 @@ APIRouter.post('/v2/los/applications',
   apiController.getLosApplicationLabelsByName,
   transformController.pretransform,
   apiController.createAPIApplication,
-  // paymentController.checkOrganizationStatus,
-  // paymentController.setRequestTypeAndCost,
-  // paymentController.stageAPITransactionForCreation,
-  // paymentController.addTransaction,
   apiController.sendResponse);
 
 APIRouter.use('/v2/lap/applications', LAPRouters.ApplicationRouter);
