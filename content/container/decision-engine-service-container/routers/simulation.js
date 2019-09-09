@@ -175,9 +175,7 @@ SimulationRouter.post('/individual/run/:id', // Rules Engine
   integrationController.initializeStrategyForSimulationCompilation,
   simulationController.fetchAllDocumentTemplatesFromAWS,
   simulationController.stageStrategyForSimulation,
-  // apiController.createSimulationRequestRecord,
   simulationController.runIndividualSimulation,
-  // apiController.updateSimulationRequestRecord,
   paymentController.stageProcessingTransactionForCreation,
   paymentController.addTransaction,
   simulationController.redirectSuccessfulIndividualSimulation);
@@ -268,23 +266,6 @@ SimulationRouter.post('/compare_simulations',
   transformController.posttransform,
   simulationController.handleControllerDataResponse);
 
-// with population tags
-// SimulationRouter.post('/run_simulation',
-//   ensureApiAuthenticated,
-//   transformController.pretransform,
-//   simulationController.checkSimulation,
-//   simulationController.checkActiveSimulation,
-//   integrationController.getDataIntegrations,
-//   integrationController.initializeStrategyForSimulationCompilation,
-//   simulationController.getTestCasesData,
-//   simulationController.registerSimulation,
-//   simulationController.stageStrategyForSimulation,
-//   simulationController.pullPopulationTags,
-//   apiController.createSimulationRequestRecord,
-//   simulationController.runBatchSimulations,
-//   apiController.updateSimulationRequestRecord
-// );
-
 SimulationRouter.post('/batch/run', // Rules Engine Batch
   ensureApiAuthenticated,
   organizationController.APIgetOrg,
@@ -302,12 +283,10 @@ SimulationRouter.post('/batch/run', // Rules Engine Batch
   integrationController.assignVMParserToDataIntegrations,
   simulationController.stageStrategyForSimulation,
   simulationController.pullPopulationTags,
-  // apiController.createSimulationRequestRecord,
   simulationController.coerceTestCases,
   simulationController.runBatchSimulations,
   paymentController.stageProcessingTransactionForCreation,
-  paymentController.addTransaction,
-  // apiController.updateSimulationRequestRecord
+  paymentController.addTransaction
 );
 
 SimulationRouter.post('/test_case',
