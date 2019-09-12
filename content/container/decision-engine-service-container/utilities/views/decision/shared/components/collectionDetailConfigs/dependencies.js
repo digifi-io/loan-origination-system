@@ -16,13 +16,13 @@ const variable = [
         cardTitle: 'Variable Dependencies (Rules)',
         cardStyle: {
           marginBottom: 0,
-        }
+        },
       }),
     },
     formElements: [ {
       type: 'layout',
       value: findTabs({
-        tabnames: [ 'input', 'output' ], outerTabs: ACTIVE_TABS({}), baseURL: `decision/variables/:id/dependencies`
+        tabnames: [ 'input', 'output', ], outerTabs: ACTIVE_TABS({}), baseURL: 'decision/variables/:id/dependencies',
       }).outerTabs,
     },
     {
@@ -39,7 +39,7 @@ const variable = [
           sortable: false,
           headerColumnProps: {
             style: {
-              width: '30%'
+              width: '30%',
             },
           },
         }, {
@@ -61,27 +61,25 @@ const variable = [
           sortid: 'description',
           sortable: false,
           headerColumnProps: {
-          style: {
-            width: '20%'
+            style: {
+              width: '20%',
+            },
           },
-        },
         }, {
           label: ' ',
           headerColumnProps: {
             style: {
               width: '45px',
-            }
+            },
           },
           columnProps: {
-            style: {
-              whiteSpace: 'nowrap',
-            }
+            style: styles.buttonCellStyle,
           },
           buttons: [ {
             passProps: {
               buttonProps: {
                 icon: 'fa fa-pencil',
-                className: '__icon_button'
+                className: '__icon_button',
               },
               onClick: 'func:this.props.reduxRouter.push',
               onclickBaseUrl: '/decision/rules/:id/overview',
@@ -90,7 +88,7 @@ const variable = [
           },
           ],
         }, ],
-    }]
+    },],
   },
 ];
 
@@ -103,7 +101,7 @@ const rule = {
       cardTitle: 'Dependencies',
       cardStyle: {
         marginBottom: 0,
-      }
+      },
     }),
   },
   formElements: [{
@@ -113,8 +111,8 @@ const rule = {
       bindprops: true,
       thisprops: {
         rows: [ 'formdata', 'rulesets', ],
-        numItems: [ 'formdata', 'numItems' ],
-        numPages: [ 'formdata', 'numPages' ],
+        numItems: [ 'formdata', 'numItems', ],
+        numPages: [ 'formdata', 'numPages', ],
       },
       props: {
         flattenRowData: true,
@@ -130,7 +128,7 @@ const rule = {
         }, {
           'key': 'numPages',
           value: 'numPages',
-        }],
+        },],
         hasPagination: true,
         simplePagination: true,
         // baseUrl: `/decision/api/standard_${options.collection}/:id`,
@@ -143,7 +141,7 @@ const rule = {
             sortable: false,
             headerColumnProps: {
               style: {
-                width: '30%'
+                width: '30%',
               },
             },
           },
@@ -170,26 +168,24 @@ const rule = {
             sortable: false,
             headerColumnProps: {
               style: {
-                width: '20%'
+                width: '20%',
               },
             },
           }, {
             label: ' ',
             headerColumnProps: {
-                style: {
-                  width: '40px',
-                }
+              style: {
+                width: '40px',
+              },
             },
             columnProps: {
-              style: {
-                whiteSpace: 'nowrap',
-              }
+              style: styles.buttonCellStyle,
             },
             buttons: [ {
               passProps: {
                 buttonProps: {
                   icon: 'fa fa-pencil',
-                  className: '__icon_button'
+                  className: '__icon_button',
                 },
                 onClick: 'func:this.props.reduxRouter.push',
                 onclickBaseUrl: '/decision/rulesets/:id/detail',
@@ -198,11 +194,11 @@ const rule = {
             },
             ],
           }, ],
-      }
-    }
-  }
-  ]
-}
+      },
+    },
+  },
+  ],
+};
 
 const DEPENDENCY_CONFIGS = {
   variable,

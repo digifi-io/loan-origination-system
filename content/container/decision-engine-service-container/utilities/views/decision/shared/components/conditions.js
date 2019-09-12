@@ -40,9 +40,7 @@ function generateComponent(options) {
       formRowButtons: true,
       dynamicFormRowWidth: 45,
       columnProps: {
-        style: {
-          whiteSpace: 'nowrap',
-        }
+        style: styles.buttonCellStyle,
       },
       buttons: [{
         passProps: {

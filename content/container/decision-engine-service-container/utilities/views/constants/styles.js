@@ -75,6 +75,7 @@ module.exports = {
   buttonCellStyle: {
     whiteSpace: 'nowrap',
     overflow: 'visible',
+    textAlign: 'right'
   },
   buttons: {
     approve: {

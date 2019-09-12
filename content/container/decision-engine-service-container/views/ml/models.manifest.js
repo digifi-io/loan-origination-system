@@ -239,9 +239,7 @@ module.exports = {
                       },
                     },
                     columnProps: {
-                      style: Object.assign({}, styles.buttonCellStyle, {
-                        textAlign: 'right',
-                      }),
+                      style: styles.buttonCellStyle,
                     },
                     buttons: [{
                       passProps: {

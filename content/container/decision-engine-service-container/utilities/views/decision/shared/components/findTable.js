@@ -56,9 +56,7 @@ const strategy = [
       },
     },
     columnProps: {
-      style: {
-        whiteSpace: 'nowrap',
-      }
+      style: styles.buttonCellStyle,
     },
     buttons: [ {
       passProps: {
@@ -175,9 +173,7 @@ const variable = [
       },
     },
     columnProps: {
-      style: {
-        whiteSpace: 'nowrap',
-      }
+      style: styles.buttonCellStyle,
     },
     buttons: [ {
       passProps: {

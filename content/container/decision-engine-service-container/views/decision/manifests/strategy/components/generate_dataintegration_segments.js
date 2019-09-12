@@ -255,9 +255,7 @@ const SEGMENT = [
                     },
                   },
                   columnProps: {
-                    style: {
-                      whiteSpace: 'nowrap',
-                    },
+                    style: styles.buttonCellStyle,
                   },
                   label: ' ',
                   buttons: [

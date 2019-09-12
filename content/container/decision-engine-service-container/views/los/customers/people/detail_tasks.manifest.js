@@ -39,12 +39,12 @@ module.exports = {
               },
               onClick: 'func:this.props.createModal',
               spanProps: {
-                className: '__ra_rb button_page_title'
+                className: '__ra_rb button_page_title',
               },
             },
             asyncprops: {
-              onclickPropObject: ['peopledata', 'person'],
-              children: ['peopledata', 'data', 'display_title'],
+              onclickPropObject: ['peopledata', 'person',],
+              children: ['peopledata', 'data', 'display_title',],
             },
           }),
           peopleTabs('tasks'),
@@ -52,7 +52,7 @@ module.exports = {
             left: [ {
               component: 'ResponsiveButton',
               asyncprops: {
-                onclickPropObject: [ 'peopledata', 'person' ],
+                onclickPropObject: [ 'peopledata', 'person', ],
               },
               props: {
                 onClick: 'func:this.props.createModal',
@@ -89,7 +89,7 @@ module.exports = {
                   numItems: [ 'peopledata', 'numItems', ],
                   numPages: [ 'peopledata', 'numPages', ],
                   baseUrl: [ 'peopledata', 'baseUrl', ],
-                  filterButtons: [ 'peopledata', 'filterButtons' ],
+                  filterButtons: [ 'peopledata', 'filterButtons', ],
                 },
                 props: {
                   useRowProps: true,
@@ -202,10 +202,7 @@ module.exports = {
                     },
                     columnProps: {
                       className: 'task-buttons',
-                      style: {
-                        whiteSpace: 'nowrap',
-                        textAlign: 'right',
-                      },
+                      style: styles.buttonCellStyle,
                     },
                     buttons: [ {
                       passProps: {

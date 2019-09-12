@@ -2,6 +2,8 @@
 const cardprops = require('../../decision/shared/components/cardProps');
 const formElements = require('../../decision/shared/components/formElements');
 const randomKey = Math.random;
+const CONSTANTS = require('../../constants');
+const styles = CONSTANTS.styles;
 
 module.exports = {
   component: 'ResponsiveForm',
@@ -102,6 +104,9 @@ module.exports = {
                     width: '50px',
                   },
                 },
+                columnProps: {
+                  style: styles.buttonCellStyle,
+                },
                 buttons: [{
                   passProps: {
                     buttonProps: {
@@ -182,6 +187,9 @@ module.exports = {
                     style: {
                       width: '50px',
                     },
+                  },
+                  columnProps: {
+                    style: styles.buttonCellStyle,
                   },
                   buttons: [{
                     passProps: {

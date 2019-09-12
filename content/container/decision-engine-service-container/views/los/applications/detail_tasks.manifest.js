@@ -240,11 +240,7 @@ module.exports = {
                       },
                     },
                     columnProps: {
-                      className: 'task-buttons',
-                      style: {
-                        whiteSpace: 'nowrap',
-                        textAlign: 'right',
-                      },
+                      style: styles.buttonCellStyle,
                     },
                     buttons: [ {
                       passProps: {
