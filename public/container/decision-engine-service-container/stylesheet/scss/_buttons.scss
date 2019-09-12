@@ -184,7 +184,10 @@
 }
 .__re-bulma_button.__icon_button:hover,
 .__re-bulma_pagination .__re-bulma_button:hover,
-.__re-bulma_button.__icon_button:hover {
+.__re-bulma_button.__icon_button:hover,
+.__re-bulma_button.__icon_button:focus,
+.__re-bulma_pagination .__re-bulma_button:focus,
+.__re-bulma_button.__icon_button:focus {
   background-color: $color-primary;
   color: white !important;
     &.__re-bulma_is-danger {

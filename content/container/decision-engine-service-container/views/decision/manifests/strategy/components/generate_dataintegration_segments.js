@@ -34,7 +34,7 @@ const SEGMENT = [
     children: [
       {
         component: 'div',
-        children: [strategyNavBar(settings.type),],
+        children: [strategyNavBar(settings.type), ],
       },
       {
         component: 'ResponsiveForm',
@@ -80,7 +80,7 @@ const SEGMENT = [
             }, {
               guideButton: true,
               location: references.guideLinks.rulesEngine.strategiesDetailRules,
-            },],
+            }, ],
           }), {
             gridProps: {
               key: randomKey(),
@@ -103,22 +103,22 @@ const SEGMENT = [
                 name: 'segment_name',
                 passProps: {
 
-                }
-              },],
+                },
+              }, ],
               formGroupElementsRight: [{
                 label: 'Description',
                 name: 'segment_description',
                 passProps: {
                   
-                }
-              },],
-            },],
+                },
+              }, ],
+            }, ],
           }, {
             gridProps: {
               key: randomKey(),
               style: {
                 marginBottom: 0,
-              }
+              },
             },
             card: {
               props: cardprops({
@@ -142,7 +142,7 @@ const SEGMENT = [
                   props: {
                     style: {
                       fontStyle: 'italic',
-                      color: styles.colors.gray
+                      color: styles.colors.gray,
                     },
                   },
                 },
@@ -158,7 +158,7 @@ const SEGMENT = [
                   // className: 'dnd-text-table dnd-plus',
                   itemHeight: 45,
                 },
-                ignoreTableHeaders: ['_id',],
+                ignoreTableHeaders: ['_id', ],
                 headers: [{
                   label: 'Data Item Name',
                   sortid: 'display_name',
@@ -167,7 +167,7 @@ const SEGMENT = [
                   label: 'Variable Used',
                   sortable: false,
                   sortid: 'input_variable',
-                },],
+                }, ],
               }, {
                 type: 'layout',
                 layoutProps: {
@@ -180,14 +180,14 @@ const SEGMENT = [
                 value: {
                   component: 'ResponsiveButton',
                   thisprops: {
-                    onclickPropObject: ['formdata',],
+                    onclickPropObject: ['formdata', ],
                   },
                   props: {
                     onClick: 'func:this.props.createModal',
                     onclickProps: {
                       title: 'Variables Required for Data Integration',
                       pathname: '/modal/required_integration_variables/:id',
-                      params: [{ key: ':id', val: '_id', },],
+                      params: [{ key: ':id', val: '_id', }, ],
                     },
                     buttonProps: {
                       color: 'isPrimary',
@@ -195,7 +195,7 @@ const SEGMENT = [
                   },
                   children: 'EDIT',
                 },  
-              },],
+              }, ],
           }, {
             gridProps: {
               key: randomKey(),
@@ -210,7 +210,12 @@ const SEGMENT = [
                   marginBottom: 0,
                   borderTopLeftRadius: 0,
                   borderTopRightRadius: 0,
-                  // marginTop: 20,
+                },
+                cardContentProps: {
+                  style: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                  },
                 },
               }),
             },
@@ -239,7 +244,7 @@ const SEGMENT = [
                   // className: 'dnd-text-table dnd-plus',
                   itemHeight: 45,
                 },
-                ignoreTableHeaders: ['_id',],
+                ignoreTableHeaders: ['_id', ],
                 headers: [{
                   label: 'Data Item Name',
                   sortid: 'display_name',
@@ -255,9 +260,7 @@ const SEGMENT = [
                     },
                   },
                   columnProps: {
-                    style: {
-                      whiteSpace: 'nowrap',
-                    },
+                    style: styles.buttonCellStyle,
                   },
                   label: ' ',
                   buttons: [
@@ -267,7 +270,7 @@ const SEGMENT = [
                         onclickProps: {
                           title: 'Assign Output Variable',
                           pathname: '/modal/received_integration_variables/:id/:index',
-                          params: [{ key: ':id', val: 'id', }, { key: ':index', val: 'index', }],
+                          params: [{ key: ':id', val: 'id', }, { key: ':index', val: 'index', },],
                         },
                         buttonProps: {
                           icon: 'fa fa-pencil',
@@ -276,7 +279,7 @@ const SEGMENT = [
                       },
                     },
                   ],
-                },],
+                }, ],
               },             
               {
                 type: 'Semantic.checkbox',
@@ -287,14 +290,12 @@ const SEGMENT = [
                 layoutProps: {
                   size: 'isNarrow',
                   style: {
-                    display: 'inline-flex',
-                    height: '55px',
-                    float: 'right',
-                    alignItems: 'center',
+                    padding: '20px 0',
+                    marginLeft: 'auto',
                   },
                 },
                 name: 'has_population',
-              },],
+              }, ],
           }, {
             gridProps: {
               key: randomKey(),
@@ -333,7 +334,7 @@ const SEGMENT = [
                   itemHeight: 45,
                   className: 'dnd-text-table dnd-and',
                 },
-                ignoreTableHeaders: ['_id',],
+                ignoreTableHeaders: ['_id', ],
                 headers: [{
                   label: {
                     component: 'Columns',
@@ -355,7 +356,7 @@ const SEGMENT = [
                         size: 'is4',
                       },
                       children: 'Value',
-                    }]
+                    },],
                   },
                   sortid: 'combined_value_comparison_property',
                   sortable: false,
@@ -368,18 +369,18 @@ const SEGMENT = [
                       width: '90px',
                     },
                   },
-                },],
+                }, ],
               }, {
                 type: 'layout',
-                value: addPopulationButtons({ blockPopulation: true }),
-              },],
-          },],
+                value: addPopulationButtons({ blockPopulation: true, }),
+              }, ],
+          }, ],
         },
         asyncprops: {
-          formdata: [`${settings.type}data`, 'data',],
-          __formOptions: [`${settings.type}data`, 'formsettings',],
+          formdata: [`${settings.type}data`, 'data', ],
+          __formOptions: [`${settings.type}data`, 'formsettings', ],
         },
-      },],
-  },];
+      }, ],
+  }, ];
 
 module.exports = SEGMENT;

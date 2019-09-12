@@ -72,6 +72,11 @@ module.exports = {
       fontSize: '1.25rem',
     },
   },
+  buttonCellStyle: {
+    whiteSpace: 'nowrap',
+    overflow: 'visible',
+    textAlign: 'right'
+  },
   buttons: {
     approve: {
       backgroundColor: THEMESETTINGS.company_color_primary,

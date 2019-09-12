@@ -1211,11 +1211,6 @@ a {
   padding-top: 4px;
   cursor: pointer; }
 
-.ui.dropdown .menu > .item > a {
-  color: inherit;
-  border: none;
-  background-color: transparent !important; }
-
 .ui.dropdown .menu > .item {
   padding: 0 !important; }
 
@@ -1569,8 +1564,7 @@ a {
 .__ra-left-icon input,
 .__ra-left-icon select,
 .__ra-left-icon.__re-bulma_control .ui.search.selection.dropdown > input.search,
-.__ra-left-icon.__re-bulma_control > .ui.dropdown,
-.__ra-left-icon #date_input {
+.__ra-left-icon.__re-bulma_control > .ui.dropdown {
   padding-left: 33px; }
   .__ra-left-icon input:focus + i, .__ra-left-icon input:active + i, .__ra-left-icon input.active + i,
   .__ra-left-icon select:focus + i,
@@ -1581,11 +1575,11 @@ a {
   .__ra-left-icon.__re-bulma_control .ui.search.selection.dropdown > input.search.active + i,
   .__ra-left-icon.__re-bulma_control > .ui.dropdown:focus + i,
   .__ra-left-icon.__re-bulma_control > .ui.dropdown:active + i,
-  .__ra-left-icon.__re-bulma_control > .ui.dropdown.active + i,
-  .__ra-left-icon #date_input:focus + i,
-  .__ra-left-icon #date_input:active + i,
-  .__ra-left-icon #date_input.active + i {
+  .__ra-left-icon.__re-bulma_control > .ui.dropdown.active + i {
     color: #404040; }
+
+.__ra-left-icon .__ra_date_picker_active + i {
+  color: #404040; }
 
 .__ra-left-icon input,
 .__ra-left-icon select,
@@ -1752,13 +1746,16 @@ a {
     display: inline-flex;
     align-items: center;
     color: #00b050; }
-  .ui.dropdown.button-dropdown-success:focus > .text, .ui.dropdown.button-dropdown-success:focus .dropdown.icon, .ui.dropdown.button-dropdown-success:hover > .text, .ui.dropdown.button-dropdown-success:hover .dropdown.icon {
+  .ui.dropdown.button-dropdown-success:focus > .text,
+  .ui.dropdown.button-dropdown-success:focus .dropdown.icon, .ui.dropdown.button-dropdown-success:hover > .text,
+  .ui.dropdown.button-dropdown-success:hover .dropdown.icon {
     color: white; }
   .ui.dropdown.button-dropdown-success.active {
     background-color: #00b050 !important;
     border-color: #00b050;
     border-radius: .28571429rem !important; }
-    .ui.dropdown.button-dropdown-success.active > .text, .ui.dropdown.button-dropdown-success.active .dropdown.icon {
+    .ui.dropdown.button-dropdown-success.active > .text,
+    .ui.dropdown.button-dropdown-success.active .dropdown.icon {
       color: white !important; }
     .ui.dropdown.button-dropdown-success.active .menu {
       box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
@@ -1825,12 +1822,12 @@ a {
 .__form_element_has_error .__re-bulma_control #date_input {
   border-color: #d9534f; }
 
-.__form_element_has_error .__re-bulma_control.__re-bulma_has-icon > .__re-bulma_fa,
-.__form_element_has_error .__re-bulma_control > .__re-bulma_fa {
+.__form_element_has_error .__re-bulma_control.__re-bulma_has-icon > .__ra_custom_error_icon,
+.__form_element_has_error .__re-bulma_control > .__ra_custom_error_icon {
   color: #d9534f !important; }
 
-.__form_element_is_valid .__re-bulma_control.__re-bulma_has-icon > .__re-bulma_fa,
-.__form_element_is_valid .__re-bulma_control > .__re-bulma_fa {
+.__form_element_is_valid .__re-bulma_control.__re-bulma_has-icon > .__ra_custom_error_icon,
+.__form_element_is_valid .__re-bulma_control > .__ra_custom_error_icon {
   color: #65ca60 !important; }
 
 .ui.checkbox input:checked ~ .box:after,
@@ -1930,6 +1927,27 @@ a {
   .ui.dropdown .ui.label > img {
     height: 1.5em !important; }
 
+.ui.dropdown .menu > .item a {
+  color: inherit;
+  border: none;
+  background-color: transparent !important; }
+
+.ui.dropdown .text a[href],
+.ui.dropdown .menu[role="listbox"] a[href] {
+  color: #007aff; }
+  .ui.dropdown .text a[href]:hover,
+  .ui.dropdown .menu[role="listbox"] a[href]:hover {
+    text-decoration: underline; }
+
+.ui.dropdown .menu > .item > a,
+.ui.dropdown .menu > .item > .__re-bulma_button {
+  color: inherit;
+  border: none;
+  background-color: transparent !important; }
+
+.ui.active.search.dropdown input.search:focus + .text a {
+  color: rgba(115, 115, 115, 0.87); }
+
 .ui.checkbox.reverse-label .box:after,
 .ui.checkbox.reverse-label .box:before,
 .ui.checkbox.reverse-label label:after,
@@ -1937,7 +1955,8 @@ a {
   left: unset;
   right: 0; }
 
-.ui.checkbox.reverse-label .box, .ui.checkbox.reverse-label label {
+.ui.checkbox.reverse-label .box,
+.ui.checkbox.reverse-label label {
   padding-right: 1.85714em;
   padding-left: unset;
   font-weight: normal; }
@@ -2155,7 +2174,8 @@ a {
 .tabbed-code-mirror .__re-bulma_tabs.__re-bulma_is-boxed li.__re-bulma_is-active span {
   background: white; }
 
-.tabbed-code-mirror .__re-bulma_tabs.__re-bulma_is-boxed a:hover, .tabbed-code-mirror .__re-bulma_tabs.__re-bulma_is-boxed span:hover {
+.tabbed-code-mirror .__re-bulma_tabs.__re-bulma_is-boxed a:hover,
+.tabbed-code-mirror .__re-bulma_tabs.__re-bulma_is-boxed span:hover {
   background: white;
   font-weight: bold; }
 
@@ -2163,64 +2183,80 @@ a {
   border: 1px solid #d3d6db;
   border-top: none; }
 
-.cropper-face, .cropper-line, .cropper-point {
+.cropper-face,
+.cropper-line,
+.cropper-point {
   opacity: 0.2; }
 
-.__re-bulma_content .DayPicker_transitionContainer, .__re-bulma_column .DayPicker_transitionContainer {
+.__re-bulma_content .DayPicker_transitionContainer,
+.__re-bulma_column .DayPicker_transitionContainer {
   background-color: white; }
 
-.__re-bulma_content .CalendarMonth_caption, .__re-bulma_column .CalendarMonth_caption {
+.__re-bulma_content .CalendarMonth_caption,
+.__re-bulma_column .CalendarMonth_caption {
   font-size: 18px;
   text-align: center;
   padding-top: 22px;
   padding-bottom: 37px;
   caption-side: top; }
-  .__re-bulma_content .CalendarMonth_caption strong, .__re-bulma_column .CalendarMonth_caption strong {
+  .__re-bulma_content .CalendarMonth_caption strong,
+  .__re-bulma_column .CalendarMonth_caption strong {
     font-weight: inherit;
     font-weight: bolder;
     font-size: inherit; }
 
-.__re-bulma_content small, .__re-bulma_column small {
+.__re-bulma_content small,
+.__re-bulma_column small {
   font-size: 80%; }
 
-.__re-bulma_content .DayPicker_weekHeader_ul.DayPicker_weekHeader_ul_1, .__re-bulma_column .DayPicker_weekHeader_ul.DayPicker_weekHeader_ul_1 {
+.__re-bulma_content .DayPicker_weekHeader_ul.DayPicker_weekHeader_ul_1,
+.__re-bulma_column .DayPicker_weekHeader_ul.DayPicker_weekHeader_ul_1 {
   margin: 0; }
 
-.__re-bulma_content .DayPicker_weekHeader, .__re-bulma_column .DayPicker_weekHeader {
+.__re-bulma_content .DayPicker_weekHeader,
+.__re-bulma_column .DayPicker_weekHeader {
   padding: 0 13px; }
 
-.__re-bulma_content .CalendarDay__default, .__re-bulma_column .CalendarDay__default {
+.__re-bulma_content .CalendarDay__default,
+.__re-bulma_column .CalendarDay__default {
   border: 1px solid #e4e7e7;
   color: #565a5c;
   vertical-align: middle;
   background: #fff; }
-  .__re-bulma_content .CalendarDay__default:hover, .__re-bulma_column .CalendarDay__default:hover {
+  .__re-bulma_content .CalendarDay__default:hover,
+  .__re-bulma_column .CalendarDay__default:hover {
     background: #e4e7e7;
     border: 1px double #e4e7e7;
     color: inherit; }
 
 .__re-bulma_content .CalendarDay__selected,
 .__re-bulma_content .CalendarDay__selected:active,
-.__re-bulma_content .CalendarDay__selected:hover, .__re-bulma_column .CalendarDay__selected,
+.__re-bulma_content .CalendarDay__selected:hover,
+.__re-bulma_column .CalendarDay__selected,
 .__re-bulma_column .CalendarDay__selected:active,
 .__re-bulma_column .CalendarDay__selected:hover {
   background: #007aff;
   border: 1px solid #007aff;
   color: #fff; }
 
-.__re-bulma_content .CalendarMonth, .__re-bulma_column .CalendarMonth {
+.__re-bulma_content .CalendarMonth,
+.__re-bulma_column .CalendarMonth {
   padding: 0 13px; }
 
-.__re-bulma_content .CalendarMonth_table, .__re-bulma_column .CalendarMonth_table {
+.__re-bulma_content .CalendarMonth_table,
+.__re-bulma_column .CalendarMonth_table {
   vertical-align: middle; }
 
-.__re-bulma_content .DayPicker_weekHeaders__horizontal, .__re-bulma_column .DayPicker_weekHeaders__horizontal {
+.__re-bulma_content .DayPicker_weekHeaders__horizontal,
+.__re-bulma_column .DayPicker_weekHeaders__horizontal {
   margin-left: 9px; }
 
-.__re-bulma_content .DayPicker_weekHeader_li, .__re-bulma_column .DayPicker_weekHeader_li {
+.__re-bulma_content .DayPicker_weekHeader_li,
+.__re-bulma_column .DayPicker_weekHeader_li {
   margin: 0; }
 
-.__re-bulma_content .DayPickerKeyboardShortcuts_panel, .__re-bulma_column .DayPickerKeyboardShortcuts_panel {
+.__re-bulma_content .DayPickerKeyboardShortcuts_panel,
+.__re-bulma_column .DayPickerKeyboardShortcuts_panel {
   overflow: auto;
   background: #fff;
   border: 1px solid #dbdbdb;
@@ -2496,12 +2532,18 @@ input[type="radio"]:checked:after {
 
 .__re-bulma_button.__icon_button:hover,
 .__re-bulma_pagination .__re-bulma_button:hover,
-.__re-bulma_button.__icon_button:hover {
+.__re-bulma_button.__icon_button:hover,
+.__re-bulma_button.__icon_button:focus,
+.__re-bulma_pagination .__re-bulma_button:focus,
+.__re-bulma_button.__icon_button:focus {
   background-color: #007aff;
   color: white !important; }
   .__re-bulma_button.__icon_button:hover.__re-bulma_is-danger,
   .__re-bulma_pagination .__re-bulma_button:hover.__re-bulma_is-danger,
-  .__re-bulma_button.__icon_button:hover.__re-bulma_is-danger {
+  .__re-bulma_button.__icon_button:hover.__re-bulma_is-danger,
+  .__re-bulma_button.__icon_button:focus.__re-bulma_is-danger,
+  .__re-bulma_pagination .__re-bulma_button:focus.__re-bulma_is-danger,
+  .__re-bulma_button.__icon_button:focus.__re-bulma_is-danger {
     background-color: #d9534f; }
 
 .reactapp__app_div_content .__re-bulma_table .__re-bulma_button.__re-bulma_is-outlined,

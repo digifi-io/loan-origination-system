@@ -105,9 +105,7 @@ function strategyVersionUpdateHistoryTable(options) {
                 }
               },
               columnProps: {
-                style: {
-                  whiteSpace: 'nowrap',
-                }
+                style: styles.buttonCellStyle,
               },
               buttons: [ {
                 passProps: {
@@ -176,9 +174,7 @@ function strategyVersionUpdateHistoryTable(options) {
                   },
                 },
                 columnProps: {
-                  style: {
-                    whiteSpace: 'nowrap',
-                  }
+                  style: styles.buttonCellStyle,
                 },
                 buttons: [ {
                   passProps: {

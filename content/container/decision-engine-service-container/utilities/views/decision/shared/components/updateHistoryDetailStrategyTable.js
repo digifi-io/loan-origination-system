@@ -55,42 +55,40 @@ function updateHistoryDetailStrategyTable(options) {
           },
           layoutProps: {},
           headers: [ {
-            label: `Population Rule Set`,
+            label: 'Population Rule Set',
             sortid: 'conditions',
             sortable: false,
           }, {
-            label: `Process Rule Set`,
+            label: 'Process Rule Set',
             sortid: 'ruleset',
             sortable: false,
           }, {
             label: '',
             headerColumnProps: {
               style: {
-                width: '45px'
+                width: '45px',
               },
             },
             columnProps: {
-              style: {
-                whiteSpace: 'nowrap',
-              }
+              style: styles.buttonCellStyle,
             },
             buttons: [{
               passProps: {
                 buttonProps: {
                   icon: 'fa fa-pencil',
-                  className: '__icon_button'
+                  className: '__icon_button',
                 },
                 onClick: 'func:this.props.reduxRouter.push',
-                'onclickBaseUrl': `/decision/strategies/:id/segments/:category/:index`,
+                'onclickBaseUrl': '/decision/strategies/:id/segments/:category/:index',
                 'onclickLinkParams': [
-                  {key: ':id', val: 'parent_id'}, 
-                  {key: ':category', val: 'type'}, 
-                  {key: ':index', val: 'index'}, 
+                  { key: ':id', val: 'parent_id', }, 
+                  { key: ':category', val: 'type' ,}, 
+                  { key: ':index', val: 'index', }, 
                 ],
               },
-            }]
-          }, ]
-        }
+            },],
+          }, ],
+        },
       ],
       right: [
         {
@@ -109,41 +107,44 @@ function updateHistoryDetailStrategyTable(options) {
           },
           layoutProps: {},
           headers: [ {
-            label: `Population Rule Set`,
+            label: 'Population Rule Set',
             sortid: 'conditions',
             sortable: false,
           }, {
-            label: `Process Rule Set`,
+            label: 'Process Rule Set',
             sortid: 'ruleset',
             sortable: false,
           }, {
             label: ' ',
             headerColumnProps: {
               style: {
-                width: '45px'
-              }
+                width: '45px',
+              },
+            },
+            columnProps: {
+              style: styles.buttonCellStyle,
             },
             buttons: [{
               children: 'View',
               passProps: {
                 buttonProps: {
                   className: '__icon_button',
-                  icon: 'fa fa-pencil'
+                  icon: 'fa fa-pencil',
                 },
                 onClick: 'func:this.props.reduxRouter.push',
-                'onclickBaseUrl': `/decision/strategies/:id/segments/:category/:index`,
+                'onclickBaseUrl': '/decision/strategies/:id/segments/:category/:index',
                 'onclickLinkParams': [
-                  {key: ':id', val: 'parent_id'}, 
-                  {key: ':category', val: 'type'}, 
-                  {key: ':index', val: 'index'}, 
+                  { key: ':id', val: 'parent_id' ,}, 
+                  { key: ':category', val: 'type', }, 
+                  { key: ':index', val: 'index' ,}, 
                 ],
               },
-            }]
-          }, ]
-        }
+            },],
+          }, ],
+        },
       ],
     }), ],
-  }
+  };
 }
 
 module.exports = updateHistoryDetailStrategyTable;

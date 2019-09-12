@@ -203,9 +203,7 @@ function generatePage(options) {
                         },
                       },
                       columnProps: {
-                        style: {
-                          whiteSpace: 'nowrap',
-                        },
+                        style: styles.buttonCellStyle,
                       },
                       buttons: [ {
                         passProps: {
