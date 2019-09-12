@@ -1211,7 +1211,8 @@ a {
   padding-top: 4px;
   cursor: pointer; }
 
-.ui.dropdown .menu > .item > a {
+.ui.dropdown .menu > .item > a,
+.ui.dropdown .menu > .item > .__re-bulma_button {
   color: inherit;
   border: none;
   background-color: transparent !important; }
