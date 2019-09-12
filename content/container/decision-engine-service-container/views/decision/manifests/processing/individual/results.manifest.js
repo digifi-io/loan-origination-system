@@ -144,9 +144,7 @@ module.exports = {
                       },
                     },
                     columnProps: {
-                      style: {
-                        whiteSpace: 'nowrap',
-                      },
+                      style: styles.buttonCellStyle,
                     },
                     label: ' ',
                     buttons: [

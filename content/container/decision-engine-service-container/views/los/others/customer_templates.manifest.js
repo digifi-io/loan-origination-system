@@ -67,9 +67,7 @@ module.exports = {
                           },
                         },
                         columnProps: {
-                          style: {
-                            whiteSpace: 'nowrap',
-                          }
+                          style: styles.buttonCellStyle,
                         },
                         buttons: [ {
                           passProps: {
@@ -181,9 +179,7 @@ module.exports = {
                           },
                         },
                         columnProps: {
-                          style: {
-                            whiteSpace: 'nowrap',
-                          }
+                          style: styles.buttonCellStyle,
                         },
                         buttons: [ {
                           passProps: {
@@ -295,9 +291,7 @@ module.exports = {
                           },
                         },
                         columnProps: {
-                          style: {
-                            whiteSpace: 'nowrap',
-                          }
+                          style: styles.buttonCellStyle,
                         },
                         buttons: [ {
                           passProps: {

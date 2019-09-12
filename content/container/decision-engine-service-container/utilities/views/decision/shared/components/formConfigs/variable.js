@@ -379,9 +379,7 @@ let additionalComponents = [ {
               }
             },
             columnProps: {
-              style: {
-                whiteSpace: 'nowrap',
-              }
+              style: styles.buttonCellStyle,
             },
             buttons: [ {
               passProps: {
@@ -671,9 +669,7 @@ let additionalComponents = [ {
                   }
                 },
                 columnProps: {
-                  style: {
-                    whiteSpace: 'nowrap',
-                  }
+                  style: styles.buttonCellStyle,
                 },
                 buttons: [ {
                   passProps: {

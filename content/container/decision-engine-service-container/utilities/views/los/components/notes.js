@@ -118,10 +118,9 @@ module.exports = {
             },
           },
           columnProps: {
-            style: {
-              whiteSpace: 'nowrap',
+            style: Object.assign({}, styles.buttonCellStyle, {
               textAlign: 'right',
-            },
+            }),
           },
           buttons: [ {
             passProps: {

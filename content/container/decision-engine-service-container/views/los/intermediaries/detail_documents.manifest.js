@@ -196,10 +196,7 @@ module.exports = {
                       },
                     },
                     columnProps: {
-                      style: {
-                        whiteSpace: 'nowrap',
-                        textAlign: 'right',
-                      },
+                      style: styles.buttonCellStyle,
                     },
                     buttons: [ {
                       passProps: {
