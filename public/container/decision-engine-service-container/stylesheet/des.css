@@ -2532,12 +2532,18 @@ input[type="radio"]:checked:after {
 
 .__re-bulma_button.__icon_button:hover,
 .__re-bulma_pagination .__re-bulma_button:hover,
-.__re-bulma_button.__icon_button:hover {
+.__re-bulma_button.__icon_button:hover,
+.__re-bulma_button.__icon_button:focus,
+.__re-bulma_pagination .__re-bulma_button:focus,
+.__re-bulma_button.__icon_button:focus {
   background-color: #007aff;
   color: white !important; }
   .__re-bulma_button.__icon_button:hover.__re-bulma_is-danger,
   .__re-bulma_pagination .__re-bulma_button:hover.__re-bulma_is-danger,
-  .__re-bulma_button.__icon_button:hover.__re-bulma_is-danger {
+  .__re-bulma_button.__icon_button:hover.__re-bulma_is-danger,
+  .__re-bulma_button.__icon_button:focus.__re-bulma_is-danger,
+  .__re-bulma_pagination .__re-bulma_button:focus.__re-bulma_is-danger,
+  .__re-bulma_button.__icon_button:focus.__re-bulma_is-danger {
     background-color: #d9534f; }
 
 .reactapp__app_div_content .__re-bulma_table .__re-bulma_button.__re-bulma_is-outlined,
