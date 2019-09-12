@@ -1211,12 +1211,6 @@ a {
   padding-top: 4px;
   cursor: pointer; }
 
-.ui.dropdown .menu > .item > a,
-.ui.dropdown .menu > .item > .__re-bulma_button {
-  color: inherit;
-  border: none;
-  background-color: transparent !important; }
-
 .ui.dropdown .menu > .item {
   padding: 0 !important; }
 
@@ -1930,6 +1924,27 @@ a {
   align-items: center; }
   .ui.dropdown .ui.label > img {
     height: 1.5em !important; }
+
+.ui.dropdown .menu > .item a {
+  color: inherit;
+  border: none;
+  background-color: transparent !important; }
+
+.ui.dropdown .text a[href],
+.ui.dropdown .menu[role="listbox"] a[href] {
+  color: #007aff; }
+  .ui.dropdown .text a[href]:hover,
+  .ui.dropdown .menu[role="listbox"] a[href]:hover {
+    text-decoration: underline; }
+
+.ui.dropdown .menu > .item > a,
+.ui.dropdown .menu > .item > .__re-bulma_button {
+  color: inherit;
+  border: none;
+  background-color: transparent !important; }
+
+.ui.active.search.dropdown input.search:focus + .text a {
+  color: rgba(115, 115, 115, 0.87); }
 
 .ui.checkbox.reverse-label .box:after,
 .ui.checkbox.reverse-label .box:before,

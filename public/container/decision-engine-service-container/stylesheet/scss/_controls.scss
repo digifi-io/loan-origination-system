@@ -537,6 +537,35 @@
   }
 }
 
+.ui.dropdown .menu>.item {
+  & a {
+    color: inherit;
+    border: none;
+    background-color: transparent !important;
+  }
+}
+
+.ui.dropdown .text,
+.ui.dropdown .menu[role="listbox"] {
+  & a[href] {
+    color: $color-primary;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.ui.dropdown .menu>.item>a,
+.ui.dropdown .menu>.item>.__re-bulma_button {
+  color: inherit;
+  border: none;
+  background-color: transparent !important;
+}
+
+.ui.active.search.dropdown input.search:focus+.text a {
+  color: hsla(0, 0%, 45%, .87);
+}
 
 .ui.checkbox.reverse-label .box:after, 
 .ui.checkbox.reverse-label .box:before, 

@@ -120,7 +120,10 @@ async function formatNewApplicationFormData(req) {
     if (req.controllerData.intermediaries) {
       const intermediaryDropdown = req.controllerData.intermediaries.map(intermediary => ({
         label: {
-          component: 'a',
+          component: 'ResponsiveLink',
+          props: {
+            location: `/los/intermediaries/${intermediary._id}`,
+          },
           children: intermediary.name,
         },
         value: intermediary._id.toString(),
@@ -518,7 +521,10 @@ async function formatApplicationDetail(req) {
         if (req.controllerData.intermediaries) {
           const intermediaryDropdown = req.controllerData.intermediaries.map(intermediary => ({
             label: {
-              component: 'a',
+              component: 'ResponsiveLink',
+              props: {
+                location: `/los/intermediaries/${intermediary._id}`,
+              },
               children: intermediary.name,
             },
             value: intermediary._id.toString(),
@@ -1896,7 +1902,10 @@ async function formatDropdowns(req) {
     if (req.controllerData.intermediaries) {
       const intermediaryDropdown = req.controllerData.intermediaries.map(intermediary => ({
         label: {
-          component: 'a',
+          component: 'ResponsiveLink',
+          props: {
+            location: `/los/intermediaries/${intermediary._id}`,
+          },
           children: intermediary.name,
         },
         value: intermediary._id.toString(),
@@ -2778,7 +2787,10 @@ async function formatUploadDocFormDropdown(req) {
     } else if (req.controllerData.intermediary) {
       const intermediaryDropdown = req.controllerData.intermediary.map(intermediary => ({
         label: {
-          component: 'a',
+          component: 'ResponsiveLink',
+          props: {
+            location: `/los/intermediaries/${intermediary._id}`,
+          },
           children: intermediary.name,
         },
         value: intermediary._id.toString(),
