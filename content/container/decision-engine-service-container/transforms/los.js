@@ -119,7 +119,10 @@ async function formatNewApplicationFormData(req) {
     }
     if (req.controllerData.intermediaries) {
       const intermediaryDropdown = req.controllerData.intermediaries.map(intermediary => ({
-        label: intermediary.name,
+        label: {
+          component: 'a',
+          children: intermediary.name,
+        },
         value: intermediary._id.toString(),
       }));
       req.controllerData.formoptions.intermediary = intermediaryDropdown;
@@ -514,7 +517,10 @@ async function formatApplicationDetail(req) {
         }
         if (req.controllerData.intermediaries) {
           const intermediaryDropdown = req.controllerData.intermediaries.map(intermediary => ({
-            label: intermediary.name,
+            label: {
+              component: 'a',
+              children: intermediary.name,
+            },
             value: intermediary._id.toString(),
           }));
           req.controllerData.formoptions.intermediary = intermediaryDropdown;
@@ -1889,7 +1895,10 @@ async function formatDropdowns(req) {
 
     if (req.controllerData.intermediaries) {
       const intermediaryDropdown = req.controllerData.intermediaries.map(intermediary => ({
-        label: intermediary.name,
+        label: {
+          component: 'a',
+          children: intermediary.name,
+        },
         value: intermediary._id.toString(),
       })).sort((a, b) => a.intermediary > b.intermediary ? 1 : -1);
       req.controllerData.formoptions.intermediary = intermediaryDropdown;
@@ -2768,7 +2777,10 @@ async function formatUploadDocFormDropdown(req) {
       delete req.controllerData.person;
     } else if (req.controllerData.intermediary) {
       const intermediaryDropdown = req.controllerData.intermediary.map(intermediary => ({
-        label: intermediary.name,
+        label: {
+          component: 'a',
+          children: intermediary.name,
+        },
         value: intermediary._id.toString(),
       }));
       req.controllerData.formoptions.intermediary = intermediaryDropdown;
