@@ -919,7 +919,7 @@ function _generateLabelTag(label, color) {
 function generateInputFields({ initValues, }) {
   return function (ipt) {
     let input;
-    let initValue = (initValues[ ipt.display_title ] !== undefined) ? initValues[ ipt.display_title ] : '';
+    let initValue = (initValues[ ipt.display_title ] !== undefined && initValues[ ipt.display_title ] !== null) ? initValues[ ipt.display_title ] : '';
     switch (ipt.data_type) {
       case 'Number':
         input = {

@@ -609,7 +609,12 @@ async function initializeStrategyForApiCompilation(req, res, next) {
   try {
     req.controllerData = req.controllerData || {};
     const { org, } = req.controllerData;
-    const orgId = (org && org._id) ? org._id.toString() : 'organization';
+    const user = req.user || {};
+    const orgId = (org && org._id) 
+      ? org._id.toString() 
+      : (user && user.association && user.association.organization && user.association.organization._id)
+        ? user.association.organization._id
+        : 'organization';
     let strategy = req.controllerData.strategy;
     let compiledStrategy;
     let init_compiled_strategy = Object.assign({}, strategy, { input_variables: [], calculated_variables: [], output_variables: [], rules: [], decline_reasons: [], templates: [], });
