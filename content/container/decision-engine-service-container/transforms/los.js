@@ -4228,9 +4228,7 @@ async function formatIntermediaryApplicationTablePage(req) {
                     },
                   },
                   columnProps: {
-                    style: {
-                      whiteSpace: 'nowrap',
-                    },
+                    style: styles.buttonCellStyle,
                   },
                   buttons: [ {
                     passProps: {

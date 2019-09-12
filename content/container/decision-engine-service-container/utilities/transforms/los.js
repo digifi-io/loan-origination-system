@@ -1772,9 +1772,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
                         },
                       },
                       columnProps: {
-                        style: {
-                          whiteSpace: 'nowrap',
-                        },
+                        style: styles.buttonCellStyle,
                       },
                       buttons: [ {
                         passProps: {
@@ -1908,9 +1906,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
                         },
                       },
                       columnProps: {
-                        style: {
-                          whiteSpace: 'nowrap',
-                        },
+                        style: styles.buttonCellStyle,
                       },
                       buttons: [ {
                         passProps: {

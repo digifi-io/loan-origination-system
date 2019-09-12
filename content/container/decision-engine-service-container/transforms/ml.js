@@ -2089,9 +2089,7 @@ async function generateMLIndividualRunProcessPage(req) {
         },
       },
       columnProps: {
-        style: {
-          whiteSpace: 'nowrap',
-        },
+        style: styles.buttonCellStyle,
       },
       buttons: [ {
         passProps: {
@@ -3146,9 +3144,7 @@ function generateMLBatchRunProcessPage(req) {
           },
         },
         columnProps: {
-          style: {
-            whiteSpace: 'nowrap',
-          },
+          style: styles.buttonCellStyle,
         },
         buttons: [ {
           passProps: {
@@ -3559,9 +3555,7 @@ async function generateBatchMLResultsDetailPage(req) {
             },
           },
           columnProps: {
-            style: {
-              whiteSpace: 'nowrap',
-            },
+            style: styles.buttonCellStyle,
           },
           buttons: [ {
             passProps: {
@@ -3718,9 +3712,7 @@ async function generateBatchMLResultsDetailPage(req) {
             },
           },
           columnProps: {
-            style: {
-              whiteSpace: 'nowrap',
-            },
+            style: styles.buttonCellStyle,
           },
           buttons: [ {
             passProps: {

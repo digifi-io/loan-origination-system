@@ -16,8 +16,8 @@ const capitalize = require('capitalize');
 const shared = utilities.views.shared;
 const formElements = shared.props.formElements.formElements;
 const cardprops = shared.props.cardprops;
-const styles = utilities.views.constants.styles;
-const references = utilities.views.constants.references;
+const styles = utilities.views.styles;
+const references = utilities.views.references;
 let randomKey = Math.random;
 const util = require('util');
 const plainHeaderTitle = utilities.views.shared.component.layoutComponents.plainHeaderTitle;
@@ -205,9 +205,7 @@ async function testcaseTabs(req) {
             },
           },
           columnProps: {
-            style: {
-              whiteSpace: 'nowrap',
-            },
+            style: styles.buttonCellStyle,
           },
           label: ' ',
           buttons: [
@@ -1166,9 +1164,7 @@ function createSimulationPage(req) {
                             },
                           },
                           columnProps: {
-                            style: {
-                              whiteSpace: 'nowrap',
-                            },
+                            style: styles.buttonCellStyle,
                           },
                           label: ' ',
                           buttons: [
@@ -1359,9 +1355,7 @@ function createSimulationPage(req) {
                             },
                           },
                           columnProps: {
-                            style: {
-                              whiteSpace: 'nowrap',
-                            },
+                            style: styles.buttonCellStyle,
                           },
                           label: ' ',
                           buttons: [
@@ -1703,9 +1697,7 @@ async function testcasesPage(req) {
                 },
               },
               columnProps: {
-                style: {
-                  whiteSpace: 'nowrap',
-                },
+                style: styles.buttonCellStyle,
               },
               buttons: [ {
                 passProps: {
@@ -2503,9 +2495,7 @@ function generateIndividualRunProcessPage(req) {
                             },
                           },
                           columnProps: {
-                            style: {
-                              whiteSpace: 'nowrap',
-                            },
+                            style: styles.buttonCellStyle,
                           },
                           label: ' ',
                           buttons: [
@@ -2695,9 +2685,7 @@ function generateIndividualRunProcessPage(req) {
                             },
                           },
                           columnProps: {
-                            style: {
-                              whiteSpace: 'nowrap',
-                            },
+                            style: styles.buttonCellStyle,
                           },
                           label: ' ',
                           buttons: [
@@ -2887,9 +2875,7 @@ function generateIndividualResultsDetailPage(req) {
               },
             },
             columnProps: {
-              style: {
-                whiteSpace: 'nowrap',
-              }
+              style: styles.buttonCellStyle,
             },
             buttons: [ {
               passProps: {
@@ -3186,9 +3172,7 @@ function generateIndividualResultsDetailPage(req) {
                   //           },
                   //         },
                   //         columnProps: {
-                  //           style: {
-                  //             whiteSpace: 'nowrap',
-                  //           },
+  //                          style: styles.buttonCellStyle,
                   //         },
                   //         label: ' ',
                   //         buttons: [ {
@@ -3417,9 +3401,7 @@ function generateIndividualResultsDetailPage(req) {
 //                           },
 //                         },
 //                         columnProps: {
-//                           style: {
-//                             whiteSpace: 'nowrap',
-//                           },
+ //                           style: styles.buttonCellStyle,
 //                         },
 //                         label: ' ',
 //                         buttons: [ {
@@ -3712,9 +3694,7 @@ function generateBatchResultsDetailPage(req) {
                           },
                         },
                         columnProps: {
-                          style: {
-                            whiteSpace: 'nowrap',
-                          },
+                          style: styles.buttonCellStyle,
                         },
                         label: ' ',
                         buttons: [ {
@@ -3940,9 +3920,7 @@ function generateBatchCaseResultsDetailPage(req) {
                           },
                         },
                         columnProps: {
-                          style: {
-                            whiteSpace: 'nowrap',
-                          },
+                          style: styles.buttonCellStyle,
                         },
                         label: ' ',
                         buttons: [ {
