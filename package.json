@@ -1,7 +1,7 @@
 {
   "name": "decision-engine-service",
   "description": "Simple enterprise node app server.",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "main": "index.js",
   "engines": {
     "node": "^6.x"
