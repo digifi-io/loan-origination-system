@@ -11,7 +11,7 @@ Please visit our [Documentation](https://docs.digifi.io/) for comprehensive info
  * **Tested & Documented**: Substantial in-market performance with some of the largest lenders in the world
  * **Highly Configurable**: Unparalleled UI-based configurability plus unlimited code-level customizations 
  * **Flexible Deployment**: Deploy to your cloud or on-premise servers, or leverage DigiFi's hosting
- * **Support & Services**: Excellent support plans and custom development services available, plus ongoing platform improvements powered by an open-source development community (visit www.digifi.io or contact info@digifi.io for information)
+ * **Support & Services**: Excellent support plans and custom development services available, plus ongoing platform improvements powered by an open-source development community (visit www.digifi.io or contact info@digifi.io for information) 
  
 # Key Platform Features
 
