@@ -2019,7 +2019,7 @@ function _generateDocuSignTemplateDetailForm(options) {
           timeout: 10000,
           type: 'success',
         },
-        responseCallback: 'func:this.props.reduxRouter.push',
+        responseCallback: 'func:this.props.refresh',
       },
       hiddenFields: [],
       blockPageUI: true,
