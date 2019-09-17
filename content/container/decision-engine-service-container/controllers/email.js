@@ -11,7 +11,7 @@ const mailerSendEmail = Promisie.promisify(CoreMailer.sendEmail);
 
 let emailTemplateData = {
   welcome_to_digifi: {
-    subject: 'Welcome to DigiFi’s Loan Acquisition Platform!',
+    subject: 'Welcome to DigiFi’s Loan Origination Platform!',
     from: 'DigiFi <support@digifi.io>',
     templatename: 'welcome_to_digifi.ejs',
     templatedata: {
