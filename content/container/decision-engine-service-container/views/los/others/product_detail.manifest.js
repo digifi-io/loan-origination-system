@@ -42,10 +42,14 @@ module.exports = {
                 flattenFormData: true,
                 footergroups: false,
                 onSubmit: {
-                  url: '/organization/update_org_info',
+                  url: '/los/api/products/:id',
                   'options': {
                     'method': 'PUT',
                   },
+                  params: [{
+                    key: ':id',
+                    val: '_id',
+                  }, ],
                   successCallback: ['func:this.props.refresh', 'func:this.props.createNotification', ],
                   successProps: [null, {
                     type: 'success',
@@ -139,6 +143,7 @@ module.exports = {
                       },
                       name: 'description',
                       type: 'textarea',
+                      placeholder: 'Description',
                       errorIconRight: true,
                       errorIcon: 'fa fa-exclamation',
                     }, {
