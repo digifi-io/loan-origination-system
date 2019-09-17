@@ -39,51 +39,43 @@ module.exports = {
                 type: 'success',
               }, {} ]
             },
-            validations: [{
-              name: {
-                'name': 'from',
-                'constraints': {
-                  'from': {
-                    'presence': {
-                      'message': '^Sender email address is required.',
-                    },
+            validations: [ {
+              'name': 'from',
+              'constraints': {
+                'from': {
+                  'presence': {
+                    'message': '^Sender email is required.',
                   },
                 },
               },
             }, {
-              name: {
-                'name': 'subject',
-                'constraints': {
-                  'subject': {
-                    'presence': {
-                      'message': '^Subject is required.',
-                    },
+              'name': 'subject',
+              'constraints': {
+                'subject': {
+                  'presence': {
+                    'message': '^Email subject is required.',
                   },
                 },
               },
             }, {
-              name: {
-                'name': 'email',
-                'constraints': {
-                  'email': {
-                    'presence': {
-                      'message': '^Email is required.',
-                    },
+              'name': 'email',
+              'constraints': {
+                'email': {
+                  'presence': {
+                    'message': '^Email address is required.',
                   },
                 },
               },
             }, {
-              name: {
-                'name': 'description',
-                'constraints': {
-                  'description': {
-                    'presence': {
-                      'message': '^Document description is required.',
-                    },
+              'name': 'description',
+              'constraints': {
+                'description': {
+                  'presence': {
+                    'message': '^Document description is required.',
                   },
                 },
               },
-            },],
+            }, ],
             formgroups: [ {
               gridProps: {
                 key: randomKey(),

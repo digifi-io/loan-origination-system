@@ -10,6 +10,7 @@ const helpers = utilities.helpers;
 const transformhelpers = utilities.transformhelpers;
 const losControllerUtil = utilities.controllers.los;
 const losTransformUtil = utilities.transforms.los;
+const path = require('path');
 const Busboy = require('busboy');
 
 async function createApplication(req, res, next) {
@@ -906,6 +907,7 @@ async function sendCustomerDocUploadRequest(req, res, next) {
         protocol: periodic.settings.application.protocol,
         loan_officer_name: `${user.first_name} ${user.last_name}`,
         organization_name: organization.name,
+        document_description: req.body.description
       },
     };
     const emailSend = await periodic.core.mailer.sendEmail(email);
