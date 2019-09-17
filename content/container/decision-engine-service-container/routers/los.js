@@ -578,6 +578,7 @@ LosRouter.post('/products',
 // Products PUT  
 LosRouter.put('/products/:id',
   ensureApiAuthenticated,
+  transformController.pretransform,
   losController.application.updateProduct,
   losController.handleControllerDataResponse);
 
