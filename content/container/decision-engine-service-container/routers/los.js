@@ -293,6 +293,11 @@ LosRouter.post('/applications',
   losController.application.createApplication,
   losController.application.redirectToApplicationDetail);
 
+LosRouter.post('/applications/:id/send_document_upload_request',
+  ensureApiAuthenticated,
+  losController.application.sendCustomerDocUploadRequest,
+  losController.handleControllerDataResponse);
+
 LosRouter.post('/applications/:id/select_automation',
   ensureApiAuthenticated,
   transformController.pretransform,

@@ -22,18 +22,15 @@ module.exports = {
             footergroups: false,
             setInitialValues: false,
             'onSubmit': {
-              // url: '/los/api/applicationrejectiontypes/:orgid/:index?method=edit',
+              url: '/los/api/applications/:id/send_document_upload_request',
               options: {
                 headers: {},
                 method: 'POST',
               },
-              // params: [ {
-              //   key: ':orgid',
-              //   val: 'orgid',
-              // }, {
-              //   key: ':index',
-              //   val: 'index',
-              // } ],
+              params: [ {
+                key: ':id',
+                val: 'applicationId',
+              }, ],
               responseCallback: 'func:window.setHeaders',
               successCallback: [ 'func:window.closeModalAndCreateNotification', 'func:this.props.refresh' ],
               successProps: [ {
@@ -75,7 +72,18 @@ module.exports = {
                   },
                 },
               },
-            }],
+            }, {
+              name: {
+                'name': 'description',
+                'constraints': {
+                  'description': {
+                    'presence': {
+                      'message': '^Document description is required.',
+                    },
+                  },
+                },
+              },
+            },],
             formgroups: [ {
               gridProps: {
                 key: randomKey(),
