@@ -140,6 +140,13 @@ LosRouter.get('/applications/swimlane',
   transformController.posttransform,
   losController.handleControllerDataResponse)
 
+LosRouter.get('/applications/:id/request_upload',
+  ensureApiAuthenticated,
+  losController.application.getApplication,
+  losController.application.getApplicationCustomer,
+  transformController.posttransform,
+  losController.handleControllerDataResponse)
+
 LosRouter.get('/applications/:id/reject_application',
   ensureApiAuthenticated,
   transformController.posttransform,
@@ -286,6 +293,11 @@ LosRouter.post('/applications',
   transformController.pretransform,
   losController.application.createApplication,
   losController.application.redirectToApplicationDetail);
+
+LosRouter.post('/applications/:id/send_document_upload_request',
+  ensureApiAuthenticated,
+  losController.application.sendCustomerDocUploadRequest,
+  losController.handleControllerDataResponse);
 
 LosRouter.post('/applications/:id/select_automation',
   ensureApiAuthenticated,

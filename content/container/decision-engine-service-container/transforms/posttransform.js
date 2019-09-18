@@ -17,6 +17,9 @@ const pagegenerator = require('./pagegenerator');
 
 module.exports = {
   GET: {
+    '/los/api/applications/:id/request_upload': [
+      los.formatCustomerDocUploadModal,
+    ],
     '/decision/api/standard_strategies/:id/addSegment': [
       decision.strategy.getModuleDropdown,
     ],
