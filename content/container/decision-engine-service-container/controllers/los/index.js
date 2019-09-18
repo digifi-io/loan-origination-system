@@ -207,6 +207,7 @@ module.exports = {
   note,
   doc,
   label,
+  product,
   status,
   task,
   taskbot,
