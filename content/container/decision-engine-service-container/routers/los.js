@@ -8,6 +8,7 @@ const transformController = controllers.transform;
 const losController = controllers.los;
 const integrationController = controllers.integration;
 const apiController = controllers.api;
+const lapController = controllers.lap;
 const orgController = controllers.organization;
 const LosRouter = periodic.express.Router();
 const ensureApiAuthenticated = periodic.controllers.extension.get('periodicjs.ext.oauth2server').auth.ensureApiAuthenticated;
@@ -578,8 +579,7 @@ LosRouter.post('/products',
 // Products PUT  
 LosRouter.put('/products/:id',
   ensureApiAuthenticated,
-  transformController.pretransform,
-  losController.application.updateProduct,
+  lapController.ProductController.updateProduct,
   losController.handleControllerDataResponse);
 
 LosRouter.put('/products/:id/template/:idx',
