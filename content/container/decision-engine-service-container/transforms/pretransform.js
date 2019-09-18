@@ -290,9 +290,6 @@ module.exports = {
     '/los/api/applications/:id': [
       los.formatApplicationDataForUpdate,
     ],
-    '/los/api/products/:id': [
-      los.formatProductDataForUpdate,
-    ],
     '/los/api/customers/companies/:id': [
       los.formatApplicationDataForUpdate,
     ],
