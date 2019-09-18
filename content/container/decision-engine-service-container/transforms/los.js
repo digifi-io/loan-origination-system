@@ -1022,38 +1022,6 @@ async function formatApplicationSwimlane(req) {
   }
 }
 
-async function formatProductDataForUpdate(req) {
-  try {
-    // if (req.query && req.query.type === 'patch_loan_info' || req.query.type === 'patch_key_information') {
-    //   const { name, value, value_type, value_category } = los_transform_util.coerceLoanDataType(req.body);
-    //   req.body = Object.assign({}, req.body, { name, value, value_type, value_category });
-    // } else if (req.query.status) {
-    //   const user = req.user || {};
-    //   const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id.toString() : 'organization';
-    //   const LosStatus = periodic.datas.get('standard_losstatus');
-    //   if (req.query.status === 'approve') {
-    //     const approvedStatus = await LosStatus.model.findOne({ organization, name: 'Approved', }).lean();
-    //     req.body.status = approvedStatus._id.toString();
-    //     req.body.decision_date = new Date();
-    //   } else if (req.query.status === 'reject') {
-    //     const rejectedStatus = await LosStatus.model.findOne({ organization, name: 'Rejected', }).lean();
-    //     req.body.status = rejectedStatus._id.toString();
-    //     req.body.decision_date = new Date();
-    //   }
-    // }
-    // if (req.body && req.body.team_members) req.body.team_members = req.body.team_members.filter(Boolean);
-    // if (req.body && req.body.labels) req.body.labels = req.body.labels.filter(Boolean);
-    // if (req.body.loan_amount) {
-    //   req.body.loan_amount = numeral(req.body.loan_amount)._value;
-    // }
-    delete req.body.null;
-    return req;
-  } catch (e) {
-    req.error = e.message;
-    return req;
-  }
-}
-
 async function formatApplicationDataForUpdate(req) {
   try {
     if (req.query && req.query.type === 'patch_loan_info' || req.query.type === 'patch_key_information') {
@@ -4662,7 +4630,6 @@ module.exports = {
   // formatPeopleIndexTable,
   formatNewApplicationFormData,
   formatApplicationSwimlane,
-  formatProductDataForUpdate,
   formatApplicationDataForUpdate,
   formatApplicationAttributeDetail,
   formatApplicationDocsIndexTable,
