@@ -17,10 +17,10 @@ async function updateProduct(req, res, next) {
   try {
     req.controllerData = req.controllerData || {};
     const Product = periodic.datas.get('standard_losproduct');
-    const organization = (req.user && req.user.association && req.user.association.organization) ? req.user.association.organization : null;
+    const organizationId = req.user && req.user.association && req.user.association.organization && req.user.association.organization._id || null;
     req.controllerData.product = await Product.model.findOneAndUpdate({
       _id: req.params.id,
-      organization: organization._id,
+      organization: organizationId,
     }, req.body, {
       new: true,
     });
