@@ -8,7 +8,7 @@ const randomKey = Math.random;
 
 module.exports = {
   containers: {
-    '/secure_customer_document_upload/:id': {
+    '/secure_customer_document_upload/:id/:org': {
       layout: {
         component: 'div',
         props: {},
@@ -78,7 +78,9 @@ module.exports = {
                             marginBottom: '0px',
                           },
                         },
-                        children: 'Welcome!', 
+                        asyncprops: {
+                          _children: ['data', 'orgName'],
+                        },
                       },
                       {
                         component: 'span',
@@ -233,7 +235,7 @@ module.exports = {
         }, ],
       },
       'resources': {
-        me: '/los/api/applications/secure_customer_document_upload/:id'
+        'data': '/los/api/applications/secure_customer_document_upload/:id/:org',
       },
       callbacks: [],
       onFinish: 'render',

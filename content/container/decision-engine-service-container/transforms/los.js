@@ -4626,16 +4626,12 @@ async function formatCustomerDocUploadModal(req) {
     return req;
   }
 }
-async function fan(req) {
+async function populateSecureUploadPage(req) {
   try {
     req.controllerData = req.controllerData || {};
-    console.log(req.query, "FANNOEE")
-    console.log(req.params, "FANNOEE")
-    // const customer = req.controllerData.customer;
-    // const application = req.controllerData.application;
-    const user = req.user || {};
-    const organization = user && user.association && user.association.organization;
-    console.log(user, organization)
+    const Organization = periodic.datas.get('standard_organization');
+    const org = await Organization.model.findOne({ _id: req.params.org, }).lean();
+    req.controllerData.orgName = org.name;
     return req;
   } catch (e) {
     req.error = e.message;
@@ -4715,5 +4711,5 @@ module.exports = {
   formatApplicationRejectionDetail,
   generateLosStatusEditDetail,
   formatCustomerDocUploadModal,
-  fan,
+  populateSecureUploadPage,
 };
