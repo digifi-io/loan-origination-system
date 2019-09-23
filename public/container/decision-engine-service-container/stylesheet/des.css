@@ -253,6 +253,10 @@ textarea.__re-bulma_textarea,
   .hide-mobile {
     display: none; } }
 
+@media only screen and (max-width: 480px) {
+  body[id^="_secure_customer_document_upload_"] .__re-bulma_nav-right.__re-bulma_nav-menu {
+    display: none; } }
+
 @media only screen and (max-width: 320px) {
   .__re-bulma_container.login.responsive {
     padding: 0; }
