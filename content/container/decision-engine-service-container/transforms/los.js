@@ -4626,6 +4626,18 @@ async function formatCustomerDocUploadModal(req) {
     return req;
   }
 }
+async function populateSecureUploadPage(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const Organization = periodic.datas.get('standard_organization');
+    const org = await Organization.model.findOne({ _id: req.params.org, }).lean();
+    req.controllerData.orgName = org.name;
+    return req;
+  } catch (e) {
+    req.error = e.message;
+    return req;
+  }
+}
 
 module.exports = {
   setCompanyDisplayTitle,
@@ -4699,4 +4711,5 @@ module.exports = {
   formatApplicationRejectionDetail,
   generateLosStatusEditDetail,
   formatCustomerDocUploadModal,
+  populateSecureUploadPage,
 };

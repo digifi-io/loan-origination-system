@@ -91,7 +91,7 @@ module.exports = {
               formElements: [ {
                 name: 'subject',
                 label: 'Subject',
-              },],
+              }, ],
             }, {
               gridProps: {
                 key: randomKey(),

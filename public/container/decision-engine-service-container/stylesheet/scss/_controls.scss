@@ -15,6 +15,11 @@
   font-size: 13px;
 }
 
+.__re-bulma_content p.__re-bulma_control:not(:last-child) {
+  margin-bottom: 0;
+  // remove margin on controls with error icons
+}
+
 .__re-bulma_is-grouped {
   & .__re-bulma_control {
     flex: 1;

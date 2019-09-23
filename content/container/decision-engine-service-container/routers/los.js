@@ -146,6 +146,13 @@ LosRouter.get('/applications/:id/request_upload',
   transformController.posttransform,
   losController.handleControllerDataResponse)
 
+LosRouter.get('/applications/secure_customer_document_upload/:id/:org',
+  // ensureApiAuthenticated,
+  // losController.application.getApplication,
+  // losController.application.getApplicationCustomer,
+  transformController.posttransform,
+  losController.handleControllerDataResponse)
+
 LosRouter.get('/applications/:id/reject_application',
   ensureApiAuthenticated,
   transformController.posttransform,
