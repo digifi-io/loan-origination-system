@@ -78,7 +78,7 @@ module.exports = {
                             marginBottom: '0px',
                           },
                         },
-                        children: 'Welcome!',
+                        children: 'Welcome!', 
                       },
                       {
                         component: 'span',
@@ -233,6 +233,7 @@ module.exports = {
         }, ],
       },
       'resources': {
+        me: '/los/api/applications/secure_customer_document_upload/:id'
       },
       callbacks: [],
       onFinish: 'render',

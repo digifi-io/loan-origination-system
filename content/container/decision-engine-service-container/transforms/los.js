@@ -4626,6 +4626,22 @@ async function formatCustomerDocUploadModal(req) {
     return req;
   }
 }
+async function fan(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    console.log(req.query, "FANNOEE")
+    console.log(req.params, "FANNOEE")
+    // const customer = req.controllerData.customer;
+    // const application = req.controllerData.application;
+    const user = req.user || {};
+    const organization = user && user.association && user.association.organization;
+    console.log(user, organization)
+    return req;
+  } catch (e) {
+    req.error = e.message;
+    return req;
+  }
+}
 
 module.exports = {
   setCompanyDisplayTitle,
@@ -4699,4 +4715,5 @@ module.exports = {
   formatApplicationRejectionDetail,
   generateLosStatusEditDetail,
   formatCustomerDocUploadModal,
+  fan,
 };

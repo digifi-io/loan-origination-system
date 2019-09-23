@@ -20,6 +20,9 @@ module.exports = {
     '/los/api/applications/:id/request_upload': [
       los.formatCustomerDocUploadModal,
     ],
+    '/los/api/applications/secure_customer_document_upload/:id': [
+      los.fan,
+    ],
     '/decision/api/standard_strategies/:id/addSegment': [
       decision.strategy.getModuleDropdown,
     ],
