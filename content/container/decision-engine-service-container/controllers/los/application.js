@@ -902,7 +902,7 @@ async function sendCustomerDocUploadRequest(req, res, next) {
       emailtemplatedata: {
         appname: periodic.settings.name,
         hostname: periodic.settings.application.hostname || periodic.settings.name,
-        basepath: `/secure_customer_document_upload/${req.params.id}`,
+        basepath: `/secure_customer_document_upload/${req.params.id}/${organization._id}`,
         url: periodic.settings.application.url,
         protocol: periodic.settings.application.protocol,
         loan_officer_name: `${user.first_name} ${user.last_name}`,
