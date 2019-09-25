@@ -415,8 +415,6 @@ async function uploadDocumentToAWS(req, res, next) {
   try {
     req.controllerData = req.controllerData || {};
     req.controllerData.newdoc = req.controllerData.newdoc || {};
-    let user = req.user;
-    let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
     const file = req.controllerData.file || req.controllerData.newdoc.file;
     const filename = req.controllerData.newdoc.name;
     const Key = (req.controllerData.newdoc.parent_directory)

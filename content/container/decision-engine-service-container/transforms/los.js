@@ -4632,6 +4632,8 @@ async function populateSecureUploadPage(req) {
     const Organization = periodic.datas.get('standard_organization');
     const org = await Organization.model.findOne({ _id: req.params.org, }).lean();
     req.controllerData.orgName = org.name;
+    req.controllerData.organization = req.params.org;
+    req.controllerData.applicationId = req.params.id;
     return req;
   } catch (e) {
     req.error = e.message;

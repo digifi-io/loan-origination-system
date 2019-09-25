@@ -329,6 +329,12 @@ LosRouter.post('/applications/:id/docs',
   transformController.posttransform,
   losController.doc.redirectToFolder);
 
+LosRouter.post('/applications/:id/secure_customer_document_upload',
+  losController.doc.getUploadedDocument,
+  losController.application.uploadDocumentToAWS,
+  losController.doc.createCustomerUploadDocument,
+  losController.handleControllerDataResponse);
+
 LosRouter.post('/applications/:id/generate_doc/:template',
   ensureApiAuthenticated,
   losController.application.getApplication,

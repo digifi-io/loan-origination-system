@@ -164,38 +164,36 @@ module.exports = {
                           }, ],
                         }, {
                           component: 'ResponsiveForm',
+                          asyncprops: {
+                            formdata: ['data'],
+                          },
                           props: {
                             flattenFormData: true,
                             footergroups: false,
                             setInitialValues: false,
-                            // 'onSubmit': {
-                            //   url: '/los/api/applications/:id/send_document_upload_request',
-                            //   options: {
-                            //     headers: {},
-                            //     method: 'POST',
-                            //   },
-                            //   params: [{
-                            //     key: ':id',
-                            //     val: 'applicationId',
-                            //   }, ],
-                            //   responseCallback: 'func:window.setHeaders',
-                            //   successCallback: ['func:window.closeModalAndCreateNotification', 'func:this.props.refresh', ],
-                            //   successProps: [{
-                            //     text: 'Changes saved successfully!',
-                            //     timeout: 10000,
-                            //     type: 'success',
-                            //   }, {}, ],
-                            // },
-                            validations: [{
-                              'name': 'file',
-                              'constraints': {
-                                'file': {
-                                  'presence': {
-                                    'message': '^Please select a file to upload',
-                                  },
-                                },
+                            'onSubmit': {
+                              url: '/los/api/applications/:id/secure_customer_document_upload',
+                              options: {
+                                headers: {},
+                                method: 'POST',
                               },
+                              params: [{
+                                key: ':id',
+                                val: 'applicationId',
+                              }, ],
+                              responseCallback: 'func:window.setHeaders',
+                              successCallback: ['func:window.closeModalAndCreateNotification',],
+                              successProps: [{
+                                text: 'File uploaded successfully!',
+                                timeout: 10000,
+                                type: 'success',
+                              }, {}, ],
+                            },
+                            hiddenFields: [ {
+                              form_name: 'organization',
+                              form_val: 'organization',
                             }, ],
+                            validations: [],
                             formgroups: [{
                               gridProps: {
                                 key: randomKey(),

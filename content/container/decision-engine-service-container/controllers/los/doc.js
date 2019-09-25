@@ -168,6 +168,26 @@ async function createDocument(req, res, next) {
   }
 }
 
+async function createCustomerUploadDocument(req, res, next) {
+  try {
+    const LosDoc = periodic.datas.get('standard_losdoc');
+    req.controllerData = req.controllerData || {};
+    const newdoc = req.controllerData.newdoc;
+
+    if (req.params.id) newdoc.application = req.params.id;
+    newdoc.doc_type = 'file';
+    newdoc.user = {
+      creator: 'Secure Customer Upload',
+      updater: 'Secure Customer Upload',
+    };
+    const created = await LosDoc.create({ newdoc, });
+    req.controllerData.document = created;
+    next();
+  } catch (e) {
+    return res.status(500).send({ message: 'Error uploading customer document', });
+  }
+}
+
 async function createFolder(req, res, next) {
   try {
     const LosDoc = periodic.datas.get('standard_losdoc');
@@ -523,6 +543,7 @@ module.exports = {
   updateDoc,
   redirectToFolder,
   createDocument,
+  createCustomerUploadDocument,
   createFolder,
   deleteDocument,
   getUploadedDocument,
