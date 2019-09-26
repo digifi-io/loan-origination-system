@@ -129,6 +129,23 @@ module.exports = {
               props: {
                 onClick: 'func:this.props.createModal',
                 onclickProps: {
+                  title: 'Send Secure Upload Link to Customer',
+                  pathname: '/los/applications/:id/request_upload',
+                  params: [ { key: ':id', val: '_id', }, ],
+                },
+                buttonProps: {
+                  color: 'isSuccess',
+                },
+              },
+              children: 'REQUEST UPLOAD',
+            }, {
+              component: 'ResponsiveButton',
+              asyncprops: {
+                onclickPropObject: [ 'applicationdata', 'application' ],
+              },
+              props: {
+                onClick: 'func:this.props.createModal',
+                onclickProps: {
                   title: 'Create Folder',
                   pathname: '/los/applications/:id/create_folder',
                   params: [ { key: ':id', val: '_id', }, ],

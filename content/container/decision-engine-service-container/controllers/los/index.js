@@ -13,6 +13,7 @@ const customer = require('./customer');
 const customertemplate = require('./customertemplate');
 const doc = require('./doc');
 const note = require('./note');
+const product = require('./product');
 const label = require('./label');
 const status = require('./status');
 const task = require('./task');
@@ -206,6 +207,7 @@ module.exports = {
   note,
   doc,
   label,
+  product,
   status,
   task,
   taskbot,

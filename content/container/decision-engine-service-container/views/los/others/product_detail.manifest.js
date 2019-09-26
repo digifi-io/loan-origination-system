@@ -17,7 +17,7 @@ module.exports = {
     '/los/others/products/:id': {
       layout: {
         component: 'div',
-        privileges: [ 101, 102, 103],
+        privileges: [ 101, 102, 103, ],
         props: {
           style: styles.pageContainer,
         },
@@ -32,240 +32,263 @@ module.exports = {
             component: 'Container',
             props: {
             },
-            children: [ {
-              component: 'Columns',
-              children: [ {
-                component: 'Column',
-                children: [ {
-                  component: 'ResponsiveCard',
-                  props: cardprops({
-                    cardTitle: 'Overview Information',
-                  }),
-                  children: [ {
-                    component: 'ResponsiveForm',
-                    asyncprops: {
-                      formdata: [ 'productdata', 'product' ],
+            children: [{
+              component: 'ResponsiveForm',
+              asyncprops: {
+                formdata: ['productdata', 'product', ],
+                rows: ['productdata', 'product', 'template_info', ],
+              },
+              props: {
+                flattenFormData: true,
+                footergroups: false,
+                onSubmit: {
+                  url: '/los/api/products/:id',
+                  'options': {
+                    'method': 'PUT',
+                  },
+                  params: [{
+                    key: ':id',
+                    val: '_id',
+                  }, ],
+                  successCallback: ['func:this.props.refresh', 'func:this.props.createNotification', ],
+                  successProps: [null, {
+                    type: 'success',
+                    text: 'Changes saved successfully!',
+                    timeout: 10000,
+                  }, ],
+                },
+                validations: [],
+                formgroups: [formGlobalButtonBar({
+                  left: [],
+                  right: [{
+                    type: 'submit',
+                    value: 'SAVE',
+                    passProps: {
+                      color: 'isPrimary',
                     },
-                    props: {
-                      flattenFormData: true,
-                      footergroups: false,
-                      onSubmit: {
-                        url: '/organization/update_org_info',
-                        'options': {
-                          'method': 'PUT',
-                        },
-                        successCallback: [ 'func:this.props.refresh', 'func:this.props.createNotification', ],
-                        successProps: [ null, {
-                          type: 'success',
-                          text: 'Changes saved successfully!',
-                          timeout: 10000,
-                        },
-                        ],
-                      },
-                      validations: [],
-                      formgroups: [
-                        {
-                          gridProps: {
-                            key: randomKey(),
-                          },
-                          formElements: [ {
-                            label: 'Product Name',
-                            name: 'name',
-                          } ],
-                        }, {
-                          gridProps: {
-                            key: randomKey(),
-                          },
-                          formElements: [ {
-                            name: 'customer_type',
-                            label: 'Customer Type',
-                            type: 'dropdown',
-                            passProps: {
-                              selection: true,
-                              fluid: true,
-                              search: false,
-                              selectOnBlur: false,
-                            },
-                            options: [ {
-                              label: 'Person',
-                              value: 'person',
-                            }, {
-                              label: 'Company',
-                              value: 'company',
-                            } ]
-                          }, ],
-                        }, {
-                          gridProps: {
-                            key: randomKey(),
-                          },
-                          formElements: [ {
-                            customLabel: {
-                              component: 'span',
-                              children: [ {
-                                component: 'span',
-                                children: 'Description',
-                              }, {
-                                component: 'span',
-                                children: 'Optional',
-                                props: {
-                                  style: {
-                                    fontStyle: 'italic',
-                                    marginLeft: '2px',
-                                    fontWeight: 'normal',
-                                    color: '#969696',
-                                  },
-                                },
-                              }, ],
-                            },
-                            name: 'description',
-                            type: 'textarea',
-                            errorIconRight: true,
-                            errorIcon: 'fa fa-exclamation',
-                          }, ],
-                        }, {
-                          gridProps: {
-                            key: randomKey(),
-                          },
-                          formElements: [ {
-                            label: 'Created',
-                            name: 'createdat',
-                            passProps: {
-                              state: 'isDisabled',
-                            },
-                          } ],
-                        }, {
-                          gridProps: {
-                            key: randomKey(),
-                          },
-                          formElements: [ {
-                            label: 'Updated',
-                            name: 'updatedat',
-                            passProps: {
-                              state: 'isDisabled',
-                            },
-                          } ],
-                        },
-                      ],
+                    layoutProps: {
+                      className: 'global-button-save',
                     },
                   }, ],
-                }, ],
-              }, {
-                component: 'Column',
-                children: [ {
-                  component: 'ResponsiveCard',
-                  props: cardprops({
-                    cardTitle: 'Product Template (Loan Information)',
-                    cardStyle: {
-                    },
-                  }),
-                  children: [ {
-                    component: 'ResponsiveTable',
-                    asyncprops: {
-                      rows: [ 'productdata', 'product', 'template_info' ],
-                    },
-                    props: {
-                      flattenRowData: true,
-                      hasPagination: false,
-                      headerLinkProps: {
-                        style: {
-                          textDecoration: 'none',
-                        },
+                }), {
+                  gridProps: {
+                    key: randomKey(),
+                  },
+                  card: {
+                    doubleCard: true,
+                    leftDoubleCardColumn: {
+                      style: {
+                        display: 'flex',
                       },
-                      headers: [ {
-                        label: 'Description',
-                        sortid: 'name',
-                        sortable: false,
+                    },
+                    rightDoubleCardColumn: {
+                      style: {
+                        display: 'flex',
+                      },
+                    },
+                    leftCardProps: cardprops({
+                      cardTitle: 'Overview Information',
+                      cardStyle: {
+                        marginBottom: 0,
+                      },
+                    }),
+                    rightCardProps: cardprops({
+                      cardTitle: 'Product Template (Loan Information)',
+                      cardStyle: {
+                        marginBottom: 0,
+                      },
+                    }),
+                  },
+                  formElements: [formElements({
+                    twoColumns: true,
+                    doubleCard: true,
+                    left: [{
+                      label: 'Product Name',
+                      name: 'name',
+                    }, {
+                      name: 'customer_type',
+                      label: 'Customer Type',
+                      type: 'dropdown',
+                      passProps: {
+                        selection: true,
+                        fluid: true,
+                        search: false,
+                        selectOnBlur: false,
+                      },
+                      options: [{
+                        label: 'Person',
+                        value: 'person',
                       }, {
-                        label: 'Type',
-                        sortid: 'value_type',
-                        sortable: false,
-                      },  {
-                        label: 'Default Value',
-                        sortid: 'value',
-                        sortable: false,
-                      }, {
-                        label: ' ',
-                        headerColumnProps: {
-                          style: {
-                            width: '80px'
-                          },
-                        },
-                        columnProps: {
-                          style: styles.buttonCellStyle,
-                        },
-                        buttons: [ {
-                          passProps: {
-                            buttonProps: {
-                              icon: 'fa fa-pencil',
-                              className: '__icon_button'
-                            },
-                            onClick: 'func:this.props.createModal',
-                            onclickProps: {
-                              title: 'Edit Item in Template',
-                              pathname: '/los/products/:id/edit_template_item/:idx',
-                              params: [ { key: ':id', val: '_id', }, { key: ':idx', val: 'idx' }, ],
-                            },
-                          },
+                        label: 'Company',
+                        value: 'company',
+                      }, ],
+                    }, {
+                      customLabel: {
+                        component: 'span',
+                        children: [{
+                          component: 'span',
+                          children: 'Description',
                         }, {
-                          passProps: {
-                            buttonProps: {
-                              icon: 'fa fa-trash',
-                              color: 'isDanger',
-                              className: '__icon_button'
+                          component: 'span',
+                          children: 'Optional',
+                          props: {
+                            style: {
+                              fontStyle: 'italic',
+                              marginLeft: '2px',
+                              fontWeight: 'normal',
+                              color: '#969696',
                             },
-                            onClick: 'func:this.props.fetchAction',
-                            onclickBaseUrl: '/los/api/products/:id/template/:idx?type=delete_template_item',
-                            onclickLinkParams: [ { key: ':id', val: '_id', }, { key: ':idx', val: 'idx' }, ],
-                            fetchProps: {
-                              method: 'PUT',
-                            },
-                            successProps: {
-                              success: {
-                                notification: {
-                                  text: 'Changes saved successfully!',
-                                  timeout: 10000,
-                                  type: 'success',
-                                },
-                              },
-                              successCallback: 'func:this.props.refresh',
-                            },
-                            confirmModal: Object.assign({}, styles.defaultconfirmModalStyle, {
-                              title: 'Delete Strategy',
-                              textContent: [ {
-                                component: 'p',
-                                children: 'Do you want to permanently delete this Strategy?',
-                                props: {
-                                  style: {
-                                    textAlign: 'left',
-                                    marginBottom: '1.5rem',
-                                  }
-                                }
-                              }, ],
-                            })
                           },
                         }, ],
-                      }, ],
-                    },
-                  }, {
-                    component: 'ResponsiveButton',
-                    children: 'ADD ITEM',
-                    asyncprops: {
-                      onclickPropObject: [ 'productdata', 'product' ],
-                    },
-                    props: {
-                      onClick: 'func:this.props.createModal',
-                      onclickProps: {
-                        title: 'Add Item To Template',
-                        pathname: '/los/products/:id/add_template_item',
-                        params: [ { key: ':id', val: '_id', }, ],
                       },
-                      buttonProps: {
-                        color: 'isSuccess',
+                      name: 'description',
+                      type: 'textarea',
+                      placeholder: 'Description',
+                      errorIconRight: true,
+                      errorIcon: 'fa fa-exclamation',
+                    }, {
+                      label: 'Created',
+                      name: 'createdat',
+                      passProps: {
+                        state: 'isDisabled',
                       },
-                    },
-                  }, ],
-                }, ],
-              } ],
+                    }, {
+                      label: 'Updated',
+                      name: 'updatedat',
+                      passProps: {
+                        state: 'isDisabled',
+                      },
+                    }, ],
+                    right: [{
+                      type: 'layout',
+                      value: {
+                        component: 'div',
+                        children: [{
+                          component: 'ResponsiveTable',
+                          thisprops: {
+                            rows: ['rows'],
+                          },
+                          props: {
+                            flattenRowData: true,
+                            hasPagination: false,
+                            headerLinkProps: {
+                              style: {
+                                textDecoration: 'none',
+                              },
+                            },
+                            headers: [{
+                              label: 'Description',
+                              sortid: 'name',
+                              sortable: false,
+                            }, {
+                              label: 'Type',
+                              sortid: 'value_type',
+                              sortable: false,
+                            }, {
+                              label: 'Default Value',
+                              sortid: 'value',
+                              sortable: false,
+                            }, {
+                              label: ' ',
+                              headerColumnProps: {
+                                style: {
+                                  width: '80px',
+                                },
+                              },
+                              columnProps: {
+                                style: styles.buttonCellStyle,
+                              },
+                              buttons: [{
+                                passProps: {
+                                  buttonProps: {
+                                    icon: 'fa fa-pencil',
+                                    className: '__icon_button',
+                                  },
+                                  onClick: 'func:this.props.createModal',
+                                  onclickProps: {
+                                    title: 'Edit Item in Template',
+                                    pathname: '/los/products/:id/edit_template_item/:idx',
+                                    params: [{
+                                      key: ':id',
+                                      val: '_id',
+                                    }, {
+                                      key: ':idx',
+                                      val: 'idx',
+                                    }, ],
+                                  },
+                                },
+                              }, {
+                                passProps: {
+                                  buttonProps: {
+                                    icon: 'fa fa-trash',
+                                    color: 'isDanger',
+                                    className: '__icon_button',
+                                  },
+                                  onClick: 'func:this.props.fetchAction',
+                                  onclickBaseUrl: '/los/api/products/:id/template/:idx?type=delete_template_item',
+                                  onclickLinkParams: [{
+                                    key: ':id',
+                                    val: '_id',
+                                  }, {
+                                    key: ':idx',
+                                    val: 'idx',
+                                  }, ],
+                                  fetchProps: {
+                                    method: 'PUT',
+                                  },
+                                  successProps: {
+                                    success: {
+                                      notification: {
+                                        text: 'Changes saved successfully!',
+                                        timeout: 10000,
+                                        type: 'success',
+                                      },
+                                    },
+                                    successCallback: 'func:this.props.refresh',
+                                  },
+                                  confirmModal: Object.assign({}, styles.defaultconfirmModalStyle, {
+                                    title: 'Delete Strategy',
+                                    textContent: [{
+                                      component: 'p',
+                                      children: 'Do you want to permanently delete this Strategy?',
+                                      props: {
+                                        style: {
+                                          textAlign: 'left',
+                                          marginBottom: '1.5rem',
+                                        },
+                                      },
+                                    }, ],
+                                  }),
+                                },
+                              }, ],
+                            }, ],
+                          },
+                        }, {
+                          component: 'ResponsiveButton',
+                          children: 'ADD ITEM',
+                          thisprops: {
+                            onclickPropObject: ['formdata'],
+                          },
+                          props: {
+                            onClick: 'func:this.props.createModal',
+                            onclickProps: {
+                              title: 'Add Item To Template',
+                              pathname: '/los/products/:id/add_template_item',
+                              params: [{
+                                key: ':id',
+                                val: '_id',
+                              }, ],
+                            },
+                            buttonProps: {
+                              color: 'isSuccess',
+                            },
+                          },
+                        }, ],
+                      },
+                    }, ],
+                  }), ],
+                },],
+              },
             },
             ],
           },

@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@digifi-los/comparison": "^0.0.2",
-    "@digifi-los/credit-process": "^0.0.7",
+    "@digifi-los/credit-process": "^0.1.0",
     "@digifi-los/data-integrations-core": "^0.0.5",
     "@digifi-los/form-creator": "^0.0.4",
     "@digifi-los/reactapp": "^0.0.5",
