@@ -147,25 +147,6 @@ class DocuSign {
     envDef.emailSubject = emailSubject || 'Please sign this document sent from Node SDK';
     envDef.templateId = templateId;
 
-    // create a template role with a valid templateId and roleName and assign signer info
-    // let tRole = new docusign.TemplateRole();
-    // tRole.roleName = templateRoleName || 'signer';
-    // tRole.name = fullName || 'Signer Name';
-    // tRole.email = recipientEmail || 'Recipient Name';
-
-    // let tRole2 = new docusign.TemplateRole();
-    // tRole.roleName = 'carboncopy';
-    // tRole.name = 'Cody Hahn';
-    // tRole.email = 'cody@digifi.io';
-
-    // create a list of template roles and add our newly created role
-    // let templateRolesList = [];
-    // templateRolesList.push(tRole);
-    // templateRolesList.push(tRole2);
-
-    // assign template role(s) to the envelope
-    // envDef.templateRoles = templateRolesList;
-
     envDef.eventNotification = {
       url: webhook_url,
       includeCertificateOfCompletion: 'false',
@@ -193,21 +174,22 @@ class DocuSign {
       }]
     } })
     const envelopeId = envelopeSummary.envelopeId;
+    const recipients = {
+      signers: [{
+        email: recipientEmail,
+        name: fullName,
+        recipientId: '1',
+        routingOrder: '1',
+      }]
+    };
+    if (ccEmail && ccEmail.length) recipients.carbonCopies = [{
+      email: ccEmail,
+      name: ccName || 'ccName',
+      recipientId: '2',
+      routingOrder: '2'
+    },]
     await envelopesApi.updateRecipients(this.accountId, envelopeId, {
-      recipients: {
-        signers: [{
-          email: recipientEmail,
-          name: fullName,
-          recipientId: '1',
-          routingOrder: '1',
-        }],
-        carbonCopies: [{
-          email: ccEmail,
-          name: ccName || 'ccName',
-          recipientId: '2',
-          routingOrder: '2'
-        },]
-      }
+      recipients
     })
     const tabs = await envelopesApi.listTabs(this.accountId, envelopeId, '1');
     tabs.textTabs.forEach((tab, idx) => {

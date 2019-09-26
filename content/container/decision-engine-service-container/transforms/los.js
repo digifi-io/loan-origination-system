@@ -4606,6 +4606,41 @@ async function generateLosStatusEditDetail(req) {
   }
 }
 
+async function formatCustomerDocUploadModal(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const customer = req.controllerData.customer;
+    const application = req.controllerData.application;
+    const user = req.user || {};
+    const organization = user && user.association && user.association.organization;
+    req.controllerData.data = {
+      from: 'no-reply@digifi.io',
+      subject: `${organization.name} Secure Document Upload`,
+      email: customer.email || '',
+      description: '',
+      applicationId: application._id.toString(),
+    }
+    return req;
+  } catch (e) {
+    req.error = e.message;
+    return req;
+  }
+}
+async function populateSecureUploadPage(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const Organization = periodic.datas.get('standard_organization');
+    const org = await Organization.model.findOne({ _id: req.params.org, }).lean();
+    req.controllerData.orgName = org.name;
+    req.controllerData.organization = req.params.org;
+    req.controllerData.applicationId = req.params.id;
+    return req;
+  } catch (e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
 module.exports = {
   setCompanyDisplayTitle,
   setPersonDisplayTitle,
@@ -4677,4 +4712,6 @@ module.exports = {
   formatApplicationRejectionTypeDetail,
   formatApplicationRejectionDetail,
   generateLosStatusEditDetail,
+  formatCustomerDocUploadModal,
+  populateSecureUploadPage,
 };

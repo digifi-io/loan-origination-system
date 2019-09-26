@@ -10,6 +10,7 @@ const helpers = utilities.helpers;
 const transformhelpers = utilities.transformhelpers;
 const losControllerUtil = utilities.controllers.los;
 const losTransformUtil = utilities.transforms.los;
+const path = require('path');
 const Busboy = require('busboy');
 
 async function createApplication(req, res, next) {
@@ -414,8 +415,6 @@ async function uploadDocumentToAWS(req, res, next) {
   try {
     req.controllerData = req.controllerData || {};
     req.controllerData.newdoc = req.controllerData.newdoc || {};
-    let user = req.user;
-    let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
     const file = req.controllerData.file || req.controllerData.newdoc.file;
     const filename = req.controllerData.newdoc.name;
     const Key = (req.controllerData.newdoc.parent_directory)
@@ -821,7 +820,7 @@ async function addOutputVariableToApplicationInfo(req, res, next) {
     }
     next();
   } catch (e) {
-    return res.status(401).send({ message: 'Could not retrieve the case' });
+    return res.status(401).send({ message: `Error in addOutputVariableToApplicationInfo: ${e.message}` });
   }
 }
 
@@ -835,7 +834,7 @@ async function checkDocusignExists(req, res, next) {
     if (docusignDoc) req.controllerData.showDocusign = true;
     return next();
   } catch (e) {
-    return res.status(401).send({ message: 'Could not retrieve the case' });
+    return res.status(401).send({ message: `Error in checkDocusignExists: ${e.message}` });
   }
 }
 
@@ -853,7 +852,7 @@ async function redirectToRunAutomationModal(req, res) {
       });
     }
   } catch (e) {
-    return res.status(500).send({ message: 'Error pulling the template', });
+    return res.status(401).send({ message: `Error in redirectToRunAutomationModal: ${e.message}` });
   }
 }
 
@@ -884,7 +883,35 @@ async function checkProductCustomer(req, res, next) {
       next();
     }
   } catch (e) {
-    return res.status(500).send({ message: 'Error pulling the template', });
+    return res.status(401).send({ message: `Error in checkProductCustomer: ${e.message}` });
+  }
+}
+
+async function sendCustomerDocUploadRequest(req, res, next) {
+  try {
+    const user = req.user || {};
+    const organization = user && user.association && user.association.organization || {};
+    const email = {
+      from: req.body.from,
+      to: req.body.email,
+      subject: req.body.subject,
+      generateTextFromHTML: true,
+      emailtemplatefilepath: path.resolve(periodic.config.app_root, 'content/container/decision-engine-service-container/utilities/views/email/customer_doc_upload_request.ejs'),
+      emailtemplatedata: {
+        appname: periodic.settings.name,
+        hostname: periodic.settings.application.hostname || periodic.settings.name,
+        basepath: `/secure_customer_document_upload/${req.params.id}/${organization._id}`,
+        url: periodic.settings.application.url,
+        protocol: periodic.settings.application.protocol,
+        loan_officer_name: `${user.first_name} ${user.last_name}`,
+        organization_name: organization.name,
+        document_description: req.body.description
+      },
+    };
+    const emailSend = await periodic.core.mailer.sendEmail(email);
+    next();
+  } catch(e) {
+    return res.status(401).send({ message: `Error in sendCustomerDocUploadRequest: ${e.message}` });
   }
 }
 
@@ -920,4 +947,5 @@ module.exports = {
   getApplicationFromURL,
   getApplicationIntermediary,
   getApplicationCoapplicant,
+  sendCustomerDocUploadRequest,
 };

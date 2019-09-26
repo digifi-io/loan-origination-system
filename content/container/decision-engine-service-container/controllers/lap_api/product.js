@@ -15,7 +15,7 @@ async function getProduct(req, res, next) {
   const Product = periodic.datas.get('standard_losproduct');
   const organization = (req.user && req.user.association && req.user.association.organization) ? req.user.association.organization : null;
   req.controllerData.product = await Product.model.findOne({ _id: req.params.id, organization: organization._id, }).lean();
-  return next();
+  return next();  
 }
 
 async function updateProduct(req, res, next) {

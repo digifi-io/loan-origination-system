@@ -2019,9 +2019,37 @@ function _generateDocuSignTemplateDetailForm(options) {
           timeout: 10000,
           type: 'success',
         },
-        responseCallback: 'func:this.props.reduxRouter.push',
+        responseCallback: 'func:this.props.refresh',
       },
       hiddenFields: [],
+      validations: [ {
+        'name': 'emailSubject',
+        'constraints': {
+          'emailSubject': {
+            'presence': {
+              'message': '^Email subject is required.',
+            },
+          },
+        },
+      }, {
+        'name': 'recipientEmail',
+        'constraints': {
+          'recipientEmail': {
+            'presence': {
+              'message': '^Recipient email is required.',
+            },
+          },
+        },
+      }, {
+        'name': 'fullName',
+        'constraints': {
+          'fullName': {
+            'presence': {
+              'message': '^Recipient full name is required.',
+            },
+          },
+        },
+      }, ],
       blockPageUI: true,
       useFormOptions: true,
       flattenFormData: true,
