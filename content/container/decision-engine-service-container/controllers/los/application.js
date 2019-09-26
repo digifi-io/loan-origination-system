@@ -890,7 +890,7 @@ async function checkProductCustomer(req, res, next) {
 async function sendCustomerDocUploadRequest(req, res, next) {
   try {
     const user = req.user || {};
-    const organization = user && user.association && user.association.organization && user.association.organization || {};
+    const organization = user && user.association && user.association.organization || {};
     const email = {
       from: req.body.from,
       to: req.body.email,
