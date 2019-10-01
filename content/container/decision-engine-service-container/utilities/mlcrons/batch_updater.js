@@ -41,17 +41,17 @@ function batchUpdater(options) {
               if (data && data.Status === 'COMPLETED') {
                 const inputDataLocationS3 = data.InputDataLocationS3;
                 const splitInputDataLocationS3 = inputDataLocationS3.split('/');
-                let datasource_filename = (splitInputDataLocationS3.length) ? splitInputDataLocationS3[splitInputDataLocationS3.length - 1] : '';
+                const datasource_filename = (splitInputDataLocationS3.length) ? splitInputDataLocationS3[splitInputDataLocationS3.length - 1] : '';
                 let batch_prediction_rows = [];
                 const original_batch_prediction_rows = [];
-                let batch_key = `${batch_prediction._id.toString()}_${batch_prediction.createdat.getTime()}-${datasource_filename}.gz`;
-                let bucket_key = data.OutputUri.replace('s3://', '') + 'batch-prediction/result';
+                const batch_key = `${batch_prediction._id.toString()}_${batch_prediction.createdat.getTime()}-${datasource_filename}.gz`;
+                const bucket_key = data.OutputUri.replace('s3://', '') + 'batch-prediction/result';
                 const s3Stream = s3.getObject({
                   Bucket: bucket_key,
                   Key: batch_key,
                 }).createReadStream();
-                var zlib = require('zlib');
-                var gunzip = zlib.createGunzip();
+                const zlib = require('zlib');
+                const gunzip = zlib.createGunzip();
                 s3Stream.pipe(gunzip).pipe(csv())
                   .on('data', (data) => {
                     batch_prediction_rows.push(data);
