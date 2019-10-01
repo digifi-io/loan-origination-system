@@ -46,7 +46,7 @@ module.exports = {
             ],
             right: [ {
               guideButton: true,
-              location: references.guideLinks.companySettings[ 'userManagement' ],
+              location: references.guideLinks.companySettings.userManagement,
             },
             ],
           }),

@@ -85,7 +85,7 @@ const SEGMENT = function (options) {
                   },
                 }, {
                   guideButton: true,
-                  location: references.guideLinks.decision[ '/strategies/:id/:type/:segment' ],
+                  location: references.guideLinks.rulesEngine.strategies,
                 } ]
               }), {
                 gridProps: {
@@ -343,7 +343,7 @@ const SEGMENT = function (options) {
                   },
                 }, {
                   guideButton: true,
-                  location: references.guideLinks.decision[ '/strategies/:id/:type/:segment' ],
+                  location: references.guideLinks.rulesEngine.strategies,
                 } ]
               }), {
                 gridProps: {

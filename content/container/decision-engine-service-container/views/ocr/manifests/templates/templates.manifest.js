@@ -55,7 +55,7 @@ module.exports = {
               children: 'TUTORIAL',
             }, {
               guideButton: true,
-              location: references.guideLinks.vision.templates,
+              location: references.guideLinks.ocr.templates,
             },
             ],
           }),

@@ -32,7 +32,6 @@ function getInputLink(link) {
           'color': styles.colors.primary,
           'width': '100%',
         },
-        className: 'testing-los'
       }, link.passProps),
       'children': link.displayprop,
     },

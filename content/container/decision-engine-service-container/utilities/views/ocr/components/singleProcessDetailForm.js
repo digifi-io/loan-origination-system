@@ -59,7 +59,7 @@ function generateForm(options) {
             }
           }, {
             guideButton: true,
-            location: references.guideLinks.vision.individualProcessing,
+            location: references.guideLinks.ocr.individualProcessing,
           } ],
         }),
         {
