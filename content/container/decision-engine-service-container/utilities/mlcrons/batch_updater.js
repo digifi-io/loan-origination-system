@@ -39,11 +39,12 @@ function batchUpdater(options) {
             if (err) logger.warn('Error in retrieving batch prediction: ', err);
             else {
               if (data && data.Status === 'COMPLETED') {
-                let datasource_filename = (data.InputDataLocationS3) ? data.InputDataLocationS3.split('/').splice(-1) : '';
+                const inputDataLocationS3 = data.InputDataLocationS3;
+                const splitInputDataLocationS3 = inputDataLocationS3.split('/');
+                let datasource_filename = (splitInputDataLocationS3.length) ? splitInputDataLocationS3[splitInputDataLocationS3.length - 1] : '';
                 let batch_prediction_rows = [];
                 const original_batch_prediction_rows = [];
-                let batch_key_end = data.InputDataLocationS3.split('/').slice(-1)[ 0 ];
-                let batch_key = `${batch_prediction._id.toString()}_${batch_prediction.createdat.getTime()}-${batch_key_end}.gz`;
+                let batch_key = `${batch_prediction._id.toString()}_${batch_prediction.createdat.getTime()}-${datasource_filename}.gz`;
                 let bucket_key = data.OutputUri.replace('s3://', '') + 'batch-prediction/result';
                 const s3Stream = s3.getObject({
                   Bucket: bucket_key,
