@@ -48,9 +48,7 @@ const guideLinks = {
     '/api_response': 'https://docs.digifi.io/docs/api-response',
   },
   companySettings: {
-    productManagement: 'https://docs.digifi.io/docs/overview-of-company-settings',
-    billingManagement: 'https://docs.digifi.io/docs/overview-of-company-settings',
-    userManagement: 'https://docs.digifi.io/docs/overview-of-company-settings',
+    userManagement: 'https://docs.digifi.io/docs/user-management',
     apiSetup: 'https://docs.digifi.io/docs/api-setup',
   },
   account: {
