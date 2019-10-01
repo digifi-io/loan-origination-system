@@ -1,5 +1,7 @@
 'use strict';
-const styles = require('../../utilities/views/constants/styles');
+const utilites = require('../../utilities');
+const styles = utilites.views.constants.styles;
+const references = utilites.views.constants.references;
 
 function _getHistoricalDataContent(modelTypeRequirement, model_type) {
   return {
@@ -60,7 +62,7 @@ function _getHistoricalDataContent(modelTypeRequirement, model_type) {
         },],
         props: {
           className: '__re-bulma_button __re-bulma_is-primary',
-          href: 'https://docs.digifi.io/docs/training-an-ml-model',
+          href: references.guideLinks.models.modelTraining,
           target: '_blank',
           rel: 'noopener noreferrer',
         },

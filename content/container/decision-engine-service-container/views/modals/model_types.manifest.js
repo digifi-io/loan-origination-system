@@ -1,5 +1,7 @@
 'use strict';
-const styles = require('../../utilities/views/constants/styles');
+const utilites = require('../../utilities');
+const styles = utilites.views.constants.styles;
+const references = utilites.views.constants.references;
 
 module.exports = {
   'containers': {
@@ -55,7 +57,7 @@ module.exports = {
             },],
             props: {
               className: '__re-bulma_button __re-bulma_is-primary',
-              href: 'https://docs.digifi.io/docs/training-an-ml-model',
+              href: references.guideLinks.models.modelTraining,
               target: '_blank',
               rel: 'noopener noreferrer',
             },
@@ -128,7 +130,7 @@ module.exports = {
             }, ],
             props: {
               className: '__re-bulma_button __re-bulma_is-primary',
-              href: 'https://docs.digifi.io/docs/training-an-ml-model',
+              href: references.guideLinks.models.modelTraining,
               target: '_blank',
               rel: 'noopener noreferrer',
             },
@@ -201,7 +203,7 @@ module.exports = {
             },],
             props: {
               className: '__re-bulma_button __re-bulma_is-primary',
-              href: 'https://docs.digifi.io/docs/training-an-ml-model',
+              href: references.guideLinks.models.modelTraining,
               target: '_blank',
               rel: 'noopener noreferrer',
             },
