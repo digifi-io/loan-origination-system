@@ -19,19 +19,13 @@ const guideLinks = {
   },
   rulesEngine: {
     variables: 'https://docs.digifi.io/docs/decision-automation-strategies#section-data-structuring',
-    // strategies: 'https://docs.digifi.io/docs/creating-editing-strategies',
+    strategies: 'https://docs.digifi.io/docs/decision-automation-strategies#section-creating-a-new-strategy',
     strategiesDetailProcessFlow: 'https://docs.digifi.io/docs/decision-automation-strategies#section-implementing-a-decision-flow',
     strategiesDetailRules: 'https://docs.digifi.io/docs/decision-automation-strategies#section-adding-rules-logic',
     strategiesDetailVersions: 'https://docs.digifi.io/docs/decision-automation-strategies#section-versions-locking',
     individualProcessing: 'https://docs.digifi.io/docs/processing-rules-engine#section-interface-processing-individual',
     batchProcessing: 'https://docs.digifi.io/docs/processing-rules-engine#section-interface-processing-batch',
     APIProcessing: 'https://docs.digifi.io/docs/processing-rules-engine#section-api-processing',
-  },
-  decision: {
-    '/strategies/all': 'https://docs.digifi.io/docs/decision-automation-strategies#section-creating-a-new-strategy',
-    '/variables/:id/detail': 'https://docs.digifi.io/docs/decision-automation-strategies#section-data-structuring',
-    '/strategies/:id/overview': 'https://docs.digifi.io/docs/decision-automation-strategies#section-implementing-a-decision-flow',
-    '/strategies/:id/versions': 'https://docs.digifi.io/docs/decision-automation-strategies#section-versions-locking',
   },
   optimization: {
     '/data_sources': 'https://docs.digifi.io/docs/adding-a-data-source',
