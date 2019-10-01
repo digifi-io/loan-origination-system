@@ -25,7 +25,7 @@ const guideLinks = {
     APIProcessing: 'https://docs.digifi.io/docs/activating-a-decision-strategy',
   },
   decision: {
-    '/strategies/all': 'https://docs.digifi.io/docs/creating-editing-strategies',
+    '/strategies/all': 'https://docs.digifi.io/docs/decision-automation-strategies#section-creating-a-new-strategy',
     '/strategies/active': 'https://docs.digifi.io/docs/creating-editing-strategies',
     '/strategies/testing': 'https://docs.digifi.io/docs/creating-editing-strategies',
     '/variables/input': 'https://docs.digifi.io/docs/variables',
