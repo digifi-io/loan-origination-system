@@ -150,7 +150,7 @@ module.exports = {
                         },
                       }, {
                         guideButton: true,
-                        location: references.guideLinks.account['myAccount'],
+                        location: references.guideLinks.account.profile,
                       },],
                     }),
                     {

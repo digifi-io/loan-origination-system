@@ -54,7 +54,7 @@ const guideLinks = {
     apiSetup: 'https://docs.digifi.io/docs/api-setup',
   },
   account: {
-    myAccount: 'https://docs.digifi.io/docs/overview-of-my-account',
+    profile: 'https://docs.digifi.io/docs/overview-of-my-account',
   },
 }; 
 
