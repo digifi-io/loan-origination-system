@@ -12,10 +12,10 @@ const guideLinks = {
     evaluation: 'https://docs.digifi.io/docs/model-training-and-evaluation#section-model-evaluation',
     modelSelection: 'https://docs.digifi.io/docs/model-training-and-evaluation#section-automl-modeling-process',
   },
-  vision: {
+  ocr: {
     templates: 'https://docs.digifi.io/docs/templates',
-    individualProcessing: 'https://docs.digifi.io/docs/individual-processing-tr',
-    batchProcessing: 'https://docs.digifi.io/docs/batch-processing-tr',
+    individualProcessing: 'https://docs.digifi.io/docs/processing-1#section-interface-processing-individual',
+    batchProcessing: 'https://docs.digifi.io/docs/processing-1#section-interface-processing-batch',
   },
   rulesEngine: {
     variables: 'https://docs.digifi.io/docs/decision-automation-strategies#section-data-structuring',
