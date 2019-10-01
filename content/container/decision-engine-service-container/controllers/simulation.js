@@ -1804,6 +1804,7 @@ function pullPopulationTags(req, res, next) {
  */
 async function runBatchSimulations(req, res, next) {
   try {
+    const Simulation = periodic.datas.get('standard_simulation');
     req.controllerData = req.controllerData || {};
     let user = req.user;
     let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
@@ -1850,6 +1851,7 @@ async function runBatchSimulations(req, res, next) {
       offset += limit;
       return offset;
     }, () => offset < test_case_length);
+    await Simulation.model.updateOne({ _id: req.controllerData.simulation._id.toString(), organization, }, { $set: { status: 'Complete', progress: 100 } });
     return next();
   } catch (e) {
     logger.error('runBatchSimulations error', e);

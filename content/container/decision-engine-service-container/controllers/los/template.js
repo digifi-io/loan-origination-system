@@ -348,7 +348,7 @@ async function getTemplateFromAWS(req, res, next) {
       let current_filepath = req.controllerData.template.images[ req.params.page ];
       let fileurl = `los_templates/${organization}/${current_filepath}`;
       let filedata = await helpers.downloadAWS({ fileurl, });
-      let filestring = 'data:image/jpg;base64,' + new Buffer(filedata).toString('base64');
+      let filestring = 'data:image/jpg;base64,' + Buffer.from(filedata).toString('base64');
       req.controllerData.template_string = filestring;
     } else {
       req.controllerData.template_string = '';
