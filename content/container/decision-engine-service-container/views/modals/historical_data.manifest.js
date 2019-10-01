@@ -62,7 +62,7 @@ function _getHistoricalDataContent(modelTypeRequirement, model_type) {
         },],
         props: {
           className: '__re-bulma_button __re-bulma_is-primary',
-          href: references.guideLinks.models.modelTraining,
+          href: references.guideLinks.models.historicalData,
           target: '_blank',
           rel: 'noopener noreferrer',
         },

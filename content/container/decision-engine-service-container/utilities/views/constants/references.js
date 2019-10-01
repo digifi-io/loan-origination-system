@@ -2,12 +2,15 @@
 
 const guideLinks = {
   models: {
-    historicalData: 'https://docs.digifi.io/docs/adding-a-data-source',
     modelTraining: 'https://docs.digifi.io/docs/model-training-and-evaluation',
-    evaluation: 'https://docs.digifi.io/docs/evaluating-predictive-power',
-    individualProcessing: 'https://docs.digifi.io/docs/individual-processing-1',
-    batchProcessing: 'https://docs.digifi.io/docs/batch-processing-1',
-    modelSelection: 'https://docs.digifi.io/docs/evaluating-predictive-power',
+    basicInformation:'https://docs.digifi.io/docs/model-training-and-evaluation#section-step-1-basic-information',
+    selectType: 'https://docs.digifi.io/docs/model-training-and-evaluation#section-step-2-select-model-type',
+    historicalData: 'https://docs.digifi.io/docs/model-training-and-evaluation#section-step-3-upload-historical-data',
+    reviewTrain: 'https://docs.digifi.io/docs/model-training-and-evaluation#section-step-4-review-train',
+    individualProcessing: 'https://docs.digifi.io/docs/generating-ml-model-predictions#section-interface-processing-individual',
+    batchProcessing: 'https://docs.digifi.io/docs/generating-ml-model-predictions#section-interface-processing-batch',
+    evaluation: 'https://docs.digifi.io/docs/model-training-and-evaluation#section-model-evaluation',
+    modelSelection: 'https://docs.digifi.io/docs/model-training-and-evaluation#section-automl-modeling-process',
   },
   vision: {
     templates: 'https://docs.digifi.io/docs/templates',
