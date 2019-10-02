@@ -1,7 +1,7 @@
 {
   "name": "decision-engine-service",
   "description": "Simple enterprise node app server.",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "main": "index.js",
   "engines": {
     "node": "^6.x"
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@digifi-los/comparison": "^0.0.2",
-    "@digifi-los/credit-process": "^0.1.0",
+    "@digifi-los/credit-process": "^0.1.1",
     "@digifi-los/data-integrations-core": "^0.0.5",
     "@digifi-los/form-creator": "^0.0.4",
     "@digifi-los/reactapp": "^0.0.5",
