@@ -75,7 +75,7 @@ module.exports = {
             },
             {
               guideButton: true,
-              location: references.guideLinks.companySettings['apiSetup'],
+              location: references.guideLinks.companySettings.apiSetup,
             },
             ],
           }),

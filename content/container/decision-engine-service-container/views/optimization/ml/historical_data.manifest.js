@@ -56,7 +56,7 @@ module.exports = {
               children: 'TUTORIAL',
             }, {
               guideButton: true,
-              location: references.guideLinks.models[ 'historicalData' ],
+              location: references.guideLinks.models.historicalData,
             },
             ],
           }, ),

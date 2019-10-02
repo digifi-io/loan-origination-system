@@ -36,7 +36,7 @@ function generateForm(options) {
           ],
           right: [ {
             guideButton: true,
-            location: references.guideLinks.vision.batchProcessing,
+            location: references.guideLinks.ocr.batchProcessing,
           } ],
         }),
         {
