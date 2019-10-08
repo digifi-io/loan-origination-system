@@ -79,28 +79,24 @@ module.exports = {
           externalIcon: true,
           doubleList: true,
           links: [{
-            location: 'https://docs.digifi.io/docs/getting-started',
-            name: 'Getting Started',
+            location: 'https://docs.digifi.io/docs/los-key-features',
+            name: 'Key Features',
           }, {
-            location: 'https://docs.digifi.io/docs/overview-of-company-settings',
-            name: 'Company Settings',
+            location: 'https://docs.digifi.io/docs/lending-crm',
+            name: 'Lending CRM Guide',
           }, {
-            location: 'https://docs.digifi.io/docs/overview-ai',
-            name: 'Machine Learning',
+            location: 'https://docs.digifi.io/docs/decision-engine',
+            name: 'Decision Engine Guide',
           }, {
-            location: 'https://docs.digifi.io/docs/overview-of-my-account',
-            name: 'My Account',
+            location: 'Machine Learning Guide',
+            name: 'Machine Learning Guide',
           }, {
-            location: 'https://docs.digifi.io/docs/overview-am',
-            name: 'Decision Engine',
-          }, {
-            location: 'https://docs.digifi.io/v2/reference#introduction',
-            name: 'API Reference',
-          },
-          /*{
             location: 'https://docs.digifi.io/docs/overview-of-text-recognition',
-            name: 'OCR Text Recognition',
-          }, */{
+            name: 'OCR Text Recognition Guide',
+          }, {
+            location: 'https://docs.digifi.io/reference',
+            name: 'API Reference',
+          }, {
             location: 'https://docs.digifi.io/docs',
             name: 'View All',
             style: {

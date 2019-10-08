@@ -83,7 +83,7 @@ module.exports = {
                     children: 'VIEW EXAMPLE DATA',
                   }, {
                     guideButton: true,
-                    location: references.guideLinks.models['modelTraining'],
+                    location: references.guideLinks.models.historicalData,
                   },],
                 }), {
                   component: 'ResponsiveCard',

@@ -1727,7 +1727,7 @@ async function generateModelSelectionForm(req) {
       }),
     }, {
       guideButton: true,
-      location: references.guideLinks.models[ 'modelSelection' ],
+      location: references.guideLinks.models.modelSelection,
     }, ];
     if (req.controllerData.mlmodel.updating_provider) {
       rightButtons.shift();

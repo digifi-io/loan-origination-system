@@ -42,10 +42,7 @@ module.exports = {
               children: 'DOWNLOAD TRANSACTIONS',
             },
             ],
-            right: [{
-              guideButton: true,
-              location: references.guideLinks.companySettings[ 'billingManagement' ],
-            },],
+            right: [],
           }),
           {
             component: 'Container',

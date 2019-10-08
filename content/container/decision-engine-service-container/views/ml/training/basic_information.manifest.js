@@ -78,7 +78,7 @@ module.exports = {
                   left: [],
                   right: [{
                     guideButton: true,
-                    location: references.guideLinks.models['modelTraining'],
+                    location: references.guideLinks.models.basicInformation,
                   },],
                 }), {
                   component: 'ResponsiveCard',

@@ -167,9 +167,6 @@ module.exports = {
                         layoutProps: {
                           className: 'global-button-save',
                         },
-                      }, {
-                        guideButton: true,
-                        location: references.guideLinks.companySettings[ 'billingManagement' ],
                       },
                       ],
                     }),

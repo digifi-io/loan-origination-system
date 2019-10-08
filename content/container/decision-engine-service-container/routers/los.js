@@ -139,6 +139,17 @@ LosRouter.get('/applications/swimlane',
   transformController.posttransform,
   losController.handleControllerDataResponse)
 
+LosRouter.get('/applications/:id/request_upload',
+  ensureApiAuthenticated,
+  losController.application.getApplication,
+  losController.application.getApplicationCustomer,
+  transformController.posttransform,
+  losController.handleControllerDataResponse)
+
+LosRouter.get('/applications/secure_customer_document_upload/:id/:org',
+  transformController.posttransform,
+  losController.handleControllerDataResponse)
+
 LosRouter.get('/applications/:id/reject_application',
   ensureApiAuthenticated,
   transformController.posttransform,
@@ -286,6 +297,11 @@ LosRouter.post('/applications',
   losController.application.createApplication,
   losController.application.redirectToApplicationDetail);
 
+LosRouter.post('/applications/:id/send_document_upload_request',
+  ensureApiAuthenticated,
+  losController.application.sendCustomerDocUploadRequest,
+  losController.handleControllerDataResponse);
+
 LosRouter.post('/applications/:id/select_automation',
   ensureApiAuthenticated,
   transformController.pretransform,
@@ -309,6 +325,12 @@ LosRouter.post('/applications/:id/docs',
   losController.doc.createDocument,
   transformController.posttransform,
   losController.doc.redirectToFolder);
+
+LosRouter.post('/applications/:id/secure_customer_document_upload',
+  losController.doc.getUploadedDocument,
+  losController.application.uploadDocumentToAWS,
+  losController.doc.createCustomerUploadDocument,
+  losController.handleControllerDataResponse);
 
 LosRouter.post('/applications/:id/generate_doc/:template',
   ensureApiAuthenticated,
@@ -578,7 +600,7 @@ LosRouter.post('/products',
 // Products PUT  
 LosRouter.put('/products/:id',
   ensureApiAuthenticated,
-  losController.application.updateProduct,
+  losController.product.updateProduct,
   losController.handleControllerDataResponse);
 
 LosRouter.put('/products/:id/template/:idx',

@@ -175,7 +175,7 @@ const BUTTON_DETAILS = {
   variable: {
     detail: {
       left: [buttonTypes['variable_version']('variable')],
-      right: [buttonTypes['guide']('https://docs.digifi.io/docs/variables'), ],
+      right: [buttonTypes['guide'](references.guideLinks.rulesEngine.variables), ],
     },
     versions: {
       left: [buttonTypes['variable_version']('variable')],

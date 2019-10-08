@@ -166,7 +166,7 @@ module.exports = {
                         columnProps: {
                           style: {
                             width: '90px',
-                            textAlign: 'right',
+                            // textAlign: 'left',
                           },
                         },
                       }, ],
