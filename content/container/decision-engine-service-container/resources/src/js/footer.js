@@ -164,7 +164,7 @@ exports.init = function () {
       console.log(e);
     }
     try {
-      grecaptcha.render('recaptcha_element', {
+      recaptcha.render('recaptcha_element', {
         sitekey: recaptcha.site_key,
         callback: recaptchaCallback(recaptcha.site_key),
       });
