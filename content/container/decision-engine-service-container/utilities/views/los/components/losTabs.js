@@ -37,6 +37,10 @@ module.exports = function (tabname) {
       location: 'intermediaries',
       icon: 'fas fa-seedling',
     }, {
+      label: 'Reporting',
+      location: 'reporting',
+      icon: 'fas fa-robot',
+    }, {
       label: 'Task Bots',
       location: 'taskbots',
       icon: 'fas fa-robot',
