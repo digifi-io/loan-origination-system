@@ -531,6 +531,9 @@ module.exports = {
     '/los/api/taskbots': [
       los.formatTaskBotsIndexTable,
     ],
+    '/los/api/reporting': [
+      los.formatReportingPage,
+    ],
     '/los/api/products': [
       los.formatProductsIndexTable,
     ],

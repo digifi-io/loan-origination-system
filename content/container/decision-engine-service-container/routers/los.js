@@ -665,6 +665,14 @@ LosRouter.get('/taskbots',
   transformController.posttransform,
   losController.handleControllerDataResponse);
 
+// Taskbots GET
+LosRouter.get('/reporting',
+  ensureApiAuthenticated,
+  // losController.taskbot.getTaskBots,
+  // losController.reporting.getReportingData,
+  transformController.posttransform,
+  losController.handleControllerDataResponse);
+
 // Templates GET 
 LosRouter.get('/templates',
   ensureApiAuthenticated,

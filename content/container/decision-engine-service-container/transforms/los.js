@@ -23,6 +23,7 @@ const cardprops = shared.props.cardprops;
 const losTabs = utilities.views.los.components.losTabs;
 const intermediaryTabs = utilities.views.los.components.intermediaryTabs;
 const applicationsTabs = utilities.views.los.components.applicationsTabs;
+const losReporting = utilities.views.los.components.reportingCharts;
 const plainGlobalButtonBar = utilities.views.shared.component.globalButtonBar.plainGlobalButtonBar;
 const simpleAsyncHeaderTitle = utilities.views.shared.component.layoutComponents.simpleAsyncHeaderTitle;
 const buttonAsyncHeaderTitle = utilities.views.shared.component.layoutComponents.buttonAsyncHeaderTitle;
@@ -4641,6 +4642,17 @@ async function populateSecureUploadPage(req) {
   }
 }
 
+async function formatReportingPage(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    req.controllerData.charts = losReporting.generateReportingChart({});
+    return req;
+  } catch(e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
 module.exports = {
   setCompanyDisplayTitle,
   setPersonDisplayTitle,
@@ -4711,6 +4723,7 @@ module.exports = {
   formatApplicationStatusesIndexTable,
   formatApplicationRejectionTypeDetail,
   formatApplicationRejectionDetail,
+  formatReportingPage,
   generateLosStatusEditDetail,
   formatCustomerDocUploadModal,
   populateSecureUploadPage,

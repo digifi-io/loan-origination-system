@@ -44,18 +44,18 @@ module.exports = {
             },
             children: [{
               component: 'ResponsiveCard',
+              asyncprops: {
+                _children: ['reportingdata', 'charts'],
+              },
               props: cardprops({
-                headerStyle: {
-                  display: 'none',
-                },
+                cardTitle: 'Selected Report',
               }),
-              children: [],
             }, ],
           },
         ],
       },
       resources: {
-        // taskbotdata: '/los/api/taskbots?paginate=true',
+        reportingdata: '/los/api/reporting?',
         checkdata: {
           url: '/auth/run_checks',
           options: {
