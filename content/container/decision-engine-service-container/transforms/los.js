@@ -4645,7 +4645,94 @@ async function populateSecureUploadPage(req) {
 async function formatReportingPage(req) {
   try {
     req.controllerData = req.controllerData || {};
-    req.controllerData.charts = losReporting.generateReportingChart({});
+    const query = req.query || {};
+    const options = {
+      legend: Boolean(query.legend) || true,
+      measurement: query.measurement || 'volume',
+      frequency: query.frequency || 'daily',
+      filterCategories: req.controllerData.filterCategories || [ 'Total' ],
+      filterCategoryMap: req.controllerData.filterCategoryMap || {},
+      data: req.controllerData.data || []
+    }
+
+    req.controllerData._children = [{
+      component: 'Semantic.Dropdown',
+      hasWindowFunc: true,
+      bindprops: true,
+      props: {
+        selection: true,
+        style: {
+          marginRight: '5px',
+          marginBottom: '20px',
+        },
+        value: query.measurement || 'volume',
+        options: [{
+          text: 'APPLICATION VOLUME',
+          value: 'volume',
+        }, {
+          text: 'APPLICATION COUNT',
+          value: 'count',
+        }],
+        onChange: 'func:window.reportingMeasurementOnDropdownClick',
+      },
+    }, {
+      component: 'Semantic.Dropdown',
+      hasWindowFunc: true,
+      bindprops: true,
+      props: {
+        selection: true,
+        style: {
+          marginRight: '5px',
+          marginBottom: '20px',
+        },
+        value: query.frequency || 'daily',
+        options: [{
+          text: 'DAILY',
+          value: 'daily',
+        }, {
+          text: 'MONTHLY',
+          value: 'monthly',
+        }, {
+          text: 'YEARLY',
+          value: 'yearly',
+        }],
+        onChange: 'func:window.reportingFrequencyOnDropdownClick',
+      },
+    }, {
+      component: 'Semantic.Dropdown',
+      hasWindowFunc: true,
+      bindprops: true,
+      props: {
+        selection: true,
+        style: {
+          marginRight: '5px',
+          marginBottom: '20px',
+        },
+        value: query.filterCategory || 'total',
+        options: [{
+          text: 'TOTAL',
+          value: 'total',
+        }, {
+          text: 'BY STATUS',
+          value: 'status',
+        },{
+          text: 'BY PRODUCT',
+          value: 'product',
+        }, 
+        // {
+        //   text: 'BY INTERMEDIARY',
+        //   value: 'intermediary',
+        // }
+        ],
+        onChange: 'func:window.reportingFilterCategoryOnDropdownClick',
+      },
+    }, {
+      component: 'ResponsiveCard',
+      props: cardprops({
+        cardTitle: 'Selected Report',
+      }),
+      children: losReporting.generateReportingChart(options),
+    }]
     return req;
   } catch(e) {
     req.error = e.message;

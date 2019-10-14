@@ -42,15 +42,9 @@ module.exports = {
             props: {
               style: {},
             },
-            children: [{
-              component: 'ResponsiveCard',
-              asyncprops: {
-                _children: ['reportingdata', 'charts'],
-              },
-              props: cardprops({
-                cardTitle: 'Selected Report',
-              }),
-            }, ],
+            asyncprops: {
+              _children: ['reportingdata', '_children'],
+            },
           },
         ],
       },

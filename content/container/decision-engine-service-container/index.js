@@ -62,8 +62,8 @@ module.exports = () => {
     periodic.app.locals.redisClient.on('connect', () => {
       logger.silly('REDIS CONNECTED');
     });
-    let updateGlobalRulesVariables = require('./crons/update_rules_variables.cron')(periodic);    
-    updateGlobalRulesVariables();
+    // let updateGlobalRulesVariables = require('./crons/update_rules_variables.cron')(periodic);    
+    // updateGlobalRulesVariables();
 
     let basename = periodic.settings.extensions[ 'periodicjs.ext.reactapp' ].basename;
     periodic.app.locals.THEMESETTINGS = Object.assign(THEMESETTINGS, {

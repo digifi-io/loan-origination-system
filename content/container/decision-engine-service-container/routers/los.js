@@ -665,11 +665,11 @@ LosRouter.get('/taskbots',
   transformController.posttransform,
   losController.handleControllerDataResponse);
 
-// Taskbots GET
+// Reporting GET
 LosRouter.get('/reporting',
   ensureApiAuthenticated,
-  // losController.taskbot.getTaskBots,
-  // losController.reporting.getReportingData,
+  losController.reporting.getReportingData,
+  losController.reporting.getFilterCategories,
   transformController.posttransform,
   losController.handleControllerDataResponse);
 
