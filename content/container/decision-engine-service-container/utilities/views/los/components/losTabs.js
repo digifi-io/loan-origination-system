@@ -45,7 +45,7 @@ module.exports = function (tabname) {
       icon: 'ellipsis horizontal',
       dropdown: [{
         name: 'Workflow Configuration',
-        location: '/los/settings/applicationstatuses',
+        location: '/los/settings/workflow',
       }, {
         name: 'Task Automation Bots',
         location: '/los/settings/taskbots',

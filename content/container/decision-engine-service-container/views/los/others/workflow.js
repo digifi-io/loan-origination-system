@@ -12,7 +12,7 @@ let randomKey = Math.random;
 
 module.exports = {
   containers: {
-    '/los/settings/applicationstatuses': {
+    '/los/settings/workflow': {
       layout: {
         component: 'div',
         privileges: [ 101, 102, 103, ],
