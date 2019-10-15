@@ -28,7 +28,7 @@ async function getReportingData(req, res, next) {
     return next();
   } catch (e) {
     logger.warn('getReportingData:', e.message);
-    res.status(500).send({ message: e.message });
+    res.status(500).send({ message: `Error in getReportingData: ${e.message}` });
   }
 }
 
@@ -53,7 +53,7 @@ async function getFilterCategories(req, res, next) {
     return next();
   } catch (e) {
     logger.warn('getFilterCategories:', e.message);
-    res.status(500).send({ message: e.message });
+    res.status(500).send({ message: `Error in getFilterCategories: ${e.message}` });
   }
 }
 
