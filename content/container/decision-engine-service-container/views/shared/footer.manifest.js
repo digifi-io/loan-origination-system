@@ -32,7 +32,7 @@ module.exports = {
               margin: '0 auto',
             },
           },
-          children: `© ${currentYear} ${THEMESETTINGS.footer.company_name || 'DigiFi, Inc.'} Version 1.2.4`,
+          children: `© ${currentYear} ${THEMESETTINGS.footer.company_name || 'DigiFi, Inc.'} Version 1.3.0`,
         },
         ],
       },

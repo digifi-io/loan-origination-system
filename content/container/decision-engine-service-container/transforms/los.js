@@ -23,6 +23,7 @@ const cardprops = shared.props.cardprops;
 const losTabs = utilities.views.los.components.losTabs;
 const intermediaryTabs = utilities.views.los.components.intermediaryTabs;
 const applicationsTabs = utilities.views.los.components.applicationsTabs;
+const losReporting = utilities.views.los.components.reportingCharts;
 const plainGlobalButtonBar = utilities.views.shared.component.globalButtonBar.plainGlobalButtonBar;
 const simpleAsyncHeaderTitle = utilities.views.shared.component.layoutComponents.simpleAsyncHeaderTitle;
 const buttonAsyncHeaderTitle = utilities.views.shared.component.layoutComponents.buttonAsyncHeaderTitle;
@@ -4641,6 +4642,149 @@ async function populateSecureUploadPage(req) {
   }
 }
 
+async function formatReportingPage(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const user = req.user || {};
+    const organization = user && user.association && user.association.organization;
+    const orgId = organization._id && organization._id.toString();
+    const query = req.query || {};
+    const measurement = query.measurement || 'volume';
+    const frequency = query.frequency || 'daily';
+    const filterCategory = query.filterCategory || 'total';
+    const options = {
+      measurement,
+      frequency,
+      filterCategories: req.controllerData.filterCategories || [ 'Total' ],
+      filterCategoryMap: req.controllerData.filterCategoryMap || {},
+      data: req.controllerData.data || []
+    }
+
+    req.controllerData._children = [{
+      component: 'Semantic.Dropdown',
+      hasWindowFunc: true,
+      bindprops: true,
+      props: {
+        selection: true,
+        style: {
+          marginRight: '5px',
+          marginBottom: '20px',
+        },
+        value: measurement,
+        options: [{
+          text: 'APPLICATION VOLUME',
+          value: 'volume',
+        }, {
+          text: 'APPLICATION COUNT',
+          value: 'count',
+        }],
+        onChange: 'func:window.reportingMeasurementOnDropdownClick',
+      },
+    }, {
+      component: 'Semantic.Dropdown',
+      hasWindowFunc: true,
+      bindprops: true,
+      props: {
+        selection: true,
+        style: {
+          marginRight: '5px',
+          marginBottom: '20px',
+        },
+        value: frequency,
+        options: [{
+          text: 'DAILY',
+          value: 'daily',
+        }, {
+          text: 'MONTHLY',
+          value: 'monthly',
+        }, {
+          text: 'YEARLY',
+          value: 'yearly',
+        }],
+        onChange: 'func:window.reportingFrequencyOnDropdownClick',
+      },
+    }, {
+      component: 'Semantic.Dropdown',
+      hasWindowFunc: true,
+      bindprops: true,
+      props: {
+        selection: true,
+        style: {
+          marginRight: '5px',
+          marginBottom: '20px',
+        },
+        value: filterCategory,
+        options: [{
+          text: 'TOTAL',
+          value: 'total',
+        }, {
+          text: 'BY STATUS',
+          value: 'status',
+        },{
+          text: 'BY PRODUCT',
+          value: 'product',
+        }, 
+        // {
+        //   text: 'BY INTERMEDIARY',
+        //   value: 'intermediary',
+        // }
+        ],
+        onChange: 'func:window.reportingFilterCategoryOnDropdownClick',
+      },
+    }, {
+      component: 'ResponsiveButton',
+      children: 'EXPORT DATA',
+      props: {
+        'onclickBaseUrl': `/los/api/reporting/download/${orgId}?measurement=${measurement}&frequency=${frequency}&filterCategory=${filterCategory}`,
+        aProps: {
+          className: '__re-bulma_button __re-bulma_is-primary',
+        },
+      },
+    }, {
+      component: 'ResponsiveCard',
+      props: cardprops({
+        cardTitle: 'Selected Report',
+      }),
+      children: losReporting.generateReportingChart(options),
+    }]
+    return req;
+  } catch(e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
+async function formatReportingDownloadData(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const query = req.query || {};
+    const measurement = query.measurement || 'volume';
+    const frequency = query.frequency || 'daily';
+    const filterCategory = query.filterCategory || 'total';
+    const filterCategories = req.controllerData.filterCategories || [ 'Total' ];
+    const filterCategoryMap = req.controllerData.filterCategoryMap || {};
+    const data = req.controllerData.data || [];
+    const baseDataRow = {};
+    filterCategories.forEach((category) => baseDataRow[category] = 0);
+    const dataMap = losReporting.generateDataMap(data, baseDataRow, filterCategoryMap);
+    const dataRows = [];
+    losReporting.generateApplicationDates(frequency).forEach((date, i) => {
+      dataRows.push([date]);
+      filterCategories.forEach((category) => {
+        const val = dataMap[date] && dataMap[date][category] || 0;
+        dataRows[i].push(val);
+      })
+    })
+    filterCategories.unshift('Application Date');
+    req.controllerData.download_content = [filterCategories, ...dataRows].reduce(transformhelpers.createCSVString, '');
+    req.controllerData.name = `Application ${capitalize(measurement)} - ${capitalize(frequency)} - By ${capitalize(filterCategory)}`;
+    return req;
+  } catch(e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
 module.exports = {
   setCompanyDisplayTitle,
   setPersonDisplayTitle,
@@ -4711,6 +4855,8 @@ module.exports = {
   formatApplicationStatusesIndexTable,
   formatApplicationRejectionTypeDetail,
   formatApplicationRejectionDetail,
+  formatReportingPage,
+  formatReportingDownloadData,
   generateLosStatusEditDetail,
   formatCustomerDocUploadModal,
   populateSecureUploadPage,

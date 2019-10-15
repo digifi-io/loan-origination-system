@@ -88,7 +88,7 @@ module.exports = {
             location: 'https://docs.digifi.io/docs/decision-engine',
             name: 'Decision Engine Guide',
           }, {
-            location: 'Machine Learning Guide',
+            location: 'https://docs.digifi.io/docs/ml-models',
             name: 'Machine Learning Guide',
           }, {
             location: 'https://docs.digifi.io/docs/overview-of-text-recognition',

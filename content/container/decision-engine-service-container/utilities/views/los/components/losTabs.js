@@ -16,10 +16,6 @@ module.exports = function (tabname) {
       location: 'applicationsdashboard',
       icon: 'file alternate',
     }, {
-      label: 'Tasks',
-      location: 'tasks',
-      icon: 'check square',
-    }, {
       label: 'Customers',
       icon: 'user',
       dropdown: [{
@@ -37,34 +33,35 @@ module.exports = function (tabname) {
       location: 'intermediaries',
       icon: 'fas fa-seedling',
     }, {
-      label: 'Task Bots',
-      location: 'taskbots',
-      icon: 'fas fa-robot',
+      label: 'Tasks',
+      location: 'tasks',
+      icon: 'check square',
     }, {
-      label: 'Other',
+      label: 'Reporting',
+      location: 'reporting',
+      icon: 'fas fa-line-chart',
+    }, {
+      label: 'Settings',
       icon: 'ellipsis horizontal',
       dropdown: [{
-        name: 'Communications',
-        location: '/los/others/communications',
+        name: 'Workflow Configuration',
+        location: '/los/settings/workflow',
       }, {
-        name: 'Documents',
-        location: '/los/others/docs',
-      }, {
-        name: 'Loan Product Types',
-        location: '/los/others/products',
-      }, {
-        name: 'Customer & Intermediary Templates',
-        location: '/los/others/customer_templates',
-      }, {
-        name: 'Document Creation Templates',
-        location: '/los/others/templates',
+        name: 'Task Automation Bots',
+        location: '/los/settings/taskbots',
       }, {
         name: 'Application Labels',
-        location: '/los/others/applicationlabels',
+        location: '/los/settings/applicationlabels',
       }, {
-        name: 'Application Statuses & Rejection Types',
-        location: '/los/others/applicationstatuses',
-      },
+        name: 'Document Creation Templates',
+        location: '/los/settings/templates',
+      }, {
+        name: 'Loan Product Templates',
+        location: '/los/settings/products',
+      }, {
+        name: 'Customer & Intermediary Templates',
+        location: '/los/settings/customer_templates',
+      }, 
       ],
     },
   ];
