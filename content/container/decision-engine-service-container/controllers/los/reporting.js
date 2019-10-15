@@ -19,7 +19,6 @@ async function getReportingData(req, res, next) {
     const organizationId = (req.params && req.params.org) ? ObjectId(req.params.org) : organization._id;
     const Aggregationmodel = periodic.datas.get(`standard_${collectionName}`);
     const query = req.query || {};
-    // const queryOptions = generate
     const aggregationQueryFunction = AGGREGATION_QUERY_FUNCTIONS[`${query.collection || 'losapplication'}`];
     const aggregationQuery = aggregationQueryFunction ? aggregationQueryFunction({ organization: organizationId, ...query }) : null;
     if (aggregationQuery) {
@@ -37,7 +36,7 @@ async function getFilterCategories(req, res, next) {
   try {
     req.controllerData = req.controllerData || {};
     if (req.query.filterCategory && req.query.filterCategory !== 'total') {
-      const filterCategoryModelName = `standard_los${req.query.filterCategory}`; // standard_losproduct, standard_losstatus, standard_losintermediary as of now
+      const filterCategoryModelName = `standard_los${req.query.filterCategory}`;
       const user = req.user || {};
       const organization = (user && user.association && user.association.organization) ? user.association.organization : {};
       const organizationId = (req.params && req.params.org) ? ObjectId(req.params.org) : organization._id;
