@@ -665,6 +665,20 @@ LosRouter.get('/taskbots',
   transformController.posttransform,
   losController.handleControllerDataResponse);
 
+// Reporting GET
+LosRouter.get('/reporting',
+  ensureApiAuthenticated,
+  losController.reporting.getReportingData,
+  losController.reporting.getFilterCategories,
+  transformController.posttransform,
+  losController.handleControllerDataResponse);
+
+LosRouter.get('/reporting/download/:org',
+  losController.reporting.getReportingData,
+  losController.reporting.getFilterCategories,
+  transformController.posttransform,
+  losController.reporting.downloadCSV);
+
 // Templates GET 
 LosRouter.get('/templates',
   ensureApiAuthenticated,

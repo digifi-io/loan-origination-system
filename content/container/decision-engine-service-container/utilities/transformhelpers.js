@@ -1502,7 +1502,14 @@ function generateJSONtoCSVFields(config) {
   }
 }
 
+function createCSVString(aggregate, rowArray) {
+  let row = rowArray.join(',');
+  aggregate += row + '\r\n';
+  return aggregate;
+}
+
 module.exports = {
+  createCSVString,
   generateJSONtoCSVFields,
   getMedian,
   getStringMode,

@@ -249,7 +249,39 @@ const INTERMEDIARY_TYPE = {
   other: 'Other',
 };
 
+const AGGREGATION_DATE_FORMAT_MAP = {
+  'daily': "%m/%d/%Y",
+  'monthly': "%m/%Y",
+  'yearly': "%Y"
+}
+
+const AGGREGATION_QUERY_FUNCTIONS = {
+  losapplication: (options) => {
+    const currentDate = new Date();
+    const frequency = options.frequency || 'daily';
+    if (frequency === 'yearly') {
+      currentDate.setFullYear(currentDate.getFullYear() - 5)
+    } else if (frequency === 'monthly') {
+      currentDate.setMonth(currentDate.getMonth() - 12)
+    } else {
+      currentDate.setDate(currentDate.getDate() - 30)
+    }
+    const createdatQuery = { $gte: currentDate };
+    const dateFormat = AGGREGATION_DATE_FORMAT_MAP[frequency];
+    const $sum = options.measurement === 'count' ? 1 : '$loan_amount'; // only works for losapplication
+    return (options.filterCategory) ? [
+      {$match: { organization: options.organization, createdat: createdatQuery } },
+      {$group: { _id: { "date": { $dateToString: { format: dateFormat, date: "$createdat" } }, filterCategory: `$${options.filterCategory}` }, outputVal: { $sum } } }
+    ] 
+    : [
+      {$match: { organization: options.organization, createdat: createdatQuery } },
+      {$group: { _id: { "date": { $dateToString: { format: dateFormat, date: "$createdat" } } }, outputVal: { $sum } } }
+    ]
+  }
+}
+
 module.exports = {
+  AGGREGATION_QUERY_FUNCTIONS,
   TEMPLATE_DEFAULT_DROPDOWN: {
     application: TEMPLATE_APPLICATION_DEFAULT_DROPDOWN,
     person: TEMPLATE_PERSON_DEFAULT_DROPDOWN,

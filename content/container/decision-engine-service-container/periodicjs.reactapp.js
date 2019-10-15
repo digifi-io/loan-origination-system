@@ -42,6 +42,7 @@ module.exports = {
       '/content/container/decision-engine-service-container/views/los/customers/company',
       '/content/container/decision-engine-service-container/views/los/customers/people',
       '/content/container/decision-engine-service-container/views/los/tasks',
+      '/content/container/decision-engine-service-container/views/los/reporting',
       '/content/container/decision-engine-service-container/views/los/taskbots',
       '/content/container/decision-engine-service-container/views/los/others',
       '/content/container/decision-engine-service-container/views/los/modals',
