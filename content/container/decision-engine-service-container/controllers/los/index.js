@@ -15,6 +15,7 @@ const doc = require('./doc');
 const note = require('./note');
 const product = require('./product');
 const label = require('./label');
+const reporting = require('./reporting');
 const status = require('./status');
 const task = require('./task');
 const taskbot = require('./taskbot');
@@ -208,6 +209,7 @@ module.exports = {
   doc,
   label,
   product,
+  reporting,
   status,
   task,
   taskbot,

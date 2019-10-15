@@ -8,6 +8,7 @@ const peopleTabs = require('./peopleTabs');
 const peopleNotes = require('./peopleNotes');
 const notes = require('./notes');
 const templatePDFViewer = require('./templatePDFViewer');
+const reportingCharts = require('./reportingCharts');
 
 module.exports = {
   applicationsTabs,
@@ -19,4 +20,5 @@ module.exports = {
   notes,
   templatePDFViewer,
   intermediaryTabs,
+  reportingCharts,
 };

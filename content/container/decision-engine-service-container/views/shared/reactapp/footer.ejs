@@ -1129,6 +1129,30 @@
     window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
   }
   window.MLProviderTypeOnDropdownClick = MLProviderTypeOnDropdownClick;
+
+  function reportingMeasurementOnDropdownClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {measurement: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.reportingMeasurementOnDropdownClick = reportingMeasurementOnDropdownClick;
+
+  function reportingFrequencyOnDropdownClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {frequency: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.reportingFrequencyOnDropdownClick = reportingFrequencyOnDropdownClick;
+  
+  function reportingFilterCategoryOnDropdownClick(e, dropdown) {
+    let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
+    let query = Object.assign({}, current_route.query, {filterCategory: dropdown.value});
+    let querystring = Object.keys(query).map(key => key + '=' + query[key]).join('&')
+    window.overlayProps.reduxRouter.push(`${current_route.pathname}?${querystring}`);
+  }
+  window.reportingFilterCategoryOnDropdownClick = reportingFilterCategoryOnDropdownClick;
   
   function MLNumBinsDropdownOnClick(e, dropdown) {
     let current_route = window.overlayProps.getState().routing.locationBeforeTransitions;
