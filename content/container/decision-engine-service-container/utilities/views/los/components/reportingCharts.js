@@ -53,7 +53,7 @@ function generateDataMap(data, baseDataRow = {}, filterCategoryMap) {
 function generateReportingChart(options) {
   try {
 
-    const { legend, measurement, frequency, filterCategories, data, filterCategoryMap } = options;
+    const { measurement, frequency, filterCategories, data, filterCategoryMap } = options;
     const baseDataRow = {};
     filterCategories.forEach((category) => baseDataRow[category] = 0);
     const dataMap = generateDataMap(data, baseDataRow, filterCategoryMap);
@@ -87,7 +87,7 @@ function generateReportingChart(options) {
         data: chartData,
       },
       children: [
-        (legend) ? {
+        {
           component: 'recharts.Legend',
           props: {
             iconType: 'square',
@@ -95,7 +95,7 @@ function generateReportingChart(options) {
             style: {
             },
           },
-        } : {},
+        },
         {
           component: 'recharts.XAxis',
           hasWindowComponent: true,

@@ -4653,7 +4653,6 @@ async function formatReportingPage(req) {
     const frequency = query.frequency || 'daily';
     const filterCategory = query.filterCategory || 'total';
     const options = {
-      legend: Boolean(query.legend) || true,
       measurement,
       frequency,
       filterCategories: req.controllerData.filterCategories || [ 'Total' ],
