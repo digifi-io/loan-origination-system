@@ -168,6 +168,7 @@ module.exports = {
                             formdata: ['data'],
                           },
                           props: {
+                            blockPageUI: true,
                             flattenFormData: true,
                             footergroups: false,
                             setInitialValues: false,
