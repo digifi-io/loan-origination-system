@@ -183,7 +183,7 @@ module.exports = {
                                 val: 'applicationId',
                               }, ],
                               responseCallback: 'func:window.setHeaders',
-                              successCallback: ['func:window.closeModalAndCreateNotification',],
+                              successCallback: ['func:this.props.createNotification'],
                               successProps: [{
                                 text: 'File uploaded successfully!',
                                 timeout: 10000,
