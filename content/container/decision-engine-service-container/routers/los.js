@@ -673,6 +673,12 @@ LosRouter.get('/reporting',
   transformController.posttransform,
   losController.handleControllerDataResponse);
 
+LosRouter.get('/reporting/download/:org',
+  losController.reporting.getReportingData,
+  losController.reporting.getFilterCategories,
+  transformController.posttransform,
+  losController.reporting.downloadCSV);
+
 // Templates GET 
 LosRouter.get('/templates',
   ensureApiAuthenticated,

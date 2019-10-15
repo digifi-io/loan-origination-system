@@ -4645,11 +4645,17 @@ async function populateSecureUploadPage(req) {
 async function formatReportingPage(req) {
   try {
     req.controllerData = req.controllerData || {};
+    const user = req.user || {};
+    const organization = user && user.association && user.association.organization;
+    const orgId = organization._id && organization._id.toString();
     const query = req.query || {};
+    const measurement = query.measurement || 'volume';
+    const frequency = query.frequency || 'daily';
+    const filterCategory = query.filterCategory || 'total';
     const options = {
       legend: Boolean(query.legend) || true,
-      measurement: query.measurement || 'volume',
-      frequency: query.frequency || 'daily',
+      measurement,
+      frequency,
       filterCategories: req.controllerData.filterCategories || [ 'Total' ],
       filterCategoryMap: req.controllerData.filterCategoryMap || {},
       data: req.controllerData.data || []
@@ -4665,7 +4671,7 @@ async function formatReportingPage(req) {
           marginRight: '5px',
           marginBottom: '20px',
         },
-        value: query.measurement || 'volume',
+        value: measurement,
         options: [{
           text: 'APPLICATION VOLUME',
           value: 'volume',
@@ -4685,7 +4691,7 @@ async function formatReportingPage(req) {
           marginRight: '5px',
           marginBottom: '20px',
         },
-        value: query.frequency || 'daily',
+        value: frequency,
         options: [{
           text: 'DAILY',
           value: 'daily',
@@ -4708,7 +4714,7 @@ async function formatReportingPage(req) {
           marginRight: '5px',
           marginBottom: '20px',
         },
-        value: query.filterCategory || 'total',
+        value: filterCategory,
         options: [{
           text: 'TOTAL',
           value: 'total',
@@ -4727,12 +4733,52 @@ async function formatReportingPage(req) {
         onChange: 'func:window.reportingFilterCategoryOnDropdownClick',
       },
     }, {
+      component: 'ResponsiveButton',
+      children: 'EXPORT DATA',
+      props: {
+        'onclickBaseUrl': `/los/api/reporting/download/${orgId}?measurement=${measurement}&frequency=${frequency}&filterCategory=${filterCategory}`,
+        aProps: {
+          className: '__re-bulma_button __re-bulma_is-primary',
+        },
+      },
+    }, {
       component: 'ResponsiveCard',
       props: cardprops({
         cardTitle: 'Selected Report',
       }),
       children: losReporting.generateReportingChart(options),
     }]
+    return req;
+  } catch(e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
+async function formatReportingDownloadData(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    const query = req.query || {};
+    const measurement = query.measurement || 'volume';
+    const frequency = query.frequency || 'daily';
+    const filterCategory = query.filterCategory || 'total';
+    const filterCategories = req.controllerData.filterCategories || [ 'Total' ];
+    const filterCategoryMap = req.controllerData.filterCategoryMap || {};
+    const data = req.controllerData.data || [];
+    const baseDataRow = {};
+    filterCategories.forEach((category) => baseDataRow[category] = 0);
+    const dataMap = losReporting.generateDataMap(data, baseDataRow, filterCategoryMap);
+    const dataRows = [];
+    losReporting.generateApplicationDates(frequency).forEach((date, i) => {
+      dataRows.push([date]);
+      filterCategories.forEach((category) => {
+        const val = dataMap[date] && dataMap[date][category] || 0;
+        dataRows[i].push(val);
+      })
+    })
+    filterCategories.unshift('Application Date');
+    req.controllerData.download_content = [filterCategories, ...dataRows].reduce(transformhelpers.createCSVString, '');
+    req.controllerData.name = `Application ${capitalize(measurement)} - ${capitalize(frequency)} - By ${capitalize(filterCategory)}`;
     return req;
   } catch(e) {
     req.error = e.message;
@@ -4811,6 +4857,7 @@ module.exports = {
   formatApplicationRejectionTypeDetail,
   formatApplicationRejectionDetail,
   formatReportingPage,
+  formatReportingDownloadData,
   generateLosStatusEditDetail,
   formatCustomerDocUploadModal,
   populateSecureUploadPage,

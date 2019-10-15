@@ -534,6 +534,9 @@ module.exports = {
     '/los/api/reporting': [
       los.formatReportingPage,
     ],
+    '/los/api/reporting/download/:org': [
+      los.formatReportingDownloadData,
+    ],
     '/los/api/products': [
       los.formatProductsIndexTable,
     ],

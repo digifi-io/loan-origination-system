@@ -12,7 +12,7 @@ const LABELMAP = {
 const PROVIDER_LABEL = require('../../../constants/ml').PROVIDER_LABEL;
 const PROVIDER_COLORS = require('../../../constants/ml').PROVIDER_COLORS;
 
-function __generateApplicationDates(frequency) {
+function generateApplicationDates(frequency) {
   const currentDate = new Date();
   switch (frequency) {
     case 'daily': 
@@ -36,7 +36,7 @@ function __generateApplicationDates(frequency) {
   }
 }
 
-function __generateDataMap(data, baseDataRow = {}, filterCategoryMap) {
+function generateDataMap(data, baseDataRow = {}, filterCategoryMap) {
   return data.reduce((acc, row, i) => {
     const { date, filterCategory = null } = row._id;
     acc[date] = acc[date] || { ...baseDataRow, date };
@@ -56,8 +56,8 @@ function generateReportingChart(options) {
     const { legend, measurement, frequency, filterCategories, data, filterCategoryMap } = options;
     const baseDataRow = {};
     filterCategories.forEach((category) => baseDataRow[category] = 0);
-    const dataMap = __generateDataMap(data, baseDataRow, filterCategoryMap);
-    const chartData = __generateApplicationDates(frequency).map((date, i) => dataMap[date] || { date, ...baseDataRow });
+    const dataMap = generateDataMap(data, baseDataRow, filterCategoryMap);
+    const chartData = generateApplicationDates(frequency).map((date, i) => dataMap[date] || { date, ...baseDataRow });
     const chartBars = filterCategories.map((categoryName, i) => {
       return {
         component: 'recharts.Bar',
@@ -149,4 +149,6 @@ function generateReportingChart(options) {
 
 module.exports = {
   generateReportingChart,
+  generateApplicationDates,
+  generateDataMap,
 }
