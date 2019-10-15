@@ -39,7 +39,7 @@ module.exports = function (tabname) {
     }, {
       label: 'Reporting',
       location: 'reporting',
-      icon: 'fas fa-robot',
+      icon: 'fas fa-line-chart',
     }, {
       label: 'Settings',
       icon: 'ellipsis horizontal',
