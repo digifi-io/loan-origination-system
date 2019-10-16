@@ -79,9 +79,9 @@ module.exports = {
       decision.strategy.generateRuleDropdown,
     ],
     '/decision/api/standard_strategies/:id': [
+      async (req) => {
       decision.formatVersionAndStatus,
       decision.strategy.generateOutputVariablesOptions,
-      decision.populateAllVariablesMap,
       decision.strategy.populateSegment,
       decision.strategy.populateArtificialIntelligenceAndDataIntegrationSegment,
       decision.strategy.formatModuleRunOrder,
