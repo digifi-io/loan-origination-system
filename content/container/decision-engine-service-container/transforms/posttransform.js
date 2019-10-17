@@ -79,7 +79,6 @@ module.exports = {
       decision.strategy.generateRuleDropdown,
     ],
     '/decision/api/standard_strategies/:id': [
-      async (req) => {
       decision.formatVersionAndStatus,
       decision.strategy.generateOutputVariablesOptions,
       decision.strategy.populateSegment,
@@ -89,9 +88,7 @@ module.exports = {
     '/decision/api/standard_rules/:id': [
       decision.strategy.populateRequiredCalculationVariables,
       decision.rule.generateVariableDropdown,
-      decision.rule.getVariableMap,
       decision.rule.formatRuleDetail,
-      decision.setCalculationVariableDropdown,
     ],
     '/decision/api/standard_variables/:id': [
       decision.formatVersionAndStatus,

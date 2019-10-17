@@ -10,7 +10,11 @@ const scheme = {
     required: true,
   },
   display_name: String,
-  display_title: String,
+  display_title: {
+    type: String,
+    index: true,
+    required: true,
+  },
   title: {
     type: String,
     index: true,
@@ -28,6 +32,7 @@ const scheme = {
   latest_version: Boolean,
   type: {
     type: String,
+    index: true,
     required: true,
   },
   description: String,

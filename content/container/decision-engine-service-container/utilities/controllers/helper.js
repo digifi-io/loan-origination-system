@@ -2761,9 +2761,14 @@ function getDeleteRulesArray(options) {
   }
 }
 
-function findRuleVariables(rule) {
+function findRuleVariables(rule, includeCalculationVariables) {
   try {
     const variables = [];
+    if (includeCalculationVariables) {
+      const calcInputs = rule.calculation_inputs || [];
+      const calcOutputs = rule.calculation_outputs || [];
+      variables.push(...calcInputs.map(varId => varId.toString()), ...calcOutputs.map(varId => varId.toString()));
+    }
     const multipleRules = rule.multiple_rules || [];
     const conditionRules = rule.condition_output || [];
     multipleRules.forEach((multRule) => {

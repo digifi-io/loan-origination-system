@@ -240,7 +240,7 @@ async function populateSegment(req) {
           acc.push(...helpers.findRuleVariables(rule));
           return acc;
         }, []).filter((v, i, a) => a.indexOf(v) === i);
-        const variables = await Variable.model.find({ _id: { $in: variableIds }});
+        const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
         if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
         if (DECISION_CONSTANTS.SINGLE_RULE_MODULES[ currentSegment.type ] && currentSegment.ruleset && currentSegment.ruleset.length && currentSegment.ruleset[ 0 ]) {
@@ -526,7 +526,7 @@ async function populateArtificialIntelligenceAndDataIntegrationSegment(req) {
           acc.push(...helpers.findRuleVariables(rule));
           return acc;
         }, []).filter((v, i, a) => a.indexOf(v) === i);
-        const variables = await Variable.model.find({ _id: { $in: variableIds }});
+        const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
         if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
         currentSegment.conditions = conditionRules.map((rule_id, i) => {
@@ -2109,51 +2109,43 @@ function generateStrategyModuleDropdown(req) {
  * @param {Object} req Express request object
  * @returns {Object} request object with populated variables dropdown on req.controllerData
   */
-function generateVariableDropdown(req) {
-  return new Promise((resolve, reject) => {
+async function generateVariableDropdown(req) {
+  try {
     if (req.query.init || req.query.type === 'calculations') {
       const Variable = periodic.datas.get('standard_variable');
       req.controllerData = req.controllerData || {};
       req.controllerData.data = req.controllerData.data || {};
       let user = req.user;
       let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : null;
-      Variable.model.find({ organization, })
-        .then(variables => {
-          let variableDropdown;
-          let outputDropdown = [];
-          if (req.params && (req.params.type === 'assignments' || req.params.type === 'calculations' || req.params.type === 'output')) {
-            variableDropdown = variables.filter(variable => variable.type === 'Output').map(variable => ({ label: variable.display_title, value: variable._id, })).sort((a, b) => (a.label > b.label) ? 1 : -1);
-          } else {
-            outputDropdown = variables.filter(variable => variable.type === 'Output').map(variable => ({ label: variable.display_title, value: variable._id, })).sort((a, b) => (a.label > b.label) ? 1 : -1);
-            variableDropdown = variables.map(variable => ({ label: variable.display_title, value: variable._id, })).sort((a, b) => (a.label > b.label) ? 1 : -1);
-          }
-          variableDropdown.unshift({
-            label: ' ',
-            value: '',
-            disabled: true,
-          });
-          req.controllerData.data.variable_types = variables.reduce((collection, variable) => {
-            variable = variable.toJSON ? variable.toJSON() : variable;
-            collection[ variable._id.toString() ] = variable.data_type;
-            return collection;
-          }, {});
-          req.controllerData.data = Object.assign({}, {
-            'rule_type': '',
-            'variable_types': {},
-            'rule*0*state_property_attribute': '',
-          }, req.controllerData.data);
-          req.controllerData.formoptions = {
-            state_property_attribute: [],
-            output_variables: [],
-          };
-          return resolve(req);
-        })
-        .catch(reject);
+      const variables = await Variable.model.find({ organization, }, {title: 1, data_type: 1, display_title: 1, name: 1});
+      const [variableTypes, variableDropdown] = variables.reduce((collection, variable) => {
+        variable = variable.toJSON ? variable.toJSON() : variable;
+        collection[ 0 ][ variable._id.toString() ] = variable.data_type;
+        collection[ 1 ].push({
+          label: variable.title,
+          value: variable._id.toString(),
+        });
+        return collection;
+      }, [{}, []]);
+      req.controllerData.data = Object.assign({}, {
+        'rule_type': '',
+        'variable_types': {},
+        'rule*0*state_property_attribute': '',
+      }, req.controllerData.data);
+      req.controllerData.formoptions = {
+        state_property_attribute: [],
+        output_variables: [],
+      };
+      req.controllerData.variable_dropdown = variableDropdown;
+      req.controllerData.data.variable_types = variableTypes;
+      return req;
     } else {
-      return resolve(req);
+      return req;
     }
-
-  });
+  } catch(e) {
+    req.error = e.message;
+    return req;
+  }
 }
 
 /**
