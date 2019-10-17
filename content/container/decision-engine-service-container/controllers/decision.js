@@ -938,7 +938,8 @@ async function fetchVariableDropdown(req, res) {
     title: new RegExp(req.query.query.toLowerCase().replace(/\s+/g, '_'), 'gi'),
   }, ];
   if (req.query.type) query.type = req.query.type;
-  let variables = await Variable.query({ query, limit: req.query.limit, sort: 'title', });
+  const limit = req.query.limit ? Number(req.query.limit) : 100;
+  let variables = await Variable.model.find(query, { display_title: 1, title: 1, data_type: 1, type: 1}).limit(limit).sort('title');
   let variables_count = variables.length;
   let variables_to_add = req.query.limit - variables_count;
   if (variables_to_add > 0 && req.query.changed) {
@@ -946,7 +947,7 @@ async function fetchVariableDropdown(req, res) {
     let half_count_variables_to_add = Math.ceil(variables_to_add / 2);
     let queryOptions = { organization, };
     if (req.query.type) queryOptions.type = req.query.type;
-    let allVariables = await Variable.model.find(queryOptions).sort('title');
+    let allVariables = await Variable.model.find(queryOptions, { display_title: 1, title: 1, data_type: 1, type: 1}).sort('title');
     if (variables.length) {
       let first_variable_index = allVariables.map(variable => variable.toJSON().title).indexOf(variables[ 0 ].toJSON().title);
       front_start_slice_index = (half_count_variables_to_add > first_variable_index) ? 0 : first_variable_index - half_count_variables_to_add;

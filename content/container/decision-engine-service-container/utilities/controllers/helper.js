@@ -2761,6 +2761,33 @@ function getDeleteRulesArray(options) {
   }
 }
 
+function findRuleVariables(rule, includeCalculationVariables) {
+  try {
+    const variables = [];
+    if (includeCalculationVariables) {
+      const calcInputs = rule.calculation_inputs || [];
+      const calcOutputs = rule.calculation_outputs || [];
+      variables.push(...calcInputs.map(varId => varId.toString()), ...calcOutputs.map(varId => varId.toString()));
+    }
+    const multipleRules = rule.multiple_rules || [];
+    const conditionRules = rule.condition_output || [];
+    multipleRules.forEach((multRule) => {
+      if (multRule.state_property_attribute) variables.push(multRule.state_property_attribute);
+      if (multRule.state_property_attribute_value_comparison_type === 'variable' && multRule.state_property_attribute_value_comparison) variables.push(multRule.state_property_attribute_value_comparison);
+      if (multRule.state_property_attribute_value_minimum_type === 'variable' && multRule.state_property_attribute_value_minimum) variables.push(multRule.state_property_attribute_value_minimum);
+      if (multRule.state_property_attribute_value_maximum_type === 'variable' && multRule.state_property_attribute_value_maximum) variables.push(multRule.state_property_attribute_value_maximum);
+    })
+    conditionRules.forEach((condRule) => {
+      if (condRule.variable_id) variables.push(condRule.variable_id);
+      if (condRule.value_type === 'variable') variables.push(condRule.value);
+    })
+    return variables;
+  } catch(e) {
+    logger.warn(e.message);
+    return [];
+  }
+}
+
 module.exports = {
   addParentToChild,
   changeParentOnChild,
@@ -2803,4 +2830,5 @@ module.exports = {
   generateCalculationForm,
   getDeleteRulesArray,
   buildCodeTabs,
+  findRuleVariables,
 };
