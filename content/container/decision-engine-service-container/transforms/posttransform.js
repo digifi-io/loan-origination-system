@@ -81,7 +81,6 @@ module.exports = {
     '/decision/api/standard_strategies/:id': [
       decision.formatVersionAndStatus,
       decision.strategy.generateOutputVariablesOptions,
-      decision.populateAllVariablesMap,
       decision.strategy.populateSegment,
       decision.strategy.populateArtificialIntelligenceAndDataIntegrationSegment,
       decision.strategy.formatModuleRunOrder,
@@ -89,9 +88,7 @@ module.exports = {
     '/decision/api/standard_rules/:id': [
       decision.strategy.populateRequiredCalculationVariables,
       decision.rule.generateVariableDropdown,
-      decision.rule.getVariableMap,
       decision.rule.formatRuleDetail,
-      decision.setCalculationVariableDropdown,
     ],
     '/decision/api/standard_variables/:id': [
       decision.formatVersionAndStatus,

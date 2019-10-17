@@ -227,16 +227,22 @@ async function populateSegment(req) {
       let currentSegment = (req.controllerData.data.modules && req.controllerData.data.modules[ tabname ] && req.controllerData.data.modules[ tabname ].length) ? req.controllerData.data.modules[ tabname ][ index ] : {};
       if (currentSegment && Object.keys(currentSegment).length) {
         currentSegment = currentSegment.toJSON ? currentSegment.toJSON() : currentSegment;
-        let ruleIdMap = {};
-        let variablesMap = req.controllerData.allVariablesMap;
-        let rulesetRules = currentSegment.ruleset;
-        let conditionRules = currentSegment.conditions;
-        let allRules = rulesetRules.concat(conditionRules).filter(id => !!id);
-        let user = req.user;
-        let strategy = req.controllerData.data;
-        let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
-        const rules = await getRuleFromCache(allRules, organization);
+        const ruleIdMap = {};
+        const variablesMap = {};
+        const rulesetRules = currentSegment.ruleset;
+        const conditionRules = currentSegment.conditions;
+        const allRuleIds = rulesetRules.concat(conditionRules).filter((v, i, a) => !!v && a.indexOf(v) === i);
+        const user = req.user;
+        const strategy = req.controllerData.data;
+        const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
+        const rules = await getRuleFromCache(allRuleIds, organization);
+        const variableIds = rules.reduce((acc, rule) => {
+          acc.push(...helpers.findRuleVariables(rule));
+          return acc;
+        }, []).filter((v, i, a) => a.indexOf(v) === i);
+        const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
+        if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
         if (DECISION_CONSTANTS.SINGLE_RULE_MODULES[ currentSegment.type ] && currentSegment.ruleset && currentSegment.ruleset.length && currentSegment.ruleset[ 0 ]) {
           req.controllerData.data.default_rule_id = ruleIdMap[ currentSegment.ruleset[ 0 ] ]._id.toString();
         }
@@ -470,13 +476,8 @@ async function populateSegment(req) {
               title: module_run_element.display_name,
               baseURL: `/decision/strategies/${data._id}/${module_run_element.lookup_name}/:index`,
               buttons,
-              // toggle: `has_${module_run_element.lookup_name}`,
             };
           }),
-          // toggle_data: module_run_order.reduce((returnData, module_run_element) => {
-          //   returnData[ `has_${module_run_element.lookup_name}` ] = module_run_element.active;
-          //   return returnData;
-          // }, {}),
           all_segments: module_run_order.reduce((returnData, module_run_element) => {
             returnData.push(modules[ module_run_element.lookup_name ].map((seg, index) => ({ index, name: seg.display_name, _id: seg._id, type: seg.type, })));
             return returnData;
@@ -496,7 +497,6 @@ async function populateSegment(req) {
       }
     }
   } catch (err) {
-    console.log({ err });
     return err;
   }
 }
@@ -513,16 +513,22 @@ async function populateArtificialIntelligenceAndDataIntegrationSegment(req) {
       let currentSegment = (req.controllerData.data.modules && req.controllerData.data.modules[ tabname ] && req.controllerData.data.modules[ tabname ].length) ? req.controllerData.data.modules[ tabname ][ index ] : {};
       if (currentSegment && Object.keys(currentSegment).length) {
         currentSegment = currentSegment.toJSON ? currentSegment.toJSON() : currentSegment;
-        let ruleIdMap = {};
-        let variablesMap = req.controllerData.allVariablesMap;
-        let rulesetRules = currentSegment.ruleset;
-        let conditionRules = currentSegment.conditions;
-        let allRules = rulesetRules.concat(conditionRules).filter(id => !!id);
-        let user = req.user;
-        let strategy = req.controllerData.data;
-        let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
-        const rules = await getRuleFromCache(allRules, organization);
+        const ruleIdMap = {};
+        const variablesMap = {};
+        const rulesetRules = currentSegment.ruleset;
+        const conditionRules = currentSegment.conditions;
+        const allRuleIds = rulesetRules.concat(conditionRules).filter((v, i, a) => !!v && a.indexOf(v) === i);
+        const user = req.user;
+        const strategy = req.controllerData.data;
+        const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
+        const rules = await getRuleFromCache(allRuleIds, organization);
+        const variableIds = rules.reduce((acc, rule) => {
+          acc.push(...helpers.findRuleVariables(rule));
+          return acc;
+        }, []).filter((v, i, a) => a.indexOf(v) === i);
+        const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
+        if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
         currentSegment.conditions = conditionRules.map((rule_id, i) => {
           let rule = ruleIdMap[ rule_id ];
           let multiple_rules = rule.multiple_rules.map(inner_rule => formatMultipleRulesTable(inner_rule, rule, variablesMap));
@@ -2103,51 +2109,43 @@ function generateStrategyModuleDropdown(req) {
  * @param {Object} req Express request object
  * @returns {Object} request object with populated variables dropdown on req.controllerData
   */
-function generateVariableDropdown(req) {
-  return new Promise((resolve, reject) => {
+async function generateVariableDropdown(req) {
+  try {
     if (req.query.init || req.query.type === 'calculations') {
       const Variable = periodic.datas.get('standard_variable');
       req.controllerData = req.controllerData || {};
       req.controllerData.data = req.controllerData.data || {};
       let user = req.user;
       let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : null;
-      Variable.model.find({ organization, })
-        .then(variables => {
-          let variableDropdown;
-          let outputDropdown = [];
-          if (req.params && (req.params.type === 'assignments' || req.params.type === 'calculations' || req.params.type === 'output')) {
-            variableDropdown = variables.filter(variable => variable.type === 'Output').map(variable => ({ label: variable.display_title, value: variable._id, })).sort((a, b) => (a.label > b.label) ? 1 : -1);
-          } else {
-            outputDropdown = variables.filter(variable => variable.type === 'Output').map(variable => ({ label: variable.display_title, value: variable._id, })).sort((a, b) => (a.label > b.label) ? 1 : -1);
-            variableDropdown = variables.map(variable => ({ label: variable.display_title, value: variable._id, })).sort((a, b) => (a.label > b.label) ? 1 : -1);
-          }
-          variableDropdown.unshift({
-            label: ' ',
-            value: '',
-            disabled: true,
-          });
-          req.controllerData.data.variable_types = variables.reduce((collection, variable) => {
-            variable = variable.toJSON ? variable.toJSON() : variable;
-            collection[ variable._id.toString() ] = variable.data_type;
-            return collection;
-          }, {});
-          req.controllerData.data = Object.assign({}, {
-            'rule_type': '',
-            'variable_types': {},
-            'rule*0*state_property_attribute': '',
-          }, req.controllerData.data);
-          req.controllerData.formoptions = {
-            state_property_attribute: [],
-            output_variables: [],
-          };
-          return resolve(req);
-        })
-        .catch(reject);
+      const variables = await Variable.model.find({ organization, }, {title: 1, data_type: 1, display_title: 1, name: 1});
+      const [variableTypes, variableDropdown] = variables.reduce((collection, variable) => {
+        variable = variable.toJSON ? variable.toJSON() : variable;
+        collection[ 0 ][ variable._id.toString() ] = variable.data_type;
+        collection[ 1 ].push({
+          label: variable.title,
+          value: variable._id.toString(),
+        });
+        return collection;
+      }, [{}, []]);
+      req.controllerData.data = Object.assign({}, {
+        'rule_type': '',
+        'variable_types': {},
+        'rule*0*state_property_attribute': '',
+      }, req.controllerData.data);
+      req.controllerData.formoptions = {
+        state_property_attribute: [],
+        output_variables: [],
+      };
+      req.controllerData.variable_dropdown = variableDropdown;
+      req.controllerData.data.variable_types = variableTypes;
+      return req;
     } else {
-      return resolve(req);
+      return req;
     }
-
-  });
+  } catch(e) {
+    req.error = e.message;
+    return req;
+  }
 }
 
 /**

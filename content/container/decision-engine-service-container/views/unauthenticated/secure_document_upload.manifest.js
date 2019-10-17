@@ -168,6 +168,7 @@ module.exports = {
                             formdata: ['data'],
                           },
                           props: {
+                            blockPageUI: true,
                             flattenFormData: true,
                             footergroups: false,
                             setInitialValues: false,
@@ -182,7 +183,7 @@ module.exports = {
                                 val: 'applicationId',
                               }, ],
                               responseCallback: 'func:window.setHeaders',
-                              successCallback: ['func:window.closeModalAndCreateNotification',],
+                              successCallback: ['func:this.props.createNotification'],
                               successProps: [{
                                 text: 'File uploaded successfully!',
                                 timeout: 10000,

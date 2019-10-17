@@ -163,28 +163,30 @@ module.exports = {
                           label: 'Update Type',
                           sortid: 'change_type',
                           sortable: false,
-                        }, {
-                          label: ' ',
-                          headerColumnProps: {
-                            style: {
-                              width: '40px'
-                            },
-                          },
-                          columnProps: {
-                            style: styles.buttonCellStyle,
-                          },
-                          buttons: [ {
-                            passProps: {
-                              buttonProps: {
-                                icon: 'fa fa-pencil',
-                                className: '__icon_button'
-                              },
-                              onClick: 'func:this.props.reduxRouter.push',
-                              'onclickBaseUrl': '/decision/strategies/:endroute',
-                              'onclickLinkParams': [ { key: ':endroute', val: 'endroute' }, ],
-                            },
-                          } ]
-                        }, ]
+                        }, 
+                        // {
+                        //   label: ' ',
+                        //   headerColumnProps: {
+                        //     style: {
+                        //       width: '40px'
+                        //     },
+                        //   },
+                        //   columnProps: {
+                        //     style: styles.buttonCellStyle,
+                        //   },
+                        //   buttons: [ {
+                        //     passProps: {
+                        //       buttonProps: {
+                        //         icon: 'fa fa-pencil',
+                        //         className: '__icon_button'
+                        //       },
+                        //       onClick: 'func:this.props.reduxRouter.push',
+                        //       'onclickBaseUrl': '/decision/strategies/:endroute',
+                        //       'onclickLinkParams': [ { key: ':endroute', val: 'endroute' }, ],
+                        //     },
+                        //   } ]
+                        // }, 
+                        ]
                       }
                     }
                     ],

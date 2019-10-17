@@ -83,7 +83,7 @@ module.exports = {
     docid: ['_id', 'name', 'organization'],
     sort: { createdat: -1, },
     search: ['name',],
-    population: 'multiple_rules.state_property_attribute change strategy output_variable',
+    population: '',
     uniqueCompound: { name: 1, organization: 1, },
   },
 };
