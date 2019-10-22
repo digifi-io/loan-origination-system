@@ -34,7 +34,6 @@ module.exports = {
     ],
     '/decision/api/standard_strategies/:id/:type/createRule': [
       decision.strategy.generateVariableDropdown,
-      decision.generateSystemVariableDropdown,
     ],
     '/decision/api/*': [
       decision.checkEntityExists,

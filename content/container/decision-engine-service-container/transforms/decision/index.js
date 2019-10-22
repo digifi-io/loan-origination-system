@@ -696,91 +696,26 @@ function generateDocumentTemplateRequiredVariable(req) {
   });
 }
 
-function generateVariableDropdown(req) {
-  return new Promise((resolve, reject) => {
-    try {
-      const Variable = periodic.datas.get('standard_variable')
-      let user = req.user;
-      let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
-      Variable.model.find({ organization, })
-        .then(variables => {
-          req.controllerData.variable_dropdown = variables.map(variable => {
-            variable = variable.toJSON ? variable.toJSON() : variable;
-            return {
-              label: variable.display_title,
-              value: variable._id.toString(),
-            }
-          });
-          return resolve(req);
-        })
-        .catch(e => {
-          req.error = e.message;
-          return resolve(req);
-        });
-    } catch (err) {
-      req.error = err.message;
-      return resolve(req);
-    }
-  });
+async function generateVariableDropdown(req) {
+  try {
+    const Variable = periodic.datas.get('standard_variable')
+    let user = req.user;
+    let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
+    const variables = await Variable.model.find({ organization, }, { display_title: 1 });
+    req.controllerData.variable_dropdown = variables.map(variable => {
+      variable = variable.toJSON ? variable.toJSON() : variable;
+      return {
+        label: variable.display_title,
+        value: variable._id.toString(),
+      }
+    });
+    return req;
+  } catch (err) {
+    req.error = err.message;
+    return req;
+  }
 }
 
-function generateSystemVariableDropdown(req) {
-  return new Promise((resolve, reject) => {
-    try {
-      const Variable = periodic.datas.get('standard_variable')
-      let user = req.user;
-      let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
-      Variable.model.find({ organization })
-        .then(variables => {
-          req.controllerData.variable_dropdown = variables.map(variable => {
-            variable = variable.toJSON ? variable.toJSON() : variable;
-            return {
-              label: variable.title,
-              value: variable._id.toString(),
-            }
-          });
-          return resolve(req);
-        })
-        .catch(e => {
-          req.error = e.message;
-          return resolve(req);
-        });
-    } catch (err) {
-      req.error = err.message;
-      return resolve(req);
-    }
-  });
-}
-
-function setCalculationVariableDropdown(req) {
-  return new Promise((resolve, reject) => {
-    try {
-      const Variable = periodic.datas.get('standard_variable')
-      let user = req.user;
-      let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
-      Variable.model.find({ organization }).sort('title')
-        .then(variables => {
-          req.controllerData.formoptions = Object.assign({}, req.controllerData.formoptions, {
-            required_calculation_variables: variables.map(variable => {
-              variable = variable.toJSON ? variable.toJSON() : variable;
-              return {
-                label: variable.title,
-                value: variable._id.toString(),
-              }
-            })
-          })
-          return resolve(req);
-        })
-        .catch(e => {
-          req.error = e.message;
-          return resolve(req);
-        });
-    } catch (err) {
-      req.error = err.message;
-      return resolve(req);
-    }
-  });
-}
 
 async function deleteStrategyFromVariables(req) {
   try {
@@ -838,7 +773,6 @@ module.exports = {
   getVariableMap,
   getVariableSystemNameToIdMap,
   generateVariableDropdown,
-  generateSystemVariableDropdown,
   rule,
   variable,
   strategy,
@@ -847,6 +781,5 @@ module.exports = {
   populateBeforeAfterVariableMap,
   generateDocumentTemplateRequiredVariable,
   populateAllVariablesMap,
-  setCalculationVariableDropdown,
   formatStrategyChangeLogDetails,
 };
