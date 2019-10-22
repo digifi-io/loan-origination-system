@@ -96,9 +96,10 @@ async function stageRuleReqBodyForUpdate(req) {
       : 'organization';
     if (req.body.required_calculation_variables && req.body.required_calculation_variables.length) {
       const variables = req.body.required_calculation_variables || [];
+      const variableMapById = req.controllerData.variableMap && req.controllerData.variableMap.byId;
       const [ calculationInputs, calculationOutputs ] = variables.reduce((acc, variableId) => {
-        if (req.controllerData.variableMap && req.controllerData.variableMap.byId[variableId] && req.controllerData.variableMap.byId[variableId].type === 'Input') acc[0].push(variableId);
-        if (req.controllerData.variableMap && req.controllerData.variableMap.byId[variableId] && req.controllerData.variableMap.byId[variableId].type === 'Output') acc[1].push(variableId);
+        if (variableMapById && variableMapById[variableId] && variableMapById[variableId].type === 'Input') acc[0].push(variableId);
+        if (variableMapById && variableMapById[variableId] && variableMapById[variableId].type === 'Output') acc[1].push(variableId);
         return acc;
       }, [[], []]);
       req.body.calculation_inputs = calculationInputs;
