@@ -85,40 +85,45 @@ async function generateVariableDropdown(req) {
  * @param {Object} req Express request object
  * @returns {Object} request object with updated req body for rule update or create
  */
-function stageRuleReqBodyForUpdate(req) {
-  return new Promise((resolve, reject) => {
-    try {
-      req.body = unflatten(req.body);
-      req.controllerData = req.controllerData || {};
-      if (req.body.required_calculation_variables && req.body.required_calculation_variables.length) {
-        let inputVariableMap = req.controllerData.inputVariableMap || {};
-        req.body.required_calculation_variables = req.body.required_calculation_variables.filter(variable => !!variable);
-        req.body.calculation_inputs = req.body.required_calculation_variables.filter(variable => !!inputVariableMap[variable]);
-        req.body.calculation_outputs = req.body.required_calculation_variables.filter(variable => !inputVariableMap[variable]);
-        delete req.body.required_calculation_variables;
-      }
-      req.body = Object.keys(req.body).reduce((reduced, formname) => {
-        let formVal = req.body[ formname ];
-        formname = formname.replace(/\*/g, '.');
-        reduced[ formname ] = formVal;
-        return reduced;
-      }, {});
-      let user = req.user;
-      let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id.toString() : 'organization';
-      req.body = unflatten(req.body);
-      if (req.body.rule && Array.isArray(req.body.rule)) req.body.rule = req.body.rule.filter(el => !!el);
-      if (req.body && req.body.display_title && req.body.version) {
-        req.body.display_name = `${req.body.display_title} (v${req.body.version})`;
-      }
-      if (req.body && req.body.type) {
-        req.body = (req.query.method === 'addRule') ? ruleHelpers.cleanRuleForCreate(req) : ruleHelpers.cleanRuleForUpdate(req);
-      }
-      return resolve(req);
-    } catch (err) {
-      req.error = err.message;
-      return resolve(req);
+async function stageRuleReqBodyForUpdate(req) {
+  try {
+    req.body = unflatten(req.body);
+    req.controllerData = req.controllerData || {};
+    req.controllerData.variableMap = req.controllerData.variableMap || {};
+    const user = req.user;
+    const organization = (user && user.association && user.association.organization && user.association.organization._id)
+      ? user.association.organization._id.toString()
+      : 'organization';
+    if (req.body.required_calculation_variables && req.body.required_calculation_variables.length) {
+      const variables = req.body.required_calculation_variables || [];
+      const [ calculationInputs, calculationOutputs ] = variables.reduce((acc, variableId) => {
+        if (req.controllerData.variableMap && req.controllerData.variableMap.byId[variableId] && req.controllerData.variableMap.byId[variableId].type === 'Input') acc[0].push(variableId);
+        if (req.controllerData.variableMap && req.controllerData.variableMap.byId[variableId] && req.controllerData.variableMap.byId[variableId].type === 'Output') acc[1].push(variableId);
+        return acc;
+      }, [[], []]);
+      req.body.calculation_inputs = calculationInputs;
+      req.body.calculation_outputs = calculationOutputs;
+      delete req.body.required_calculation_variables;
     }
-  });
+    req.body = Object.keys(req.body).reduce((reduced, formname) => {
+      let formVal = req.body[ formname ];
+      formname = formname.replace(/\*/g, '.');
+      reduced[ formname ] = formVal;
+      return reduced;
+    }, {});
+    req.body = unflatten(req.body);
+    if (req.body.rule && Array.isArray(req.body.rule)) req.body.rule = req.body.rule.filter(el => !!el);
+    if (req.body && req.body.display_title && req.body.version) {
+      req.body.display_name = `${req.body.display_title} (v${req.body.version})`;
+    }
+    if (req.body && req.body.type) {
+      req.body = (req.query.method === 'addRule') ? ruleHelpers.cleanRuleForCreate(req) : ruleHelpers.cleanRuleForUpdate(req);
+    }
+    return req;
+  } catch (err) {
+    req.error = err.message;
+    return req;
+  }
 }
 
 /**
@@ -194,7 +199,7 @@ function unflattenReqBody(req) {
 }
 
 function formatInnerRuleDetail(reduced, inner_rule, idx, variableTypeMap, outer_rule) {
-  let variable_type = (inner_rule.state_property_attribute && inner_rule.state_property_attribute._id) ? inner_rule.state_property_attribute.type : variableTypeMap[ inner_rule.state_property_attribute ];
+  let variable_type = (inner_rule.state_property_attribute && inner_rule.state_property_attribute._id && inner_rule.state_property_attribute.type) ? inner_rule.state_property_attribute.type : variableTypeMap[ inner_rule.state_property_attribute.toString() ];
   if (DECISION_CONSTANTS.SINGLE_RULE_MODULES[ outer_rule.type ]) {
     inner_rule = inner_rule.toJSON ? inner_rule.toJSON() : inner_rule;
     reduced[ `rule*${idx}` ] = inner_rule;
@@ -302,7 +307,7 @@ function getVariableMap(req) {
       });
       resolve(req);
     } else {
-      Variable.model.find({ organization, })
+      Variable.model.find({ organization, }, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 })
         .then(variables => {
           req.controllerData.variableMap = variables.reduce((reduced, variable) => {
             variable = variable.toJSON ? variable.toJSON() : variable;
