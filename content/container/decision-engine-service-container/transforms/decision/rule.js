@@ -107,7 +107,7 @@ async function stageRuleReqBodyForUpdate(req) {
       delete req.body.required_calculation_variables;
     }
     req.body = Object.keys(req.body).reduce((reduced, formname) => {
-      let formVal = req.body[ formname ];
+      const formVal = req.body[ formname ];
       formname = formname.replace(/\*/g, '.');
       reduced[ formname ] = formVal;
       return reduced;
