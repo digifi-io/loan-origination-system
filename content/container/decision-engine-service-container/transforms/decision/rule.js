@@ -200,7 +200,7 @@ function unflattenReqBody(req) {
 }
 
 function formatInnerRuleDetail(reduced, inner_rule, idx, variableTypeMap, outer_rule) {
-  let variable_type = (inner_rule.state_property_attribute && inner_rule.state_property_attribute._id && inner_rule.state_property_attribute.type) ? inner_rule.state_property_attribute.type : variableTypeMap[ inner_rule.state_property_attribute ];
+  const variable_type = (inner_rule.state_property_attribute && inner_rule.state_property_attribute._id && inner_rule.state_property_attribute.type) ? inner_rule.state_property_attribute.type : variableTypeMap[ inner_rule.state_property_attribute ];
   if (DECISION_CONSTANTS.SINGLE_RULE_MODULES[ outer_rule.type ]) {
     inner_rule = inner_rule.toJSON ? inner_rule.toJSON() : inner_rule;
     reduced[ `rule*${idx}` ] = inner_rule;
