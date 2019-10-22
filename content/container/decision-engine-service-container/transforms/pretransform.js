@@ -214,7 +214,6 @@ module.exports = {
     '/decision/api/standard_strategies/:id/:name/:segment_index/createRule': [
       decision.checkLocked,
       decision.strategy.checkIfValidJavaScript,
-      decision.strategy.generateInputVariableMap,
       decision.rule.getVariableMap,
       decision.rule.unflattenReqBody,
       decision.rule.stageRuleReqBodyForUpdate,
@@ -226,7 +225,6 @@ module.exports = {
       decision.rule.getRule,
       decision.rule.checkStrategyLocked,
       decision.strategy.checkIfValidJavaScript,
-      decision.strategy.generateInputVariableMap,
       decision.rule.getVariableMap,
       decision.rule.unflattenReqBody,
       decision.rule.stageRuleReqBodyForUpdate,
