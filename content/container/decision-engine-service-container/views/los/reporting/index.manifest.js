@@ -26,10 +26,10 @@ module.exports = {
           //   right: [],
           // }),
           {
-            component: 'Container',
+            component: 'div',
             props: {
               style: {
-                marginTop: '2rem',
+                marginTop: '1.5rem',
               },
             },
             asyncprops: {

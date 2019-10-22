@@ -2458,17 +2458,24 @@ input[type="radio"]:checked:after {
   font-weight: 700;
   margin-left: 10px; }
 
+.ui.dropdown.selection.__re-bulma_button,
 .ui.dropdown.__re-bulma_button {
   display: inline-flex; }
+  .ui.dropdown.selection.__re-bulma_button .menu,
   .ui.dropdown.__re-bulma_button .menu {
     width: 100%; }
+    .ui.dropdown.selection.__re-bulma_button .menu > .item,
     .ui.dropdown.__re-bulma_button .menu > .item {
       font-weight: 600;
       font-size: inherit;
       text-align: center; }
+      .ui.dropdown.selection.__re-bulma_button .menu > .item:not(:last-child),
       .ui.dropdown.__re-bulma_button .menu > .item:not(:last-child) {
         border-bottom: 1px solid rgba(34, 36, 38, 0.15); }
-      .ui.dropdown.__re-bulma_button .menu > .item .__re-bulma_button, .ui.dropdown.__re-bulma_button .menu > .item .__ra_rb, .ui.dropdown.__re-bulma_button .menu > .item a {
+      .ui.dropdown.selection.__re-bulma_button .menu > .item .__re-bulma_button, .ui.dropdown.selection.__re-bulma_button .menu > .item .__ra_rb, .ui.dropdown.selection.__re-bulma_button .menu > .item a,
+      .ui.dropdown.__re-bulma_button .menu > .item .__re-bulma_button,
+      .ui.dropdown.__re-bulma_button .menu > .item .__ra_rb,
+      .ui.dropdown.__re-bulma_button .menu > .item a {
         border: none;
         width: 100%;
         color: inherit !important;
@@ -2477,12 +2484,16 @@ input[type="radio"]:checked:after {
         padding: 0 20px;
         height: 36px;
         line-height: 36px; }
+  .ui.dropdown.selection.__re-bulma_button > .dropdown.icon,
   .ui.dropdown.__re-bulma_button > .dropdown.icon {
     margin-left: 8px; }
+  .ui.dropdown.selection.__re-bulma_button.purple .menu > .item,
   .ui.dropdown.__re-bulma_button.purple .menu > .item {
     color: #5c198e; }
+  .ui.dropdown.selection.__re-bulma_button.__re-bulma_is-success .menu > .item,
   .ui.dropdown.__re-bulma_button.__re-bulma_is-success .menu > .item {
     color: #00b050; }
+  .ui.dropdown.selection.__re-bulma_button.__re-bulma_is-primary .menu > .item,
   .ui.dropdown.__re-bulma_button.__re-bulma_is-primary .menu > .item {
     color: #007aff; }
 
@@ -2859,6 +2870,37 @@ button:active {
   box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1) !important;
   border-color: inherit;
   height: 36px; }
+
+.global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button {
+  border-radius: 5px !important;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1) !important;
+  border: none;
+  min-width: 150px;
+  height: 36px;
+  color: #00b050; }
+  .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button:hover {
+    color: white; }
+  .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button.visible > .text:not(.default) {
+    font-weight: 600;
+    color: inherit; }
+  .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button .menu {
+    margin: 1px 0 0 0;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    border-radius: .28571429rem;
+    min-width: 100%; }
+    .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button .menu .item {
+      border: none;
+      width: 100%;
+      box-shadow: none;
+      text-decoration: none;
+      padding: 0 20px !important;
+      height: 36px;
+      line-height: 36px; }
+      .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button .menu .item:not(:last-child) {
+        border-bottom: 1px solid rgba(34, 36, 38, 0.15); }
 
 .home_box_column.strategy {
   color: #5c198e;
