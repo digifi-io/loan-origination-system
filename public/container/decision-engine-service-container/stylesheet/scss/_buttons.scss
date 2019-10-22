@@ -516,10 +516,6 @@ button:active {
     height: 36px;
   }
 
-  & .ui.selection.visible.dropdown {
-
-  }
-
   & .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button {
       border-radius: 5px!important;
       padding-left: 20px;
@@ -529,7 +525,6 @@ button:active {
       min-width: 150px;
       height: 36px;
       color: $color-green;
-      
       &:hover {
         color: white;
       }
