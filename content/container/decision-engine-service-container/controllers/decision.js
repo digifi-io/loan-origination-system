@@ -135,7 +135,7 @@ function create(req, res, next) {
             let mlmodelOptions = { childModel: 'standard_mlmodel', childId: mlmodels, parentId: newStrategyVersionDoc._id.toString(), collection, req: {}, childUpdate, };
             Promise.all([
               Model.update({ id: newStrategyVersionDoc._id.toString(), updatedoc: newStrategyVersionDoc, }),
-              controller_helper.addParentToChild(variableOptions),
+              controller_helper.addStrategyToVariable(variableOptions),
               controller_helper.addParentToChild(mlmodelOptions),
               controller_helper.handlePreviousLatestVersion({ title: newStrategyVersionDoc.title, collection, organization: newStrategyVersionDoc.organization.toString() }), ])
               .then(result => {
@@ -288,8 +288,8 @@ function update(req, res, next) {
         let changeOptions = controller_helper.createChangeOptions({ result, collection, req, strategy_title, strategy_display_title, strategy_display_name, strategyid: id, organization: (organization) ? organization.toString() : 'organization', });
         result.user = Object.assign({}, result.user, { updater: `${req.user.first_name} ${req.user.last_name}`, });
         let updatedoc = Object.assign({}, result, req.body, { updatedat: new Date(), });
-        await controller_helper.deleteParentFromChild(deleteOptions);
-        await controller_helper.addParentToChild(addOptions);
+        await controller_helper.deleteStrategyFromVariable(deleteOptions);
+        await controller_helper.addStrategyToVariable(addOptions);
         return Promise.all([
           ChangeModel.create(changeOptions),
           Model.update({
@@ -1218,8 +1218,8 @@ async function handleStrategyVariableDependencies(req, res, next) {
       parentId: req.controllerData.strategy._id.toString(),
     };
 
-    await controller_helper.addParentToChild(addOptions);
-    await controller_helper.deleteParentFromChild(deleteOptions);
+    await controller_helper.addStrategyToVariable(addOptions);
+    await controller_helper.deleteStrategyFromVariable(deleteOptions);
     return next();
   } catch (e) {
     res.status(500).send({ message: 'Error handling strategy variable dependencies', });
