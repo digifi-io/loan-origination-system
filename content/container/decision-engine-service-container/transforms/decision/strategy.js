@@ -240,7 +240,7 @@ async function populateSegment(req) {
           acc.push(...helpers.findRuleVariables(rule));
           return acc;
         }, []).filter((v, i, a) => v && a.indexOf(v) === i);
-        const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 })
+        const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
         if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
         if (DECISION_CONSTANTS.SINGLE_RULE_MODULES[ currentSegment.type ] && currentSegment.ruleset && currentSegment.ruleset.length && currentSegment.ruleset[ 0 ]) {
