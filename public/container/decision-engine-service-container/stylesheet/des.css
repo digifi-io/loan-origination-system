@@ -19,8 +19,10 @@ body {
   flex-direction: column;
   flex-flow: column; }
 
-body[id^="_secure_customer_document_upload_"] .reactapp__main {
+body[id^="_secure_customer_document_upload_"] {
   min-width: 0; }
+  body[id^="_secure_customer_document_upload_"] .reactapp__main {
+    min-width: 0; }
 
 .__re-bulma_container.login {
   min-height: calc(100vh - 70px);

@@ -27,6 +27,7 @@ body {
 }
 
 body[id^="_secure_customer_document_upload_"] {
+  min-width: 0;
   .reactapp__main {
     min-width: 0;
   }
