@@ -489,7 +489,7 @@ function generateVariableTitleMap(req) {
       const Variable = periodic.datas.get('standard_variable');
       let user = req.user;
       let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
-      Variable.model.find({ organization, }, { title: 1 })
+      Variable.model.find({ organization, }, { title: 1, display_title: 1, data_type: 1, type: 1 })
         .then(variables => {
           req.controllerData = req.controllerData || {};
           req.controllerData.variableTitleMap = variables.reduce((reduced, variable) => {
