@@ -239,7 +239,7 @@ async function populateSegment(req) {
         const variableIds = rules.reduce((acc, rule) => {
           acc.push(...helpers.findRuleVariables(rule));
           return acc;
-        }, []).filter((v, i, a) => a.indexOf(v) === i);
+        }, []).filter((v, i, a) => v && a.indexOf(v) === i);
         const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
         if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
@@ -522,10 +522,28 @@ async function populateArtificialIntelligenceAndDataIntegrationSegment(req) {
         const strategy = req.controllerData.data;
         const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
         const rules = await getRuleFromCache(allRuleIds, organization);
-        const variableIds = rules.reduce((acc, rule) => {
+        let variableIds = rules.reduce((acc, rule) => {
           acc.push(...helpers.findRuleVariables(rule));
           return acc;
-        }, []).filter((v, i, a) => a.indexOf(v) === i);
+        }, [])
+        if (currentSegment.type === 'dataintegration') {
+          if (currentSegment.inputs && currentSegment.inputs.length) {
+            variableIds.push(...currentSegment.inputs.map(input => input.input_variable));
+          }
+          if (currentSegment.outputs && currentSegment.outputs.length) {
+            variableIds.push(...currentSegment.outputs.map(output => output.output_variable));
+          }
+        }
+
+        if (currentSegment.type === 'artificialintelligence') {
+          if (currentSegment.inputs && currentSegment.inputs.length) {
+            variableIds.push(...currentSegment.inputs.map(input => input.system_variable_id));
+          }
+          if (currentSegment.outputs && currentSegment.outputs.length) {
+            variableIds.push(...currentSegment.outputs.map(output => output.output_variable));
+          }
+        }
+        variableIds = variableIds.filter((v, i, a) => v && a.indexOf(v) === i);
         const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
         if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
