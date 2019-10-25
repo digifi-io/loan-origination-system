@@ -3,6 +3,7 @@
 html {}
 
 body {
+  min-width: 1080px;
   overflow-y: scroll;
   overflow-x: auto;
   color: $color-default-text;
