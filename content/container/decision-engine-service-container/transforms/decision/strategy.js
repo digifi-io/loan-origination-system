@@ -239,7 +239,7 @@ async function populateSegment(req) {
         const variableIds = rules.reduce((acc, rule) => {
           acc.push(...helpers.findRuleVariables(rule));
           return acc;
-        }, []).filter((v, i, a) => a.indexOf(v) === i);
+        }, []).filter((v, i, a) => v && a.indexOf(v) === i);
         const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
         if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
@@ -543,7 +543,7 @@ async function populateArtificialIntelligenceAndDataIntegrationSegment(req) {
             variableIds.push(...currentSegment.outputs.map(output => output.output_variable));
           }
         }
-        variableIds = variableIds.filter((v, i, a) => a.indexOf(v) === i);
+        variableIds = variableIds.filter((v, i, a) => v && a.indexOf(v) === i);
         const variables = await Variable.model.find({ _id: { $in: variableIds }}, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 });
         if (rules && rules.length) rules.forEach(rule => ruleIdMap[ rule._id ] = rule);
         if (variables && variables.length) variables.forEach(variable => variablesMap[ variable._id ] = variable);
