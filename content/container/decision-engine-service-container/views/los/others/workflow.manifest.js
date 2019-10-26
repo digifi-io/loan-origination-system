@@ -147,10 +147,6 @@ module.exports = {
                         label: 'Status Name',
                         sortid: 'name',
                         sortable: true,
-                      // }, {
-                      //   label: 'Description',
-                      //   sortid: 'description',
-                      //   sortable: true,
                       }, {
                         label: 'Last Updated',
                         sortid: 'updatedat',

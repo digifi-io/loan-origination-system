@@ -1929,6 +1929,19 @@ a {
   .ui.progress.neural_network:not(.error) .bar {
     background-color: #a166ff !important; }
 
+.__re-bulma_control.__ra_combobox_item > .__re-bulma_button,
+.__re-bulma_control.__ra_combobox_item > .__re-bulma_button.__re-bulma_is-danger:focus:not(.__icon_button) {
+  position: absolute;
+  right: 0;
+  height: auto;
+  padding: 5px;
+  line-height: 1;
+  min-width: 0;
+  width: 100px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 5px; }
+
 .consent-check-wrapper .__re-bulma_control.__re-bulma_is-grouped {
   position: relative; }
   .consent-check-wrapper .__re-bulma_control.__re-bulma_is-grouped > .__re-bulma_control.__re-bulma_is-expanded:first-child {

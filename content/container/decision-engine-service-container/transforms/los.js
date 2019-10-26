@@ -3050,7 +3050,7 @@ async function formatApplicationStatusesIndexTable(req) {
             onClick: 'func:this.props.createModal',
             onclickProps: {
               pathname: `/los/applicationstatuses/${row._id.toString()}`,
-              title: 'Edit Status',
+              title: 'Status Configurations',
             },
           },
         }, ];
@@ -4561,7 +4561,7 @@ async function generateLosStatusEditDetail(req) {
           formElements: [{
             name: 'active',
             type: 'dropdown',
-            label: 'Active',
+            label: 'Pipeline display',
             passProps: {
               selection: true,
               fluid: true,
@@ -4579,8 +4579,24 @@ async function generateLosStatusEditDetail(req) {
             key: randomKey(),
           },
           formElements: [{
-            name: 'description',
-            label: 'Description',
+            name: 'status_requirements',
+            label: 'Status Requirements',
+            // type: 'combobox',
+          }, ],
+        }, {
+          gridProps: {
+            key: randomKey(),
+          },
+          formElements: [{
+            name: 'status_requirements',
+            label: 'Pre-Selected Loan Information Filter Categories',
+            type: 'dropdown',
+            passProps: {
+              selection: true,
+              multiple: true,
+              fluid: true,
+              search: true,
+            }
           }, ],
         }, {
           gridProps: {

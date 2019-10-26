@@ -23,6 +23,7 @@
 .__re-bulma_is-grouped {
   & .__re-bulma_control {
     flex: 1;
+
     &>.__re-bulma_column {
       padding: 0;
     }
@@ -562,477 +563,542 @@
   // }
 }
 
-// Consent Check box
+// Combobox
 
-.consent-check-wrapper {
-  & .__re-bulma_control.__re-bulma_is-grouped {
-    position: relative;
 
-    &>.__re-bulma_control.__re-bulma_is-expanded:first-child {
-      flex: none;
-    }
-  }
-
-  & .__re-bulma_help {
+.__re-bulma_control.__ra_combobox_item>.__re-bulma_button,
+  .__re-bulma_control.__ra_combobox_item>.__re-bulma_button.__re-bulma_is-danger:focus:not(.__icon_button) {
     position: absolute;
-    top: 32px;
-    left: 28px;
-    width: 250px;
+    right: 0;
+    height: auto;
+    padding: 5px;
+    line-height: 1;
+    min-width: 0;
+    width: 100px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-right: 5px;
   }
 
-}
+  // Consent Check box
 
-.__re-bulma_control {
-  &.__re-bulma_has-icon-right {
+  .consent-check-wrapper {
+    & .__re-bulma_control.__re-bulma_is-grouped {
+      position: relative;
+
+      &>.__re-bulma_control.__re-bulma_is-expanded:first-child {
+        flex: none;
+      }
+    }
+
+    & .__re-bulma_help {
+      position: absolute;
+      top: 32px;
+      left: 28px;
+      width: 250px;
+    }
+
+  }
+
+  .__re-bulma_control {
+    &.__re-bulma_has-icon-right {
+      & .ui.dropdown>.text {
+        padding-right: 32px;
+      }
+    }
+
     & .ui.dropdown>.text {
-      padding-right: 32px;
+      padding-right: 20px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    & .ui.dropdown .menu.transition.visible {
+      border-top: 1px solid #dbdbdb !important;
     }
   }
 
-  & .ui.dropdown>.text {
-    padding-right: 20px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    width: 100%;
-    overflow: hidden;
-  }
+  .ui.dropdown {
+    & .ui.label {
+      display: inline-flex;
+      align-items: center;
 
-  & .ui.dropdown .menu.transition.visible {
-    border-top: 1px solid #dbdbdb !important;
-  }
-}
-
-.ui.dropdown {
-  & .ui.label {
-    display: inline-flex;
-    align-items: center;
-
-    &>img {
-      height: 1.5em !important;
+      &>img {
+        height: 1.5em !important;
+      }
     }
   }
-}
 
-.ui.dropdown .menu>.item {
-  & a {
+  .ui.dropdown .menu>.item {
+    & a {
+      color: inherit;
+      border: none;
+      background-color: transparent !important;
+    }
+  }
+
+  .ui.dropdown .text,
+  .ui.dropdown .menu[role="listbox"] {
+    & a[href] {
+      color: $color-primary;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .ui.dropdown .menu>.item>a,
+  .ui.dropdown .menu>.item>.__re-bulma_button {
     color: inherit;
     border: none;
     background-color: transparent !important;
   }
-}
 
-.ui.dropdown .text,
-.ui.dropdown .menu[role="listbox"] {
-  & a[href] {
-    color: $color-primary;
-
-    &:hover {
-      text-decoration: underline;
-    }
+  .ui.active.search.dropdown input.search:focus+.text a {
+    color: hsla(0, 0%, 45%, .87);
   }
-}
 
-.ui.dropdown .menu>.item>a,
-.ui.dropdown .menu>.item>.__re-bulma_button {
-  color: inherit;
-  border: none;
-  background-color: transparent !important;
-}
-
-.ui.active.search.dropdown input.search:focus+.text a {
-  color: hsla(0, 0%, 45%, .87);
-}
-
-.ui.checkbox.reverse-label .box:after,
-.ui.checkbox.reverse-label .box:before,
-.ui.checkbox.reverse-label label:after,
-.ui.checkbox.reverse-label label:before {
-  left: unset;
-  right: 0;
-}
-
-.ui.checkbox.reverse-label .box,
-.ui.checkbox.reverse-label label {
-  padding-right: 1.85714em;
-  padding-left: unset;
-  font-weight: normal;
-}
-
-.ui.toggle.checkbox .box:after,
-.ui.toggle.checkbox label:after {
-  width: 1.35rem;
-  height: 1.35rem;
-  top: 3px;
-}
-
-.ui.toggle.checkbox input:checked~.box:after,
-.ui.toggle.checkbox input:checked~label:after {
-  left: 1.9rem;
-}
-
-.ui.toggle.checkbox input~.box:after,
-.ui.toggle.checkbox input~label:after {
-  left: 0.3rem;
-  top: 3px;
-}
-
-.ui.toggle.checkbox .box:before,
-.ui.toggle.checkbox label:before {
-  height: 1.8rem;
-}
-
-.ui.toggle.checkbox input:checked~.box:before,
-.ui.toggle.checkbox input:checked~label:before,
-.ui.radio.checkbox input:checked~.box:after,
-.ui.radio.checkbox input:checked~label:after {
-  background-color: $color-green !important;
-}
-
-.ui.toggle.checkbox .box:before,
-.ui.toggle.checkbox label:before {
-  background: rgba(64, 64, 64, 0.6);
-}
-
-// 
-.dcp_card .forceControllWidth100 p.__re-bulma_control {
-  width: 100%;
-}
-
-.__re-bulma_label {
-  cursor: initial;
-}
-
-.__re-bulma_label,
-.__re-bulma_content label {
-  font-size: 13px;
-  font-weight: 700;
-  text-align: left;
-
-  & * {
-    font: inherit;
+  .ui.checkbox.reverse-label .box:after,
+  .ui.checkbox.reverse-label .box:before,
+  .ui.checkbox.reverse-label label:after,
+  .ui.checkbox.reverse-label label:before {
+    left: unset;
+    right: 0;
   }
-}
 
-.__re-bulma_modal-card-body .__re-bulma_control-label {
-  // padding-top: 0px;
-  // padding-left: 5px;
-  // padding: 4px 0;
-  // flex: 2;
-  // position: relative;
-  // text-align: right;
-  // right: 10px;
-}
+  .ui.checkbox.reverse-label .box,
+  .ui.checkbox.reverse-label label {
+    padding-right: 1.85714em;
+    padding-left: unset;
+    font-weight: normal;
+  }
 
-.dcp_card .__re-bulma_card-content .__re-bulma_control-label {
-  padding-top: 0px;
-  padding-left: 5px;
-  align-self: center;
-  flex: 2;
-}
+  .ui.toggle.checkbox .box:after,
+  .ui.toggle.checkbox label:after {
+    width: 1.35rem;
+    height: 1.35rem;
+    top: 3px;
+  }
 
-.__re-bulma_input:read-only {
-  background-color: #f5f7fa;
-  border-color: $color-border;
-}
+  .ui.toggle.checkbox input:checked~.box:after,
+  .ui.toggle.checkbox input:checked~label:after {
+    left: 1.9rem;
+  }
 
-.dcp_card .__re-bulma_card-content .__re-bulma_control-label .__re-bulma_label {
-  font-weight: normal;
-  font-size: 13px;
-}
+  .ui.toggle.checkbox input~.box:after,
+  .ui.toggle.checkbox input~label:after {
+    left: 0.3rem;
+    top: 3px;
+  }
 
-.__dynamic_form_elements.__re-bulma_columns {
-  margin: 0;
-}
+  .ui.toggle.checkbox .box:before,
+  .ui.toggle.checkbox label:before {
+    height: 1.8rem;
+  }
 
-.__dynamic_form_elements>.__re-bulma_column {
-  flex: none;
-  width: 100%;
-  margin-bottom: 10px;
-}
+  .ui.toggle.checkbox input:checked~.box:before,
+  .ui.toggle.checkbox input:checked~label:before,
+  .ui.radio.checkbox input:checked~.box:after,
+  .ui.radio.checkbox input:checked~label:after {
+    background-color: $color-green !important;
+  }
 
-.recaptcha_wrapper {
-  width: auto;
-  align-self: center;
-  text-align: center;
-  margin: 20px 0 30px;
-  box-sizing: border-box;
-}
+  .ui.toggle.checkbox .box:before,
+  .ui.toggle.checkbox label:before {
+    background: rgba(64, 64, 64, 0.6);
+  }
 
-.__re-bulma_help {
-  margin-top: 0;
-}
+  // 
+  .dcp_card .forceControllWidth100 p.__re-bulma_control {
+    width: 100%;
+  }
 
-.ui.dropdown .menu {
-  z-index: 12;
-}
+  .__re-bulma_label {
+    cursor: initial;
+  }
 
-.global-search-bar {
-  display: flex;
-  align-items: flex-start;
-  padding: 10px 0;
-}
+  .__re-bulma_label,
+  .__re-bulma_content label {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
 
-.global-search-bar {
-  & .ui.menu {
-    min-height: unset;
-    border: none;
-    height: 36px;
-    box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1),
-      0 0 0 1px rgba(17, 17, 17, 0.1);
-    border-radius: 5px;
-
-    & .active.item {
-      background: #007aff;
-      color: white;
-    }
-
-    & .item {
-      padding: 0 1rem;
-      color: #777777,
+    & * {
+      font: inherit;
     }
   }
 
-  & .ui.search.dropdown.selection {
-    width: 240px;
-    transition: width 0.5s;
-    border-radius: 5px;
-    padding-top: 0;
-    padding-bottom: 0;
-    box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1),
-      0 0 0 1px rgba(17, 17, 17, 0.1);
-    border: 1px solid transparent;
-    height: auto;
-    min-height: 36px;
-    padding: 0 5px 0 30px;
-    z-index: 11;
+  .__re-bulma_modal-card-body .__re-bulma_control-label {
+    // padding-top: 0px;
+    // padding-left: 5px;
+    // padding: 4px 0;
+    // flex: 2;
+    // position: relative;
+    // text-align: right;
+    // right: 10px;
+  }
 
-    & .dropdown.icon {
-      color: #aeb1b5;
-      font-size: 1rem;
-      padding: 9px;
-      width: 30px;
-      left: 10px;
-      position: absolute;
-      float: left;
+  .dcp_card .__re-bulma_card-content .__re-bulma_control-label {
+    padding-top: 0px;
+    padding-left: 5px;
+    align-self: center;
+    flex: 2;
+  }
+
+  .__re-bulma_input:read-only {
+    background-color: #f5f7fa;
+    border-color: $color-border;
+  }
+
+  .dcp_card .__re-bulma_card-content .__re-bulma_control-label .__re-bulma_label {
+    font-weight: normal;
+    font-size: 13px;
+  }
+
+  .__dynamic_form_elements.__re-bulma_columns {
+    margin: 0;
+  }
+
+  .__dynamic_form_elements>.__re-bulma_column {
+    flex: none;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .recaptcha_wrapper {
+    width: auto;
+    align-self: center;
+    text-align: center;
+    margin: 20px 0 30px;
+    box-sizing: border-box;
+  }
+
+  .__re-bulma_help {
+    margin-top: 0;
+  }
+
+  .ui.dropdown .menu {
+    z-index: 12;
+  }
+
+  .global-search-bar {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 0;
+  }
+
+  .global-search-bar {
+    & .ui.menu {
+      min-height: unset;
+      border: none;
+      height: 36px;
+      box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1),
+        0 0 0 1px rgba(17, 17, 17, 0.1);
+      border-radius: 5px;
+
+      & .active.item {
+        background: #007aff;
+        color: white;
+      }
+
+      & .item {
+        padding: 0 1rem;
+        color: #777777,
+      }
     }
 
-    &.active {
-      border-color: #007aff;
+    & .ui.search.dropdown.selection {
+      width: 240px;
+      transition: width 0.5s;
+      border-radius: 5px;
+      padding-top: 0;
+      padding-bottom: 0;
+      box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1),
+        0 0 0 1px rgba(17, 17, 17, 0.1);
+      border: 1px solid transparent;
+      height: auto;
+      min-height: 36px;
+      padding: 0 5px 0 30px;
+      z-index: 11;
 
       & .dropdown.icon {
+        color: #aeb1b5;
+        font-size: 1rem;
+        padding: 9px;
+        width: 30px;
+        left: 10px;
+        position: absolute;
+        float: left;
+      }
+
+      &.active {
+        border-color: #007aff;
+
+        & .dropdown.icon {
+          color: inherit;
+        }
+      }
+
+      &.multiple {
+        &>input.search {
+          height: auto;
+          margin: 8px 0 8px 5px;
+        }
+      }
+
+      &:not(.multiple) {
+
+        &>input.search,
+        &>span.sizer {
+          padding-left: 30px;
+        }
+
+        &>.text {
+          margin: 10px 0px;
+          padding: 0;
+        }
+      }
+    }
+
+    & .ui.default.dropdown:not(.button)>.text,
+    & .ui.dropdown:not(.button)>.default.text {
+      color: #777777;
+      -webkit-font-smoothing: antialiased;
+      padding-left: 25px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+    & .global-table-search {
+      margin: 0;
+
+      &:not(:only-child) {
+        flex: 1 1 auto;
+        align-self: flex-start;
+
+        &:not(:last-child) {
+          margin-right: 10px;
+        }
+
+        &>input {
+          transition: none;
+          width: 100%;
+        }
+      }
+
+      &>input {
+        width: 240px;
+        transition: width 0.5s;
+        border-radius: 5px;
+        height: 36px;
+        box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
+        border: none;
+
+        ~.__re-bulma_fa {
+          top: 6px !important;
+        }
+
+        &[value] {
+          width: 100%;
+        }
+
+        &[value=""] {
+          width: 240px;
+        }
+
+        &:focus {
+          width: 100%;
+        }
+      }
+
+      & .ui.image {
+        border-radius: 50%;
+      }
+    }
+  }
+
+  // RECAPTCHA
+
+  #recaptcha_element {
+    text-align: center;
+    margin: auto;
+  }
+
+  #recaptcha_element>div {
+    width: 304px;
+    height: 78px;
+    margin: auto;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  #recaptcha_error_msg {
+    width: 304px;
+    margin: auto;
+    text-align: start;
+    color: $color-red;
+    font-size: 0.75rem;
+  }
+
+  .__select_initial .__re-bulma_select select {
+    color: #8c8c8c;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  // CODE MIRROR
+  .CodeMirror-sizer {
+    min-height: 40px !important;
+    margin-bottom: 0 !important;
+    margin-top: 5px !important;
+  }
+
+  .CodeMirror-scroll {
+    overflow: auto !important;
+  }
+
+  .cm-s-default .cm-string {
+    color: #000bb3;
+  }
+
+  .cm-s-default .cm-atom {
+    color: #42076b;
+  }
+
+  .cm-s-default .cm-number {
+    color: #023320;
+  }
+
+  .cm-s-default .cm-tag {
+    color: #000bb3;
+  }
+
+  .tabbed-code-mirror {
+
+    .__re-bulma_tabs.__re-bulma_is-boxed li.__re-bulma_is-active a,
+    .__re-bulma_tabs.__re-bulma_is-boxed li.__re-bulma_is-active span {
+      background: white;
+    }
+
+    .__re-bulma_tabs ul {}
+
+    .__re-bulma_tabs.__re-bulma_is-boxed a:hover,
+    .__re-bulma_tabs.__re-bulma_is-boxed span:hover {
+      background: white;
+      font-weight: bold;
+    }
+
+    .ReactCodeMirror {
+      border: 1px solid #d3d6db;
+      border-top: none;
+    }
+
+  }
+
+  // Cropper
+  .cropper-face,
+  .cropper-line,
+  .cropper-point {
+    opacity: 0.2;
+  }
+
+  // Date Picker 
+  .__re-bulma_content,
+  .__re-bulma_column {
+    & .DayPicker_transitionContainer {
+      background-color: white;
+    }
+
+    & .CalendarMonth_caption {
+      font-size: 18px;
+      text-align: center;
+      padding-top: 22px;
+      padding-bottom: 37px;
+      caption-side: top;
+
+      & strong {
+        font-weight: inherit;
+        font-weight: bolder;
+        font-size: inherit;
+      }
+    }
+
+    & small {
+      font-size: 80%;
+    }
+
+    & .DayPicker_weekHeader_ul.DayPicker_weekHeader_ul_1 {
+      margin: 0;
+    }
+
+    & .DayPicker_weekHeader {
+      padding: 0 13px;
+    }
+
+    & .CalendarDay__default {
+      border: 1px solid #e4e7e7;
+      color: #565a5c;
+      vertical-align: middle;
+      background: #fff;
+
+      &:hover {
+        background: #e4e7e7;
+        border: 1px double #e4e7e7;
         color: inherit;
       }
     }
 
-    &.multiple {
-      &>input.search {
-        height: auto;
-        margin: 8px 0 8px 5px;
-      }
+    & .CalendarDay__selected,
+    .CalendarDay__selected:active,
+    .CalendarDay__selected:hover {
+      background: $color-primary;
+      border: 1px solid $color-primary;
+      color: #fff;
     }
 
-    &:not(.multiple) {
-
-      &>input.search,
-      &>span.sizer {
-        padding-left: 30px;
-      }
-
-      &>.text {
-        margin: 10px 0px;
-        padding: 0;
-      }
-    }
-  }
-
-  & .ui.default.dropdown:not(.button)>.text,
-  & .ui.dropdown:not(.button)>.default.text {
-    color: #777777;
-    -webkit-font-smoothing: antialiased;
-    padding-left: 25px;
-    margin-top: 8px;
-    margin-bottom: 8px;
-  }
-
-  & .global-table-search {
-    margin: 0;
-
-    &:not(:only-child) {
-      flex: 1 1 auto;
-      align-self: flex-start;
-
-      &:not(:last-child) {
-        margin-right: 10px;
-      }
-
-      &>input {
-        transition: none;
-        width: 100%;
-      }
+    & .CalendarMonth {
+      padding: 0 13px;
     }
 
-    &>input {
-      width: 240px;
-      transition: width 0.5s;
-      border-radius: 5px;
-      height: 36px;
-      box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
-      border: none;
-
-      ~.__re-bulma_fa {
-        top: 6px !important;
-      }
-
-      &[value] {
-        width: 100%;
-      }
-
-      &[value=""] {
-        width: 240px;
-      }
-
-      &:focus {
-        width: 100%;
-      }
+    & .CalendarMonth_table {
+      vertical-align: middle
     }
 
-    & .ui.image {
-      border-radius: 50%;
+    & .DayPicker_weekHeaders__horizontal {
+      margin-left: 9px;
     }
-  }
-}
 
-// RECAPTCHA
+    & .DayPicker_weekHeader_li {
+      margin: 0
+    }
 
-#recaptcha_element {
-  text-align: center;
-  margin: auto;
-}
-
-#recaptcha_element>div {
-  width: 304px;
-  height: 78px;
-  margin: auto;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-#recaptcha_error_msg {
-  width: 304px;
-  margin: auto;
-  text-align: start;
-  color: $color-red;
-  font-size: 0.75rem;
-}
-
-.__select_initial .__re-bulma_select select {
-  color: #8c8c8c;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-// CODE MIRROR
-.CodeMirror-sizer {
-  min-height: 40px !important;
-  margin-bottom: 0 !important;
-  margin-top: 5px !important;
-}
-
-.CodeMirror-scroll {
-  overflow: auto !important;
-}
-
-.cm-s-default .cm-string {
-  color: #000bb3;
-}
-
-.cm-s-default .cm-atom {
-  color: #42076b;
-}
-
-.cm-s-default .cm-number {
-  color: #023320;
-}
-
-.cm-s-default .cm-tag {
-  color: #000bb3;
-}
-
-.tabbed-code-mirror {
-
-  .__re-bulma_tabs.__re-bulma_is-boxed li.__re-bulma_is-active a,
-  .__re-bulma_tabs.__re-bulma_is-boxed li.__re-bulma_is-active span {
-    background: white;
-  }
-
-  .__re-bulma_tabs ul {}
-
-  .__re-bulma_tabs.__re-bulma_is-boxed a:hover,
-  .__re-bulma_tabs.__re-bulma_is-boxed span:hover {
-    background: white;
-    font-weight: bold;
-  }
-
-  .ReactCodeMirror {
-    border: 1px solid #d3d6db;
-    border-top: none;
-  }
-
-}
-
-// Cropper
-.cropper-face,
-.cropper-line,
-.cropper-point {
-  opacity: 0.2;
-}
-
-// Date Picker 
-.__re-bulma_content,
-.__re-bulma_column {
-  & .DayPicker_transitionContainer {
-    background-color: white;
-  }
-
-  & .CalendarMonth_caption {
-    font-size: 18px;
-    text-align: center;
-    padding-top: 22px;
-    padding-bottom: 37px;
-    caption-side: top;
-
-    & strong {
-      font-weight: inherit;
-      font-weight: bolder;
-      font-size: inherit;
+    & .DayPickerKeyboardShortcuts_panel {
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 2px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      z-index: 2;
+      padding: 22px;
+      margin: 33px;
     }
   }
 
-  & small {
-    font-size: 80%;
+  .DayPickerKeyboardShortcuts_show__bottomRight {
+    border-right: 33px solid $color-primary;
   }
 
-  & .DayPicker_weekHeader_ul.DayPicker_weekHeader_ul_1 {
-    margin: 0;
+  .DayPickerKeyboardShortcuts_show__bottomRight:hover {
+    border-right: 33px solid #0d6ace;
   }
 
-  & .DayPicker_weekHeader {
-    padding: 0 13px;
-  }
-
-  & .CalendarDay__default {
-    border: 1px solid #e4e7e7;
-    color: #565a5c;
-    vertical-align: middle;
-    background: #fff;
-
-    &:hover {
-      background: #e4e7e7;
-      border: 1px double #e4e7e7;
-      color: inherit;
-    }
-  }
-
-  & .CalendarDay__selected,
+  .CalendarDay__selected,
   .CalendarDay__selected:active,
   .CalendarDay__selected:hover {
     background: $color-primary;
@@ -1040,183 +1106,135 @@
     color: #fff;
   }
 
-  & .CalendarMonth {
-    padding: 0 13px;
+  .DayPickerKeyboardShortcuts_buttonReset:active {
+    border-top-color: transparent;
   }
 
-  & .CalendarMonth_table {
-    vertical-align: middle
+  .create-application .SingleDatePicker_picker.SingleDatePicker_picker_1.SingleDatePicker_picker__directionLeft.SingleDatePicker_picker__directionLeft_2 {
+    left: -87% !important;
   }
 
-  & .DayPicker_weekHeaders__horizontal {
-    margin-left: 9px;
+  .__re-bulma_modal-card-body .SingleDatePicker_picker.SingleDatePicker_picker_1.SingleDatePicker_picker__directionLeft.SingleDatePicker_picker__directionLeft_2 {
+    left: -1.9rem !important;
   }
 
-  & .DayPicker_weekHeader_li {
-    margin: 0
+  .SingleDatePicker_picker {
+    z-index: 11;
   }
 
-  & .DayPickerKeyboardShortcuts_panel {
-    overflow: auto;
-    background: #fff;
-    border: 1px solid #dbdbdb;
-    border-radius: 2px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    z-index: 2;
-    padding: 22px;
-    margin: 33px;
+  #date_input {
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #d3d6db;
+    border-radius: 3px;
+    color: #222324;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    font-size: 1rem;
+    height: 32px;
+    -webkit-box-pack: start;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    line-height: 24px;
+    padding-left: 8px;
+    padding-right: 8px;
+    position: relative;
+    vertical-align: top;
+    box-shadow: inset 0 1px 2px rgba(17, 17, 17, .1);
+    max-width: 100%;
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+    font: inherit;
+
+    &.DateInput_input__focused,
+    &:focus {
+      border: 1px solid $color-primary;
+    }
   }
-}
 
-.DayPickerKeyboardShortcuts_show__bottomRight {
-  border-right: 33px solid $color-primary;
-}
-
-.DayPickerKeyboardShortcuts_show__bottomRight:hover {
-  border-right: 33px solid #0d6ace;
-}
-
-.CalendarDay__selected,
-.CalendarDay__selected:active,
-.CalendarDay__selected:hover {
-  background: $color-primary;
-  border: 1px solid $color-primary;
-  color: #fff;
-}
-
-.DayPickerKeyboardShortcuts_buttonReset:active {
-  border-top-color: transparent;
-}
-
-.create-application .SingleDatePicker_picker.SingleDatePicker_picker_1.SingleDatePicker_picker__directionLeft.SingleDatePicker_picker__directionLeft_2 {
-  left: -87% !important;
-}
-
-.__re-bulma_modal-card-body .SingleDatePicker_picker.SingleDatePicker_picker_1.SingleDatePicker_picker__directionLeft.SingleDatePicker_picker__directionLeft_2 {
-  left: -1.9rem !important;
-}
-
-.SingleDatePicker_picker {
-  z-index: 11;
-}
-
-#date_input {
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-  background-color: #fff;
-  border: 1px solid #d3d6db;
-  border-radius: 3px;
-  color: #222324;
-  display: -webkit-inline-box;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  font-size: 1rem;
-  height: 32px;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-  line-height: 24px;
-  padding-left: 8px;
-  padding-right: 8px;
-  position: relative;
-  vertical-align: top;
-  box-shadow: inset 0 1px 2px rgba(17, 17, 17, .1);
-  max-width: 100%;
-  width: 100%;
-  padding-top: 0;
-  padding-bottom: 0;
-  font: inherit;
-
-  &.DateInput_input__focused,
-  &:focus {
-    border: 1px solid $color-primary;
-  }
-}
-
-.DateInput {
-  width: 100%;
-}
-
-.DateInput_fang.DateInput_fang_1 {
-  top: 39px !important;
-}
-
-.create-application .SingleDatePicker_picker.SingleDatePicker_picker_1.SingleDatePicker_picker__directionLeft.SingleDatePicker_picker__directionLeft_2 {
-  left: -87% !important;
-}
-
-.SingleDatePicker_picker.SingleDatePicker_picker_1.SingleDatePicker_picker__directionLeft.SingleDatePicker_picker__directionLeft_2 {
-  top: 50px !important;
-}
-
-.SingleDatePickerInput__withBorder {
-  border: none;
-  width: 100%;
-}
-
-.SingleDatePicker.SingleDatePicker_1 {
-  width: 100%;
-
-  &>div {
+  .DateInput {
     width: 100%;
   }
-}
 
-// Color Picker
-.__ra_color_picker {
-  &>div {
-    z-index: 10;
+  .DateInput_fang.DateInput_fang_1 {
+    top: 39px !important;
+  }
+
+  .create-application .SingleDatePicker_picker.SingleDatePicker_picker_1.SingleDatePicker_picker__directionLeft.SingleDatePicker_picker__directionLeft_2 {
+    left: -87% !important;
+  }
+
+  .SingleDatePicker_picker.SingleDatePicker_picker_1.SingleDatePicker_picker__directionLeft.SingleDatePicker_picker__directionLeft_2 {
+    top: 50px !important;
+  }
+
+  .SingleDatePickerInput__withBorder {
+    border: none;
+    width: 100%;
+  }
+
+  .SingleDatePicker.SingleDatePicker_1 {
+    width: 100%;
 
     &>div {
-      width: 45px;
-      border-radius: 4px !important;
-      margin-right: 5px;
-      overflow: visible;
+      width: 100%;
+    }
+  }
 
-      &>div:first-child {
-        height: 22px !important;
+  // Color Picker
+  .__ra_color_picker {
+    &>div {
+      z-index: 10;
+
+      &>div {
+        width: 45px;
+        border-radius: 4px !important;
+        margin-right: 5px;
+        overflow: visible;
+
+        &>div:first-child {
+          height: 22px !important;
+        }
       }
     }
   }
-}
 
-// Radio Buttons
+  // Radio Buttons
 
-input[type="radio"] {
-  position: relative;
-}
+  input[type="radio"] {
+    position: relative;
+  }
 
-input[type="radio"]:before {
-  width: 18px;
-  height: 18px;
-  border-radius: 18px;
-  top: -2px;
-  left: -3px;
-  position: absolute;
-  background-color: white;
-  content: '';
-  display: inline-block;
-  visibility: visible;
-  border: 1px solid #ccc;
-}
+  input[type="radio"]:before {
+    width: 18px;
+    height: 18px;
+    border-radius: 18px;
+    top: -2px;
+    left: -3px;
+    position: absolute;
+    background-color: white;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 1px solid #ccc;
+  }
 
-input[type="radio"]:checked:after {
-  width: 10px;
-  height: 10px;
-  border-radius: 10px;
-  top: 2px;
-  left: 1px;
-  position: absolute;
-  background-color: $color-green;
-  content: '';
-  display: inline-block;
-  visibility: visible;
-}
+  input[type="radio"]:checked:after {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    top: 2px;
+    left: 1px;
+    position: absolute;
+    background-color: $color-green;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+  }
