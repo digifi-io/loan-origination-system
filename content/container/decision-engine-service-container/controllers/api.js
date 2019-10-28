@@ -1054,23 +1054,24 @@ async function createCaseRecord(req, res, next) {
   const strategy_name = req.controllerData.strategy && req.controllerData.strategy.display_name ? req.controllerData.strategy.display_name : req.body.strategy_name;
   let { org, results, } = req.controllerData;
   if (org.save_data) {
-    let redisClient = periodic.app.locals.redisClient;
-    let asyncRedisIncr = Bluebird.promisify(redisClient.incr, { context: redisClient, });
-    let case_count = await asyncRedisIncr('individual_case_count');
+    const redisClient = periodic.app.locals.redisClient;
+    const asyncRedisIncr = Bluebird.promisify(redisClient.incr, { context: redisClient, });
+    const case_count = await asyncRedisIncr('individual_case_count');
     const inputs = req.body.variables || {};
-    let case_name = req.body.case_name || inputs.case_name || `Individual Case ${case_count}`;
+    const case_name = req.body.case_name || inputs.case_name || `Individual Case ${case_count}`;
     if (inputs.case_name) delete inputs.case_name;
     const application_id = (req.body && req.body.application_id) ? req.body.application_id : null;
     const Case = periodic.datas.get('standard_case');
-    let result = results.results;
-    let module_order = req.controllerData.case_module_order || [];
-    let compiled_order = req.controllerData.compiled_order || [];
-    let newdoc = {
+    const result = results.results;
+    const module_order = req.controllerData.case_module_order || [];
+    const compiled_order = req.controllerData.compiled_order || [];
+    const moduleOrder = helpers.cleanModuleData(module_order);
+    const newdoc = {
       case_name,
       case_type: 'API',
       inputs,
       outputs: result.output_variables || {},
-      module_order,
+      module_order: moduleOrder || [],
       compiled_order,
       application: application_id,
       passed: result.passed,
@@ -1085,7 +1086,7 @@ async function createCaseRecord(req, res, next) {
         updater: 'API User',
       },
     };
-    let created = await Case.create({ newdoc, skip_xss: true, });
+    const created = await Case.create({ newdoc, skip_xss: true, });
     req.controllerData.created = created.toJSON ? created.toJSON() : created;
     req.controllerData.results.api_request_record = created._id.toString();
     return next();
@@ -1101,14 +1102,15 @@ async function createCase(result, module_order, compiled_order, variables, strat
   const case_name = inputs.case_name ? inputs.case_name : `Individual Case ${case_count}`;
   // const application_id = (inputs && inputs.application_id) ? inputs.application_id : null;
   if (inputs.case_name) delete inputs.case_name;
+  const moduleOrder = helpers.cleanModuleData(module_order);
   const Case = periodic.datas.get('standard_case');
-  let newdoc = {
+  const newdoc = {
     case_name,
     case_type: 'API',
     inputs,
     application: application_id,
     outputs: result.output_variables || {},
-    module_order: module_order || [],
+    module_order: moduleOrder || [],
     compiled_order,
     decline_reasons: result.decline_reasons || [],
     passed: result.passed,
@@ -1122,7 +1124,7 @@ async function createCase(result, module_order, compiled_order, variables, strat
       updater: 'API User',
     },
   };
-  let created = await Case.create({ newdoc, skip_xss: true, });
+  const created = await Case.create({ newdoc, skip_xss: true, });
   return created;
 }
 
