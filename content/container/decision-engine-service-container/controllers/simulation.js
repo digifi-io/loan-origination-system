@@ -1834,23 +1834,24 @@ async function runIndividualSimulation(req, res, next) {
     let user = req.user || {};
     let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
     let credit_pipeline = req.controllerData.credit_pipeline;
+    const Case = periodic.datas.get('standard_case');
     if (req.controllerData.testcase) {
       let result = await credit_pipeline(Object.assign({}, req.controllerData.testcase, { strategy_status: req.controllerData.strategy_status, }));
       result = formatSimulationResult(result);
-      let module_order = result.processing_detail || [];
-      let compiled_order = req.controllerData.compiled_order || [];
-      let emailModule = [];
-      let textmessageModule = [];
-      let documentcreationModule = [];
+      const module_order = result.processing_detail || [];
+      const compiled_order = req.controllerData.compiled_order || [];
+      const emailModule = [];
+      const textmessageModule = [];
+      const documentcreationModule = [];
       module_order.forEach((md) => {
         if (md.type === 'Email') emailModule.push(md);
         else if (md.type === 'Text Message') textmessageModule.push(md);
         else if (md.type === 'Document Creation') documentcreationModule.push(md);
       });
       redisClient = periodic.app.locals.redisClient;
-      let asyncRedisIncr = Bluebird.promisify(redisClient.incr, { context: redisClient, });
-      let case_count = await asyncRedisIncr('individual_case_count');
-      let case_name = req.body.case_name || `Individual Case ${case_count}`;
+      const asyncRedisIncr = Bluebird.promisify(redisClient.incr, { context: redisClient, });
+      const case_count = await asyncRedisIncr('individual_case_count');
+      const case_name = req.body.case_name || `Individual Case ${case_count}`;
       let files = [];
       if (result.data_sources && result.data_sources.length) {
         files = await saveFiles({ result: result, case_name, organization, user, });
@@ -1867,15 +1868,15 @@ async function runIndividualSimulation(req, res, next) {
         let templatefiles = await Promise.all(documentcreationModule.map(md => generateDocumentCreationFile({ md, case_name, organization, user, })));
         files.push(...templatefiles);
       }
-      let strategy_display_name = req.controllerData.compiledStrategy.display_name;
+      const strategy_display_name = req.controllerData.compiledStrategy.display_name;
       const application_id = (req.query && req.query.application_id) ? req.query.application_id : undefined;
-      const Case = periodic.datas.get('standard_case');
-      let newdoc = {
+      const moduleOrder = helpers.cleanModuleData(module_order);
+      const newdoc = {
         case_name,
         application: application_id,
         inputs: result.input_variables || {},
         outputs: result.output_variables || {},
-        module_order,
+        module_order: moduleOrder || [],
         compiled_order,
         passed: result.passed,
         decline_reasons: result.decline_reasons || [],
@@ -1890,7 +1891,7 @@ async function runIndividualSimulation(req, res, next) {
         },
         files: files.map(file => file._id.toString()),
       };
-      let created = await Case.create({ newdoc, skip_xss: true });
+      const created = await Case.create({ newdoc, skip_xss: true });
       req.controllerData.created = created.toJSON ? created.toJSON() : created;
       next();
     } else {
