@@ -4581,14 +4581,14 @@ async function generateLosStatusEditDetail(req) {
           formElements: [{
             name: 'status_requirements',
             label: 'Status Requirements',
-            // type: 'combobox',
+            type: 'combobox',
           }, ],
         }, {
           gridProps: {
             key: randomKey(),
           },
           formElements: [{
-            name: 'status_requirements',
+            name: 'preselected_loan_information_filter_categories',
             label: 'Pre-Selected Loan Information Filter Categories',
             type: 'dropdown',
             passProps: {

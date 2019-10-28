@@ -567,7 +567,9 @@
 
 
 .__re-bulma_control.__ra_combobox_item>.__re-bulma_button,
-  .__re-bulma_control.__ra_combobox_item>.__re-bulma_button.__re-bulma_is-danger:focus:not(.__icon_button) {
+.__re-bulma_control.__ra_combobox_item>.__re-bulma_button:focus,
+  .__re-bulma_control.__ra_combobox_item>.__re-bulma_button.__re-bulma_is-danger,
+  .__re-bulma_control.__ra_combobox_item>.__re-bulma_button.__re-bulma_is-danger:focus {
     position: absolute;
     right: 0;
     height: auto;
