@@ -1767,7 +1767,7 @@ a {
   text-transform: uppercase;
   color: #00b050;
   text-align: center; }
-  .ui.dropdown.button-dropdown-success:hover, .ui.dropdown.button-dropdown-success.__re-bulma_is-active {
+  .ui.dropdown.button-dropdown-success:hover, .ui.dropdown.button-dropdown-success:focus, .ui.dropdown.button-dropdown-success.__re-bulma_is-active {
     background-color: #00b050 !important;
     border-color: #00b050;
     color: white; }
@@ -2462,7 +2462,8 @@ input[type="radio"]:checked:after {
     font-size: 18px;
     position: relative;
     top: -1px; }
-  .__re-bulma_button.question-button:hover,
+  .__re-bulma_button.question-button:focus, .__re-bulma_button.question-button:hover,
+  .question-button:focus,
   .question-button:hover {
     color: #969696; }
 
@@ -2623,8 +2624,7 @@ input[type="radio"]:checked:after {
   font-size: 13px; }
 
 a.__re-bulma_button.__re-bulma_is-primary,
-.__re-bulma_button.__re-bulma_is-primary,
-.__re-bulma_button.__re-bulma_is-primary:focus {
+.__re-bulma_button.__re-bulma_is-primary {
   background-color: #fff;
   color: #007aff;
   font-weight: 600;
@@ -2638,8 +2638,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
   font-size: 13px;
   text-transform: uppercase; }
   a.__re-bulma_button.__re-bulma_is-primary.purple,
-  .__re-bulma_button.__re-bulma_is-primary.purple,
-  .__re-bulma_button.__re-bulma_is-primary:focus.purple {
+  .__re-bulma_button.__re-bulma_is-primary.purple {
     color: #5c198e; }
 
 .__re-bulma_button.__re-bulma_is-primary > span {
@@ -2672,6 +2671,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
   box-shadow: none; }
 
 .__re-bulma_button.__re-bulma_is-primary.__re-bulma_is-active,
+.__re-bulma_button.__re-bulma_is-primary:focus,
 .__re-bulma_button.__re-bulma_is-primary:hover {
   background-color: #007aff !important;
   border-color: #007aff !important;
@@ -2679,6 +2679,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
   transition: background-color 0.15s ease; }
 
 .__re-bulma_button.__re-bulma_is-primary.purple.__re-bulma_is-active,
+.__re-bulma_button.__re-bulma_is-primary.purple:focus,
 .__re-bulma_button.__re-bulma_is-primary.purple:hover {
   background-color: #5c198e !important;
   border-color: #5c198e !important;
@@ -2688,8 +2689,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
 .__re-bulma_button.__re-bulma_is-primary {
   transition: background-color 0.15s ease; }
 
-.__re-bulma_button.__re-bulma_is-danger:not(.__icon_button),
-.__re-bulma_button.__re-bulma_is-danger:focus:not(.__icon_button) {
+.__re-bulma_button.__re-bulma_is-danger:not(.__icon_button) {
   background-color: white;
   border: none;
   color: #d9534f;
@@ -2705,6 +2705,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
   text-transform: uppercase; }
 
 .__re-bulma_button.__re-bulma_is-danger.__re-bulma_is-active,
+.__re-bulma_button.__re-bulma_is-danger:focus,
 .__re-bulma_button.__re-bulma_is-danger:hover {
   background-color: #d9534f;
   color: white; }
@@ -2727,8 +2728,7 @@ button:active {
   font-weight: 600;
   font-size: 13px; }
 
-.__re-bulma_button.__re-bulma_is-success,
-.__re-bulma_button.__re-bulma_is-success:focus {
+.__re-bulma_button.__re-bulma_is-success {
   background-color: white;
   border: none;
   color: #00b050;
@@ -2742,15 +2742,12 @@ button:active {
   height: 36px;
   font-size: 13px;
   text-transform: uppercase; }
-  .__re-bulma_button.__re-bulma_is-success:hover, .__re-bulma_button.__re-bulma_is-success.__re-bulma_is-active,
-  .__re-bulma_button.__re-bulma_is-success:focus:hover,
-  .__re-bulma_button.__re-bulma_is-success:focus.__re-bulma_is-active {
+  .__re-bulma_button.__re-bulma_is-success:hover, .__re-bulma_button.__re-bulma_is-success:focus, .__re-bulma_button.__re-bulma_is-success.__re-bulma_is-active {
     background-color: #00b050 !important;
     border-color: #00b050;
     color: white; }
 
-.__re-bulma_button.docusign-btn,
-.__re-bulma_button.docusign-btn:focus {
+.__re-bulma_button.docusign-btn {
   background-color: white;
   border: none;
   color: #00b050;
@@ -2764,23 +2761,16 @@ button:active {
   height: 36px;
   font-size: 13px;
   text-transform: uppercase; }
-  .__re-bulma_button.docusign-btn:hover, .__re-bulma_button.docusign-btn.__re-bulma_is-active,
-  .__re-bulma_button.docusign-btn:focus:hover,
-  .__re-bulma_button.docusign-btn:focus.__re-bulma_is-active {
+  .__re-bulma_button.docusign-btn:hover, .__re-bulma_button.docusign-btn:focus, .__re-bulma_button.docusign-btn.__re-bulma_is-active {
     background-color: #00b050 !important;
     border-color: #00b050;
     color: white; }
-  .__re-bulma_button.docusign-btn:hover, .__re-bulma_button.docusign-btn.__re-bulma_is-active,
-  .__re-bulma_button.docusign-btn:focus:hover,
-  .__re-bulma_button.docusign-btn:focus.__re-bulma_is-active {
+  .__re-bulma_button.docusign-btn:hover, .__re-bulma_button.docusign-btn:focus, .__re-bulma_button.docusign-btn.__re-bulma_is-active {
     background-color: #005eb8 !important;
     border-color: #005eb8; }
-    .__re-bulma_button.docusign-btn:hover > span, .__re-bulma_button.docusign-btn.__re-bulma_is-active > span,
-    .__re-bulma_button.docusign-btn:focus:hover > span,
-    .__re-bulma_button.docusign-btn:focus.__re-bulma_is-active > span {
+    .__re-bulma_button.docusign-btn:hover > span, .__re-bulma_button.docusign-btn:focus > span, .__re-bulma_button.docusign-btn.__re-bulma_is-active > span {
       background-image: url(/images/elements/docusign-logo-white.svg); }
-  .__re-bulma_button.docusign-btn > span,
-  .__re-bulma_button.docusign-btn:focus > span {
+  .__re-bulma_button.docusign-btn > span {
     display: block;
     background-image: url(/images/elements/docusign-logo.png);
     width: 75px;
@@ -2865,8 +2855,9 @@ button:active {
     .radio-btn-group input[type="radio"]:checked + label .question-button {
       color: white;
       background-color: #404040; }
-      .radio-btn-group input[type="radio"]:checked + label .__re-bulma_button.question-button:hover,
-      .radio-btn-group input[type="radio"]:checked + label .question-button:hover {
+      .radio-btn-group input[type="radio"]:checked + label .__re-bulma_button.question-button:hover, .radio-btn-group input[type="radio"]:checked + label .__re-bulma_button.question-button:focus,
+      .radio-btn-group input[type="radio"]:checked + label .question-button:hover,
+      .radio-btn-group input[type="radio"]:checked + label .question-button:focus {
         color: #ccc; }
   .radio-btn-group input[type="radio"]:active + label, .radio-btn-group input[type="radio"]:hover + label, .radio-btn-group input[type="radio"]:focus + label {
     border: 1px solid #007aff; }
@@ -2899,7 +2890,7 @@ button:active {
   min-width: 150px;
   height: 36px;
   color: #00b050; }
-  .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button:hover {
+  .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button:focus, .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button:hover {
     color: white; }
   .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button.visible > .text:not(.default) {
     font-weight: 600;

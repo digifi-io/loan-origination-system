@@ -29,6 +29,7 @@
     position: relative;
     top: -1px;
   }
+  &:focus,
   &:hover {
     color: $color-gray;
   }
@@ -216,8 +217,7 @@
 }
 
 a.__re-bulma_button.__re-bulma_is-primary,
-.__re-bulma_button.__re-bulma_is-primary,
-.__re-bulma_button.__re-bulma_is-primary:focus {
+.__re-bulma_button.__re-bulma_is-primary {
   background-color: #fff;
   color: $color-primary;
   font-weight: 600;
@@ -273,6 +273,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
 }
 
 .__re-bulma_button.__re-bulma_is-primary.__re-bulma_is-active,
+.__re-bulma_button.__re-bulma_is-primary:focus,
 .__re-bulma_button.__re-bulma_is-primary:hover {
   background-color: $color-primary !important;
   border-color: $color-primary !important;
@@ -280,7 +281,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
   transition: background-color 0.15s ease;
 }
 .__re-bulma_button.__re-bulma_is-primary.purple.__re-bulma_is-active,
-// .__re-bulma_button.__re-bulma_is-primary.purple:focus,
+.__re-bulma_button.__re-bulma_is-primary.purple:focus,
 .__re-bulma_button.__re-bulma_is-primary.purple:hover {
   background-color: $color-indigo !important;
   border-color: $color-indigo !important;
@@ -293,8 +294,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
 }
 
 
-.__re-bulma_button.__re-bulma_is-danger,
-.__re-bulma_button.__re-bulma_is-danger:focus  {
+.__re-bulma_button.__re-bulma_is-danger {
   &:not(.__icon_button) {
     background-color: white;
     border: none;
@@ -313,6 +313,7 @@ a.__re-bulma_button.__re-bulma_is-primary,
 }
 
 .__re-bulma_button.__re-bulma_is-danger.__re-bulma_is-active,
+.__re-bulma_button.__re-bulma_is-danger:focus,
 .__re-bulma_button.__re-bulma_is-danger:hover {
   background-color: $color-red;
   color: white;
@@ -340,15 +341,14 @@ button:active {
   font-size: 13px;
 }
 
-.__re-bulma_button.__re-bulma_is-success,
-.__re-bulma_button.__re-bulma_is-success:focus {
+.__re-bulma_button.__re-bulma_is-success {
   @include defaultSuccessButton;
 }
 
-.__re-bulma_button.docusign-btn,
-.__re-bulma_button.docusign-btn:focus {
+.__re-bulma_button.docusign-btn {
   @include defaultSuccessButton;
   &:hover,
+  &:focus,
   &.__re-bulma_is-active {
     background-color: $color-docusign !important;
     border-color: $color-docusign;
@@ -474,7 +474,8 @@ button:active {
         & .question-button {
           color: white;
           background-color: $color-default-text;
-          &:hover {
+          &:hover,
+          &:focus {
             color: #ccc;
           }
         }
@@ -525,6 +526,7 @@ button:active {
       min-width: 150px;
       height: 36px;
       color: $color-green;
+      &:focus,
       &:hover {
         color: white;
       }
