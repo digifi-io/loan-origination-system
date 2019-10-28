@@ -184,17 +184,17 @@ async function addQueue(options) {
   let Batch = periodic.datas.get('standard_batch');
   let Case = periodic.datas.get('standard_case');
   try {
-    let simulation = await Simulation.load({ query: { _id: mongodoc._id.toString(), }, });
-    let results = await queue.addAll(arrayOfPromises);
-    let asyncRedisIncrBy = Bluebird.promisify(redisClient.incrby, { context: redisClient, });
-    let case_count = await asyncRedisIncrBy('batch_case_count', results.length);
-    let cases = await Promise.all(results.map(async (el, idx) => {
+    const simulation = await Simulation.load({ query: { _id: mongodoc._id.toString(), }, });
+    const results = await queue.addAll(arrayOfPromises);
+    const asyncRedisIncrBy = Bluebird.promisify(redisClient.incrby, { context: redisClient, });
+    const case_count = await asyncRedisIncrBy('batch_case_count', results.length);
+    const cases = await Promise.all(results.map(async (el, idx) => {
       let files = [];
       let module_order = el.processing_detail || [];
-      let emailModule = [];
-      let textmessageModule = [];
-      let documentcreationModule = [];
-      let case_name = (el.test_case_name) ? el.test_case_name : `Batch Process ${case_count - idx}`;
+      const emailModule = [];
+      const textmessageModule = [];
+      const documentcreationModule = [];
+      const case_name = (el.test_case_name) ? el.test_case_name : `Batch Process ${case_count - idx}`;
       module_order.forEach((md) => {
         if (md.type === 'Email') emailModule.push(md);
         else if (md.type === 'Text Message') textmessageModule.push(md);
@@ -204,44 +204,25 @@ async function addQueue(options) {
         files = await saveFiles({ result: el, simulation, organization, user, idx });
       }
       if (emailModule.length) {
-        let templatefiles = await Promise.all(emailModule.map(md => generateEmailAndTextDocuments({ md, case_name, organization, user, })));
+        const templatefiles = await Promise.all(emailModule.map(md => generateEmailAndTextDocuments({ md, case_name, organization, user, })));
         files = files.concat(templatefiles);
       }
       if (textmessageModule.length) {
-        let templatefiles = await Promise.all(textmessageModule.map(md => generateEmailAndTextDocuments({ md, case_name, organization, user, })));
+        const templatefiles = await Promise.all(textmessageModule.map(md => generateEmailAndTextDocuments({ md, case_name, organization, user, })));
         files = files.concat(templatefiles);
       }
       if (documentcreationModule.length) {
-        let templatefiles = await Promise.all(documentcreationModule.map(md => generateDocumentCreationFile({ md, case_name, organization, user, })));
+        const templatefiles = await Promise.all(documentcreationModule.map(md => generateDocumentCreationFile({ md, case_name, organization, user, })));
         files = files.concat(templatefiles);
       }
       if (el.input_variables && el.input_variables.datasources) delete el.input_variables.datasources;
-      // return Case.create({
-      //   newdoc: {
-      //     case_name,
-      //     inputs: el.input_variables || {},
-      //     outputs: el.output_variables || {},
-      //     module_order: el.processing_detail || [],
-      //     decline_reasons: el.decline_reasons || [],
-      //     passed: el.passed,
-      //     strategy: strategyId,
-      //     compiled_order,
-      //     strategy_display_name: strategy_display_name || '',
-      //     processing_type: 'batch',
-      //     organization,
-      //     error: (el.message && typeof el.message === 'string') ? [ el.message ] : [],
-      //     user: {
-      //       creator: `${user.first_name} ${user.last_name}`,
-      //       updater: `${user.first_name} ${user.last_name}`,
-      //     },
-      //     files: files.map(file => file._id.toString()),
-      //   }
-      // })
+      
+      const moduleOrder = helpers.cleanModuleData(module_order);
       return {
         case_name,
         inputs: el.input_variables || {},
         outputs: el.output_variables || {},
-        module_order: el.processing_detail || [],
+        module_order: moduleOrder || [],
         decline_reasons: el.decline_reasons || [],
         passed: el.passed,
         strategy: strategyId,
@@ -258,20 +239,20 @@ async function addQueue(options) {
       };
     }));
     clearInterval(activeInterval);
-    let createdCasesArray = cases.map(cs => {
-      let createOptions = {
+    const createdCasesArray = cases.map(cs => {
+      const createOptions = {
         newdoc: cs,
       };
       return Case.create(createOptions);
     });
-    let createdCases = await Promise.all(createdCasesArray);
+    const createdCases = await Promise.all(createdCasesArray);
     let data = await Batch.create({
       newdoc: { organization, results: createdCases.map(cas => ({ case: cas._id.toString(), case_name: cas.case_name, overall_result: Array.isArray(cas.error) && cas.error.length ? 'Error' : cas.passed ? 'Passed' : 'Failed', })), simulation: mongodoc._id.toString(), },
     });
     data = data.toJSON ? data.toJSON() : data;
-    let currentProgress = simulation.progress;
-    let progress = (currentProgress / 100 * totalCount + currentCount) / totalCount * 100;
-    let status = progress < 100 ? 'In Progress' : 'Complete';
+    const currentProgress = simulation.progress;
+    const progress = (currentProgress / 100 * totalCount + currentCount) / totalCount * 100;
+    const status = progress < 100 ? 'In Progress' : 'Complete';
     await Simulation.update({
       id: mongodoc._id.toString(),
       isPatch: true,

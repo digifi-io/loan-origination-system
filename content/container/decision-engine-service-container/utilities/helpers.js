@@ -753,7 +753,27 @@ function formatFileSize(size, nospace, one, places, numOnly) {
   return mysize;
 }
 
+function cleanModuleData(moduleOrder) {
+  try {
+    return moduleOrder.map((module) => {
+      if (module.type === 'requirements') {
+        return { name: module.name, display_name: module.display_name, type: module.type, segment: module.segment, passed: module.passed }
+      } else if (module.type === 'dataintegration') {
+        return { name: module.name, display_name: module.display_name, type: module.type, segment: module.segment, status: module.status };
+      } else if (module.type === 'artificialintelligence') {
+        return { name: module.name, display_name: module.display_name, type: module.type, segment: module.segment, predicted_classification: module.predicted_classification };
+      } else { 
+        return { name: module.name, display_name: module.display_name, type: module.type, segment: module.segment };
+      }
+    });
+  } catch(e) {
+    logger.warn(e.message);
+    return [];
+  }
+}
+
 module.exports = {
+  cleanModuleData,
   getCollectionCounter,
   updateCollectionCounter,
   createAWSDataSource,
