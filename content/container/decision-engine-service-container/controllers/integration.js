@@ -350,19 +350,23 @@ async function initializeStrategyForSimulationCompilation(req, res, next) {
 
     req.controllerData.compiledStrategy.calculated_variables = req.controllerData.compiledStrategy.calculated_variables || [];
 
-    const filteredOutputVariables = req.controllerData.compiledStrategy.output_variables.filter((v, i, a) => a.indexOf(v) === i);
+    const filteredOutputVariables = [...new Set(req.controllerData.compiledStrategy.output_variables)];
+
+    // req.controllerData.compiledStrategy.output_variables.filter((v, i, a) => a.indexOf(v) === i);
     for (let i = 0; i < filteredOutputVariables.length; i++) {
       filteredOutputVariables[ i ] = variableMap[ filteredOutputVariables[ i ] ];
     }
     req.controllerData.compiledStrategy.output_variables = filteredOutputVariables;
 
-    const filteredInputVariables = req.controllerData.compiledStrategy.input_variables.filter((v, i, a) => a.indexOf(v) === i);
+    const filteredInputVariables = [...new Set(req.controllerData.compiledStrategy.input_variables)];
+    // req.controllerData.compiledStrategy.input_variables.filter((v, i, a) => a.indexOf(v) === i);
     for (let i = 0; i < filteredInputVariables.length; i++) {
       filteredInputVariables[ i ] = variableMap[ filteredInputVariables[ i ] ];
     }
     req.controllerData.compiledStrategy.input_variables = filteredInputVariables;
 
-    const filteredCalculatedVariables = req.controllerData.compiledStrategy.calculated_variables.filter((v, i, a) => a.indexOf(v) === i);
+    const filteredCalculatedVariables = [...new Set(req.controllerData.compiledStrategy.calculated_variables)]
+    // req.controllerData.compiledStrategy.calculated_variables.filter((v, i, a) => a.indexOf(v) === i);
     for (let i = 0; i < filteredCalculatedVariables.length; i++) {
       filteredCalculatedVariables[ i ] = variableMap[ filteredCalculatedVariables[ i ] ];
     }
@@ -385,12 +389,18 @@ async function initializeStrategyForSimulationCompilation(req, res, next) {
 async function getDataIntegrations(req, res, next) {
   req.controllerData = req.controllerData || {};
   const DataIntegration = periodic.datas.get('standard_dataintegration');
-  let user = req.user;
+  const { org, } = req.controllerData;
+  const user = req.user || {};
+  const orgId = (org && org._id) 
+    ? org._id.toString() 
+    : (user && user.association && user.association.organization && user.association.organization._id)
+      ? user.association.organization._id
+      : 'organization';
   if (req.body && req.body.module_skip && !req.body.module_skip[ req.body.select_testcases ].dataintegration) {
     req.controllerData.dataintegrations = [];
     return next();
   } else {
-    let dataintegrations = await DataIntegration.query({ query: {}, });
+    let dataintegrations = await DataIntegration.query({ query: { organization: orgId }, });
     dataintegrations = dataintegrations.map(data => data.toJSON ? data.toJSON() : data);
     if ([ 'dataintegrations', ].indexOf(req.query.pagination) !== -1) {
       req.query.pagenum = req.query.pagenum || 1;
