@@ -344,29 +344,23 @@ async function initializeStrategyForSimulationCompilation(req, res, next) {
       active: md.active,
     }));
 
-    req.controllerData.compiledStrategy.output_variables = req.controllerData.compiledStrategy.output_variables || [];
+    const outputVariables = req.controllerData.compiledStrategy.output_variables || [];
+    const inputVariables = req.controllerData.compiledStrategy.input_variables || [];
+    const calculatedVariables = req.controllerData.compiledStrategy.calculated_variables || [];
 
-    req.controllerData.compiledStrategy.input_variables = req.controllerData.compiledStrategy.input_variables || [];
-
-    req.controllerData.compiledStrategy.calculated_variables = req.controllerData.compiledStrategy.calculated_variables || [];
-
-    const filteredOutputVariables = [...new Set(req.controllerData.compiledStrategy.output_variables)];
-
-    // req.controllerData.compiledStrategy.output_variables.filter((v, i, a) => a.indexOf(v) === i);
+    const filteredOutputVariables = [...new Set(outputVariables)];
     for (let i = 0; i < filteredOutputVariables.length; i++) {
       filteredOutputVariables[ i ] = variableMap[ filteredOutputVariables[ i ] ];
     }
     req.controllerData.compiledStrategy.output_variables = filteredOutputVariables;
 
-    const filteredInputVariables = [...new Set(req.controllerData.compiledStrategy.input_variables)];
-    // req.controllerData.compiledStrategy.input_variables.filter((v, i, a) => a.indexOf(v) === i);
+    const filteredInputVariables = [...new Set(inputVariables)];
     for (let i = 0; i < filteredInputVariables.length; i++) {
       filteredInputVariables[ i ] = variableMap[ filteredInputVariables[ i ] ];
     }
     req.controllerData.compiledStrategy.input_variables = filteredInputVariables;
 
-    const filteredCalculatedVariables = [...new Set(req.controllerData.compiledStrategy.calculated_variables)]
-    // req.controllerData.compiledStrategy.calculated_variables.filter((v, i, a) => a.indexOf(v) === i);
+    const filteredCalculatedVariables = [...new Set(calculatedVariables)];
     for (let i = 0; i < filteredCalculatedVariables.length; i++) {
       filteredCalculatedVariables[ i ] = variableMap[ filteredCalculatedVariables[ i ] ];
     }
