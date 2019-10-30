@@ -11,6 +11,7 @@ const view_utilities = require('../views');
 const THEMESETTINGS = periodic.settings.container[ 'decision-engine-service-container' ];
 const styles = view_utilities.constants.styles;
 const shared = view_utilities.shared;
+const formElements = shared.props.formElements.formElements;
 const cardprops = shared.props.cardprops;
 const getInputLink = shared.component.getInputLink;
 const formGlobalButtonBar = shared.component.globalButtonBar.formGlobalButtonBar;
@@ -18,7 +19,7 @@ const randomKey = Math.random;
 
 function coerceLoanDataType(options) {
   try {
-    let { name, value, value_type, value_category } = options;
+    let { name, value, value_type, value_category, } = options;
     name = name.trim();
     if (typeof value === 'string') value = value.trim();
     if (value_type === 'boolean') {
@@ -54,7 +55,7 @@ function coerceLoanDataType(options) {
     } else if (value_type === 'date') {
       if (typeof value === 'string') value = moment(value).toISOString();
     }
-    return { name, value, value_type, value_category };
+    return { name, value, value_type, value_category, };
   } catch (e) {
     return e;
   }
@@ -1368,7 +1369,7 @@ function _createMaskedFormElement({ value_type, name, }) {
   }
 }
 
-function _createApplicationDetailPage({ applicationId, application_status, keyInfoLength }) {
+function _createApplicationDetailPage({ applicationId, application_status, keyInfoLength, }) {
   const dateFormElementOptions = {
     estimated_close_date: {
       type: 'singleDatePicker',
@@ -1435,7 +1436,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
         formGlobalButtonBar({
           left: [ {
             component: 'ResponsiveButton',
-            children: 'Approve',
+            children: 'MOVE TO NEXT STAGE',
             thisprops: {
               onclickPropObject: [ 'formdata', ],
             },
@@ -1488,7 +1489,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
             },
           }, {
             component: 'ResponsiveButton',
-            children: 'REJECT',
+            children: 'REJECT APPLICATION',
             thisprops: {
               onclickPropObject: [ 'formdata', ],
               // status_name: ['app']
@@ -1556,434 +1557,477 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
             name: 'status',
           }, ],
         },
+
         {
           gridProps: {
             key: randomKey(),
+            isGapless: true,
             style: {
-              display: 'inline-block',
+              display: 'inline-flex',
+              flexDirection: 'column',
               width: '50%',
-              margin: 0,
-            },
-            subColumnProps: {
-              style: {
-                padding: '0 10px 0 0',
-              },
+              paddingRight: '10px',
             },
           },
           card: {
-            props: cardprops({
+            doubleCard: true,
+            leftDoubleCardColumn: {
+              style: {
+                display: 'flex',
+                width: '100%',
+              },
+            },
+            rightDoubleCardColumn: {
+              style: {
+                display: 'flex',
+                width: '100%',
+              },
+            },
+            leftCardProps: cardprops({
               cardTitle: 'Application Information',
               cardStyle: {
-                marginBottom: 0,
+              },
+            }),
+            rightCardProps: cardprops({
+              cardTitle: 'Automation Results',
+              cardStyle: {
               },
             }),
           },
-          formElements: [ {
-            type: 'maskedinput',
-            name: 'loan_amount',
-            leftIcon: 'fas fa-usd-circle',
-            placeholder: undefined,
-            createNumberMask: true,
-            passProps: {
-              mask: 'func:window.testMaskDollarInput',
-              guide: false,
-              autoComplete: 'off',
-              autoCorrect: 'off',
-              autoCapitalize: 'off',
-              spellCheck: false,
+          formElements: [{
+            formGroupCardLeft: [{
+              type: 'maskedinput',
+              name: 'loan_amount',
+              leftIcon: 'fas fa-usd-circle',
+              placeholder: undefined,
+              createNumberMask: true,
+              passProps: {
+                mask: 'func:window.testMaskDollarInput',
+                guide: false,
+                autoComplete: 'off',
+                autoCorrect: 'off',
+                autoCapitalize: 'off',
+                spellCheck: false,
+              },
+              label: 'Loan Amount',
+            }, {
+              name: 'product',
+              leftIcon: 'fas fa-star',
+              customLabel: {
+                component: 'span',
+                props: {
+                  className: '__re-bulma_label',
+                  style: {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  },
+                },
+                children: [{
+                  component: 'span',
+                  children: 'Product',
+                }, ],
+              },
+              type: 'dropdown',
+              passProps: {
+                selection: true,
+                fluid: true,
+                search: true,
+                selectOnBlur: false,
+              },
             },
-            label: 'Loan Amount',
-          }, {
-            name: 'product',
-            leftIcon: 'fas fa-star',
-            customLabel: {
-              component: 'span',
-              props: {
-                className: '__re-bulma_label',
-                style: {
-                  display: 'flex',
-                  justifyContent: 'space-between',
+            getInputLink({
+              label: 'Customer',
+              leftIcon: 'fas fa-user',
+              baseurl: '/los/:customer_baseurl',
+              thisprop: ['formdata', ],
+              displayprop: 'customer_name',
+              params: [{ 'key': ':customer_baseurl', 'val': 'customer_baseurl', }, ],
+              passProps: {
+                spanProps: {
+                  className: '__ra_rb los-input-link',
                 },
               },
-              children: [ {
-                component: 'span',
-                children: 'Product',
+            }),
+            getInputLink({
+              label: 'Co-Applicant',
+              leftIcon: 'fas fa-user',
+              baseurl: '/los/:customer_baseurl',
+              thisprop: ['formdata', ],
+              displayprop: 'coapplicant',
+              params: [{ 'key': ':customer_baseurl', 'val': 'coapplicant_baseurl', }, ],
+              passProps: {
+                spanProps: {
+                  className: '__ra_rb los-input-link',
+                },
+              },
+            }),
+            {
+              label: 'Team Members',
+              name: 'team_members',
+              leftIcon: 'fas fa-users',
+              type: 'dropdown',
+              passProps: {
+                selection: true,
+                multiple: true,
+                fluid: true,
+                search: true,
+              },
+              options: [],
+            }, {
+              name: 'intermediary',
+              label: 'Intermediary',
+              type: 'dropdown',
+              leftIcon: 'fas fa-seedling',
+              errorIconRight: true,
+              validateOnChange: true,
+              errorIcon: 'fa fa-exclamation',
+              validIcon: 'fa fa-check',
+              passProps: {
+                selection: true,
+                fluid: true,
+                search: true,
+                selectOnBlur: false,
+              },
+            }, dateFormElement, {
+              type: 'group',
+              groupElements: [{
+                name: 'createdat',
+                leftIcon: 'fas fa-calendar-alt',
+                passProps: {
+                  state: 'isDisabled',
+                },
+                label: 'Created',
+              }, {
+                name: 'updatedat',
+                leftIcon: 'fas fa-calendar-plus',
+                passProps: {
+                  state: 'isDisabled',
+                },
+                label: 'Updated',
               }, ],
             },
-            type: 'dropdown',
-            passProps: {
-              selection: true,
-              fluid: true,
-              search: true,
-              selectOnBlur: false,
-            },
-          },
-          getInputLink({
-            label: 'Customer',
-            leftIcon: 'fas fa-user',
-            baseurl: '/los/:customer_baseurl',
-            thisprop: [ 'formdata', ],
-            displayprop: 'customer_name',
-            params: [ { 'key': ':customer_baseurl', 'val': 'customer_baseurl', }, ],
-            passProps: {
-              spanProps: {
-                className: '__ra_rb los-input-link',
+            ],
+            formGroupCardRight: [{
+              type: 'layout',
+              value: {
+                component: 'ResponsiveTable',
+                thisprops: {
+                  rows: ['casedata', 'rows', ],
+                  numItems: ['casedata', 'numItems', ],
+                  numPages: ['casedata', 'numPages', ],
+                  baseUrl: ['casedata', 'baseUrl', ],
+                },
+                props: {
+                  dataMap: [{
+                    'key': 'rows',
+                    value: 'rows',
+                  }, {
+                    'key': 'numItems',
+                    value: 'numItems',
+                  }, {
+                    'key': 'numPages',
+                    value: 'numPages',
+                  }, ],
+                  flattenRowData: true,
+                  limit: 10,
+                  simplePagination: true,
+                  hasPagination: true,
+                  calculatePagination: true,
+                  'useInputRows': true,
+                  headerLinkProps: {
+                    style: {
+                      textDecoration: 'none',
+                    },
+                  },
+                  headers: [{
+                    label: 'Date',
+                    sortid: 'createdat',
+                    sortable: false,
+                  }, {
+                    label: 'Type',
+                    sortid: 'processing_type',
+                    sortable: false,
+                  }, {
+                    label: 'Description',
+                    sortid: 'case_name',
+                    sortable: false,
+                  }, {
+                    label: 'Result',
+                    sortid: 'result',
+                    sortable: false,
+                  }, {
+                    label: ' ',
+                    headerColumnProps: {
+                      style: {
+                        width: '120px',
+                      },
+                    },
+                    columnProps: {
+                      style: styles.buttonCellStyle,
+                    },
+                    buttons: [{
+                      passProps: {
+                        aProps: {
+                          className: '__re-bulma_button __icon_button green',
+                          style: {
+                          },
+                        },
+                        onclickBaseUrl: '/:download_url',
+                        onclickLinkParams: [{
+                          'key': ':download_url',
+                          'val': 'download_url',
+                        }, ],
+                      },
+                      children: [{
+                        component: 'Icon',
+                        props: {
+                          icon: 'fa fa-download',
+                        },
+                      }, ],
+                    }, {
+                      passProps: {
+                        buttonProps: {
+                          icon: 'fa fa-pencil',
+                          className: '__icon_button',
+                        },
+                        onClick: 'func:this.props.reduxRouter.push',
+                        onclickBaseUrl: '/:detail_url',
+                        onclickLinkParams: [{
+                          'key': ':detail_url',
+                          'val': 'detail_url',
+                        }, ],
+                      },
+                    }, {
+                      passProps: {
+                        buttonProps: {
+                          icon: 'fa fa-trash',
+                          color: 'isDanger',
+                          className: '__icon_button',
+                        },
+                        onClick: 'func:this.props.fetchAction',
+                        onclickBaseUrl: '/:delete_url',
+                        onclickLinkParams: [{ key: ':delete_url', val: 'delete_url', }, ],
+                        fetchProps: {
+                          method: 'DELETE',
+                        },
+                        successProps: {
+                          success: {
+                            notification: {
+                              text: 'Changes saved successfully!',
+                              timeout: 10000,
+                              type: 'success',
+                            },
+                          },
+                          successCallback: 'func:this.props.refresh',
+                        },
+                        confirmModal: Object.assign({}, styles.defaultconfirmModalStyle, {
+                          title: 'Delete Result',
+                          textContent: [{
+                            component: 'p',
+                            children: 'Do you want to permanently delete this automation result?',
+                            props: {
+                              style: {
+                                textAlign: 'left',
+                                marginBottom: '1.5rem',
+                              },
+                            },
+                          }, ],
+                        }),
+                      },
+                    }, ],
+                  }, ],
+                  // },
+                },
               },
-            },
-          }),
-          getInputLink({
-            label: 'Co-Applicant',
-            leftIcon: 'fas fa-user',
-            baseurl: '/los/:customer_baseurl',
-            thisprop: [ 'formdata', ],
-            displayprop: 'coapplicant',
-            params: [ { 'key': ':customer_baseurl', 'val': 'coapplicant_baseurl', }, ],
-            passProps: {
-              spanProps: {
-                className: '__ra_rb los-input-link',
-              },
-            },
-          }),
-          {
-            label: 'Team Members',
-            name: 'team_members',
-            leftIcon: 'fas fa-users',
-            type: 'dropdown',
-            passProps: {
-              selection: true,
-              multiple: true,
-              fluid: true,
-              search: true,
-            },
-            options: [],
-          }, {
-            name: 'intermediary',
-            label: 'Intermediary',
-            type: 'dropdown',
-            leftIcon: 'fas fa-seedling',
-            errorIconRight: true,
-            validateOnChange: true,
-            errorIcon: 'fa fa-exclamation',
-            validIcon: 'fa fa-check',
-            passProps: {
-              selection: true,
-              fluid: true,
-              search: true,
-              selectOnBlur: false,
-            },
-          }, dateFormElement, {
-            type: 'group',
-            groupElements: [ {
-              name: 'createdat',
-              leftIcon: 'fas fa-calendar-alt',
-              passProps: {
-                state: 'isDisabled',
-              },
-              label: 'Created',
-            }, {
-              name: 'updatedat',
-              leftIcon: 'fas fa-calendar-plus',
-              passProps: {
-                state: 'isDisabled',
-              },
-              label: 'Updated',
             }, ],
-          },
-          ],
-        }, {
+          }, ],
+        },
+
+        {
           gridProps: {
             key: randomKey(),
+            isGapless: true,
             style: {
-              display: 'inline-block',
+              display: 'inline-flex',
+              flexDirection: 'column',
               width: '50%',
-              verticalAlign: 'top',
-              textAlign: 'right',
-              margin: 0,
+              paddingLeft: '10px',
             },
           },
-          formElements: [ {
-            type: 'layout',
-            layoutProps: {
+          card: {
+            doubleCard: true,
+            leftDoubleCardColumn: {
               style: {
-                padding: '0 0 0 10px',
+                display: 'flex',
+                width: '100%',
+
               },
             },
-            value: {
-              component: 'div',
-              children: [ {
-                component: 'ResponsiveCard',
-                props: cardprops({
-                  cardTitle: 'Loan Information',
-                }),
-                children: [ {
-                  component: 'ResponsiveTable',
-                  thisprops: {
-                    rows: [ 'formdata', 'loan_info', ],
-                    filterButtons: [ 'formdata', 'filterButtons', ],
-                  },
-                  bindprops: true,
-                  props: {
-                    'flattenRowData': true,
-                    filterSearch: true,
-                    useHeaderFilters: true,
-                    'addNewRows': false,
-                    useRowProps: true,
-                    'rowButtons': false,
-                    'useInputRows': true,
-                    hasPagination: false,
-                    baseUrl: `/los/api/applications/${applicationId}/searchLoanInformation?`,
-                    dataMap: [ {
-                      'key': 'rows',
-                      value: 'rows',
-                    }, ],
-                    'tableSearch': true,
-                    'simpleSearchFilter': true,
-                    filterSearchProps: {
-                      icon: 'fa fa-search',
-                      hasIconRight: false,
-                      // className: 'global-table-search',
-                      placeholder: 'SEARCH FIELDS',
-                    },
-                    limit: keyInfoLength,
-                    tableWrappingStyle: keyInfoLength > 50 ? {
-                      overflowY: 'scroll',
-                      maxHeight: '500px',
-                    } : undefined,
-                    ignoreTableHeaders: [ '_id', ],
-                    headers: [ {
-                      label: 'Description',
-                      sortid: 'name',
-                      headerColumnProps: {
-                        style: {
-                        },
-                      },
-                    }, {
-                      label: 'Value',
-                      sortid: 'value',
-                      headerColumnProps: {
-                        style: {
-                        },
-                      },
-                    }, {
-                      label: ' ',
-                      headerColumnProps: {
-                        style: {
-                          width: '80px',
-                        },
-                      },
-                      columnProps: {
-                        style: styles.buttonCellStyle,
-                      },
-                      buttons: [ {
-                        passProps: {
-                          buttonProps: {
-                            icon: 'fa fa-pencil',
-                            className: '__icon_button',
-                          },
-                          onClick: 'func:this.props.createModal',
-                          onclickProps: {
-                            title: 'Edit Loan Info',
-                            pathname: '/los/applications/:id/edit_loan_info/:idx',
-                            params: [ { key: ':id', val: '_id', }, { key: ':idx', val: 'idx', }, ],
-                          },
-                        },
-                      }, {
-                        passProps: {
-                          buttonProps: {
-                            icon: 'fa fa-trash',
-                            color: 'isDanger',
-                            className: '__icon_button',
-                          },
-                          onClick: 'func:this.props.fetchAction',
-                          onclickBaseUrl: '/los/api/applications/:id/key_information/:idx?type=delete_loan_info',
-                          onclickLinkParams: [ { key: ':id', val: '_id', }, { key: ':idx', val: 'idx', }, ],
-                          fetchProps: {
-                            method: 'PUT',
-                          },
-                          successProps: {
-                            success: {
-                              notification: {
-                                text: 'Changes saved successfully!',
-                                timeout: 10000,
-                                type: 'success',
-                              },
-                            },
-                            successCallback: 'func:this.props.refresh',
-                          },
-                          confirmModal: Object.assign({}, styles.defaultconfirmModalStyle, {
-                            title: 'Delete Strategy',
-                            textContent: [ {
-                              component: 'p',
-                              children: 'Do you want to permanently delete this Strategy?',
-                              props: {
-                                style: {
-                                  textAlign: 'left',
-                                  marginBottom: '1.5rem',
-                                },
-                              },
-                            }, ],
-                          }),
-                        },
-                      }, ],
-                    }, ],
-                  },
-                }, {
-                  thisprops: {
-                    onclickPropObject: [ 'applicationdata', 'application', ],
-                  },
-                  component: 'ResponsiveButton',
-                  children: 'ADD LOAN INFORMATION',
-                  props: {
-                    onClick: 'func:this.props.createModal',
-                    onclickThisProp: [ 'formdata', ],
-                    onclickProps: {
-                      title: 'Add Loan Information',
-                      pathname: '/los/applications/:id/add_loan_info',
-                      params: [ { key: ':id', val: '_id', }, ],
-                    },
-                    buttonProps: {
-                      color: 'isSuccess',
-                    },
-                  },
-                }, ],
-              }, {
-                component: 'ResponsiveCard',
-                props: cardprops({
-                  cardTitle: 'Automation Results',
-                  cardStyle: {},
-                }),
-                children: [ {
-                  component: 'ResponsiveTable',
-                  thisprops: {
-                    rows: [ 'casedata', 'rows', ],
-                    numItems: [ 'casedata', 'numItems', ],
-                    numPages: [ 'casedata', 'numPages', ],
-                    baseUrl: [ 'casedata', 'baseUrl', ],
-                  },
-                  props: {
-                    dataMap: [ {
-                      'key': 'rows',
-                      value: 'rows',
-                    }, {
-                      'key': 'numItems',
-                      value: 'numItems',
-                    }, {
-                      'key': 'numPages',
-                      value: 'numPages',
-                    }, ],
-                    flattenRowData: true,
-                    limit: 10,
-                    simplePagination: true,
-                    hasPagination: true,
-                    calculatePagination: true,
-                    'useInputRows': true,
-                    headerLinkProps: {
-                      style: {
-                        textDecoration: 'none',
-                      },
-                    },
-                    headers: [ {
-                      label: 'Date',
-                      sortid: 'createdat',
-                      sortable: false,
-                    }, {
-                      label: 'Type',
-                      sortid: 'processing_type',
-                      sortable: false,
-                    }, {
-                      label: 'Description',
-                      sortid: 'case_name',
-                      sortable: false,
-                    }, {
-                      label: 'Result',
-                      sortid: 'result',
-                      sortable: false,
-                    }, {
-                      label: ' ',
-                      headerColumnProps: {
-                        style: {
-                          // width: '45px',
-                        },
-                      },
-                      columnProps: {
-                        style: styles.buttonCellStyle,
-                      },
-                      buttons: [ {
-                        passProps: {
-                          aProps: {
-                            className: '__re-bulma_button __icon_button green',
-                            style: {
-                            },
-                          },
-                          onclickBaseUrl: '/:download_url',
-                          onclickLinkParams: [ {
-                            'key': ':download_url',
-                            'val': 'download_url',
-                          }, ],
-                        },
-                        children: [ {
-                          component: 'Icon',
-                          props: {
-                            icon: 'fa fa-download',
-                          },
-                        }, ],
-                      }, {
-                        passProps: {
-                          buttonProps: {
-                            icon: 'fa fa-pencil',
-                            className: '__icon_button',
-                          },
-                          onClick: 'func:this.props.reduxRouter.push',
-                          onclickBaseUrl: '/:detail_url',
-                          onclickLinkParams: [ {
-                            'key': ':detail_url',
-                            'val': 'detail_url',
-                          }, ],
-                        },
-                      }, {
-                        passProps: {
-                          buttonProps: {
-                            icon: 'fa fa-trash',
-                            color: 'isDanger',
-                            className: '__icon_button',
-                          },
-                          onClick: 'func:this.props.fetchAction',
-                          onclickBaseUrl: '/:delete_url',
-                          onclickLinkParams: [ { key: ':delete_url', val: 'delete_url', }, ],
-                          fetchProps: {
-                            method: 'DELETE',
-                          },
-                          successProps: {
-                            success: {
-                              notification: {
-                                text: 'Changes saved successfully!',
-                                timeout: 10000,
-                                type: 'success',
-                              },
-                            },
-                            successCallback: 'func:this.props.refresh',
-                          },
-                          confirmModal: Object.assign({}, styles.defaultconfirmModalStyle, {
-                            title: 'Delete Result',
-                            textContent: [ {
-                              component: 'p',
-                              children: 'Do you want to permanently delete this automation result?',
-                              props: {
-                                style: {
-                                  textAlign: 'left',
-                                  marginBottom: '1.5rem',
-                                },
-                              },
-                            }, ],
-                          }),
-                        },
-                      }, ],
-                    }, ],
-                  },
-                }, ],
-              }, ],
+            rightDoubleCardColumn: {
+              style: {
+                display: 'flex',
+                width: '100%',
+              },
             },
-          }, ],
+            leftCardProps: cardprops({
+              cardTitle: 'Application Processing',
+              cardStyle: {
+              },
+            }),
+            rightCardProps: cardprops({
+              cardTitle: 'Loan Information',
+              cardStyle: {
+              },
+            }),
+          },
+          formElements: [{
+            formGroupCardLeft: [{
+              name: 'PLACEHOLDER',
+            }, ],
+            formGroupCardRight: [{
+              type: 'layout',
+              value: {
+                component: 'ResponsiveTable',
+                thisprops: {
+                  rows: ['formdata', 'loan_info', ],
+                  filterButtons: ['formdata', 'filterButtons', ],
+                },
+                bindprops: true,
+                props: {
+                  'flattenRowData': true,
+                  filterSearch: true,
+                  useHeaderFilters: true,
+                  'addNewRows': false,
+                  useRowProps: true,
+                  'rowButtons': false,
+                  'useInputRows': true,
+                  hasPagination: false,
+                  baseUrl: `/los/api/applications/${applicationId}/searchLoanInformation?`,
+                  dataMap: [{
+                    'key': 'rows',
+                    value: 'rows',
+                  }, ],
+                  'tableSearch': true,
+                  'simpleSearchFilter': true,
+                  filterSearchProps: {
+                    icon: 'fa fa-search',
+                    hasIconRight: false,
+                    // className: 'global-table-search',
+                    placeholder: 'SEARCH FIELDS',
+                  },
+                  limit: keyInfoLength,
+                  tableWrappingStyle: keyInfoLength > 50 ? {
+                    overflowY: 'scroll',
+                    maxHeight: '500px',
+                  } : undefined,
+                  ignoreTableHeaders: ['_id', ],
+                  headers: [{
+                    label: 'Description',
+                    sortid: 'name',
+                    headerColumnProps: {
+                      style: {
+                      },
+                    },
+                  }, {
+                    label: 'Value',
+                    sortid: 'value',
+                    headerColumnProps: {
+                      style: {
+                      },
+                    },
+                  }, {
+                    label: ' ',
+                    headerColumnProps: {
+                      style: {
+                        width: '80px',
+                      },
+                    },
+                    columnProps: {
+                      style: styles.buttonCellStyle,
+                    },
+                    buttons: [{
+                      passProps: {
+                        buttonProps: {
+                          icon: 'fa fa-pencil',
+                          className: '__icon_button',
+                        },
+                        onClick: 'func:this.props.createModal',
+                        onclickProps: {
+                          title: 'Edit Loan Info',
+                          pathname: '/los/applications/:id/edit_loan_info/:idx',
+                          params: [{ key: ':id', val: '_id', }, { key: ':idx', val: 'idx', }, ],
+                        },
+                      },
+                    }, {
+                      passProps: {
+                        buttonProps: {
+                          icon: 'fa fa-trash',
+                          color: 'isDanger',
+                          className: '__icon_button',
+                        },
+                        onClick: 'func:this.props.fetchAction',
+                        onclickBaseUrl: '/los/api/applications/:id/key_information/:idx?type=delete_loan_info',
+                        onclickLinkParams: [{ key: ':id', val: '_id', }, { key: ':idx', val: 'idx', }, ],
+                        fetchProps: {
+                          method: 'PUT',
+                        },
+                        successProps: {
+                          success: {
+                            notification: {
+                              text: 'Changes saved successfully!',
+                              timeout: 10000,
+                              type: 'success',
+                            },
+                          },
+                          successCallback: 'func:this.props.refresh',
+                        },
+                        confirmModal: Object.assign({}, styles.defaultconfirmModalStyle, {
+                          title: 'Delete Strategy',
+                          textContent: [{
+                            component: 'p',
+                            children: 'Do you want to permanently delete this Strategy?',
+                            props: {
+                              style: {
+                                textAlign: 'left',
+                                marginBottom: '1.5rem',
+                              },
+                            },
+                          }, ],
+                        }),
+                      },
+                    }, ],
+                  }, ],
+                },
+              },
+            }, {
+              type: 'layout',
+              layoutProps: {
+                style: {
+                  textAlign: 'right',
+                },
+              },
+              value: {
+                thisprops: {
+                  onclickPropObject: ['applicationdata', 'application', ],
+                },
+                component: 'ResponsiveButton',
+                children: 'ADD LOAN INFORMATION',
+                props: {
+                  onClick: 'func:this.props.createModal',
+                  onclickThisProp: ['formdata', ],
+                  onclickProps: {
+                    title: 'Add Loan Information',
+                    pathname: '/los/applications/:id/add_loan_info',
+                    params: [{ key: ':id', val: '_id', }, ],
+                  },
+                  buttonProps: {
+                    color: 'isSuccess',
+                  },
+                },
+              },
+            },],
+          },    
+          ],
         },
       ],
     },
@@ -1991,7 +2035,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
 }
 
 function _generateDocuSignTemplateDetailForm(options) {
-  const { textTabs, templateId, docId, autoPopulationFieldMap = {} } = options;
+  const { textTabs, templateId, docId, autoPopulationFieldMap = {}, } = options;
   let textInputs = textTabs.map(tab => {
     let value = autoPopulationFieldMap[ tab.tabLabel ] || '';
     return {
@@ -2002,8 +2046,8 @@ function _generateDocuSignTemplateDetailForm(options) {
         name: `tab.${tab.tabLabel}`,
         value,
         label: tab.tabLabel,
-      } ]
-    }
+      }, ],
+    };
   });
   return {
     component: 'ResponsiveForm',
@@ -2063,7 +2107,7 @@ function _generateDocuSignTemplateDetailForm(options) {
             label: 'Email Subject',
             name: 'emailSubject',
             value: autoPopulationFieldMap[ 'Email Subject' ] || 'Your agreements for signature',
-          } ]
+          }, ],
         },
         {
           gridProps: {
@@ -2073,7 +2117,7 @@ function _generateDocuSignTemplateDetailForm(options) {
             label: 'To (Email Address)',
             name: 'recipientEmail',
             value: autoPopulationFieldMap[ 'To (Email Address)' ] || autoPopulationFieldMap[ 'applicant.Email Address' ] || '',
-          } ],
+          }, ],
         },
         {
           gridProps: {
@@ -2083,7 +2127,7 @@ function _generateDocuSignTemplateDetailForm(options) {
             label: 'Carbon Copy (Email Address)',
             name: 'ccEmail',
             value: autoPopulationFieldMap[ 'Carbon Copy (Email Address)' ] || '',
-          } ],
+          }, ],
         },
         {
           gridProps: {
@@ -2093,7 +2137,7 @@ function _generateDocuSignTemplateDetailForm(options) {
             label: 'Full Name',
             name: 'fullName',
             value: autoPopulationFieldMap[ 'Full Name' ] || autoPopulationFieldMap['applicant.Name'] || '',
-          } ],
+          }, ],
         },
         ...textInputs,
         {
