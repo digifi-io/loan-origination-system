@@ -4753,6 +4753,11 @@ async function formatReportingPage(req) {
           component: 'ResponsiveCard',
           props: cardprops({
             cardTitle: 'Selected Report',
+            cardContentProps: {
+              style: {
+                overflowX: 'auto',
+              }
+            }
           }),
           children: losReporting.generateReportingChart(options),
         }, ]
