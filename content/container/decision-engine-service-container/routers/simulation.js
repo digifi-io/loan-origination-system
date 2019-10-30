@@ -222,16 +222,12 @@ SimulationRouter.get('/get_analysis_data',
 SimulationRouter.get('/get_setup_data',
   ensureApiAuthenticated,
   simulationController.getStrategyDisplayNames,
-  // simulationController.getSimulations,
-  // simulationController.getBatchSimulations,
   transformController.posttransform,
   simulationController.handleControllerDataResponse);
 
 SimulationRouter.get('/get_setup_data/:id',
   ensureApiAuthenticated,
   simulationController.getStrategyDisplayNames,
-  // simulationController.getSimulations,
-  // simulationController.getBatchSimulations,
   transformController.posttransform,
   simulationController.handleControllerDataResponse);
 
