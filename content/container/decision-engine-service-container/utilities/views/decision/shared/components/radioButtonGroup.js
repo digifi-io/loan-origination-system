@@ -23,6 +23,11 @@ function getRadioButtonGroup(radioData) {
       name: data.name,
       value: data.value,
       validateOnChange: true,
+      layoutProps: {
+        style: {
+          maxWidth: (radioData.length == 2) ? '50%' : undefined,
+        }
+      },
       passProps: {
         id: radioId
       },
