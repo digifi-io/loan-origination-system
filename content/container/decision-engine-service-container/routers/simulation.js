@@ -78,7 +78,7 @@ SimulationRouter.get('/get_documentocr_dropdown',
 
 SimulationRouter.get('/download/variables/:id/:strategy_id',
   ensureApiAuthenticated,
-  simulationController.getStrategies,
+  simulationController.getStrategyDisplayNames,
   integrationController.getDataIntegrations,
   integrationController.initializeStrategyForSimulationCompilation,
   transformController.pretransform,
@@ -133,13 +133,13 @@ SimulationRouter.get('/individual/results/:id',
 
 SimulationRouter.get('/individual/run',
   ensureApiAuthenticated,
-  simulationController.getStrategies,
+  simulationController.getStrategyDisplayNames,
   transformController.posttransform,
   simulationController.handleControllerDataResponse);
 
 SimulationRouter.get('/individual/run/:id',
   ensureApiAuthenticated,
-  simulationController.getStrategies,
+  simulationController.getStrategyDisplayNames,
   simulationController.getCaseFromQuery,
   integrationController.getDataIntegrations,
   integrationController.initializeStrategyForSimulationCompilation,
@@ -221,17 +221,13 @@ SimulationRouter.get('/get_analysis_data',
 
 SimulationRouter.get('/get_setup_data',
   ensureApiAuthenticated,
-  simulationController.getStrategies,
-  // simulationController.getSimulations,
-  // simulationController.getBatchSimulations,
+  simulationController.getStrategyDisplayNames,
   transformController.posttransform,
   simulationController.handleControllerDataResponse);
 
 SimulationRouter.get('/get_setup_data/:id',
   ensureApiAuthenticated,
-  simulationController.getStrategies,
-  // simulationController.getSimulations,
-  // simulationController.getBatchSimulations,
+  simulationController.getStrategyDisplayNames,
   transformController.posttransform,
   simulationController.handleControllerDataResponse);
 

@@ -23,7 +23,7 @@
     "@digifi-los/credit-process": "^0.1.2",
     "@digifi-los/data-integrations-core": "^0.0.6",
     "@digifi-los/form-creator": "^0.0.4",
-    "@digifi-los/reactapp": "^0.0.6",
+    "@digifi-los/reactapp": "^0.0.8",
     "@digifi-los/segmentloader": "^0.0.1",
     "@digifi/app-config-loader": "^0.0.3",
     "@digifi/ml-cart": "^1.0.8",

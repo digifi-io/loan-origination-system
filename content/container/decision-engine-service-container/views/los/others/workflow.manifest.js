@@ -148,10 +148,6 @@ module.exports = {
                         sortid: 'name',
                         sortable: true,
                       }, {
-                        label: 'Description',
-                        sortid: 'description',
-                        sortable: true,
-                      }, {
                         label: 'Last Updated',
                         sortid: 'updatedat',
                         sortable: true,

@@ -21,26 +21,16 @@ module.exports = {
         },
         children: [
           losTabs('Reporting'),
-          {
-            component: 'div',
-            props: {
-              style: {
-                margin: '1rem 0px 1.5rem'
-              }
-            }
-          },
-          plainHeaderTitle({
-            title: 'Reporting',
-          }),
-          styles.fullPageDivider,
           // plainGlobalButtonBar({
           //   left: [],
           //   right: [],
           // }),
           {
-            component: 'Container',
+            component: 'div',
             props: {
-              style: {},
+              style: {
+                marginTop: '1.5rem',
+              },
             },
             asyncprops: {
               _children: ['reportingdata', '_children'],

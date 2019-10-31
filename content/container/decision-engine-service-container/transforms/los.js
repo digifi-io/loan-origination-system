@@ -411,7 +411,7 @@ async function formatApplicationDetail(req) {
         application.key_information = application.key_information || {};
         const valueCategoriesMap = {};
         const loan_info = Object.entries(application.key_information).map(([ name, detail, ], idx) => {
-          if (detail.value_category && !valueCategoriesMap[detail.value_category]) valueCategoriesMap[detail.value_category] = { value: detail.value_category.toLowerCase(), text: detail.value_category };
+          if (detail.value_category && !valueCategoriesMap[detail.value_category]) valueCategoriesMap[detail.value_category] = { value: detail.value_category.toLowerCase(), text: detail.value_category, };
           let value;
           if (detail.value === null) value = '';
           else value = los_transform_util.formatByValueType({ value: detail.value, value_type: detail.value_type, });
@@ -543,12 +543,12 @@ async function formatApplicationDetail(req) {
           fluid: true,
           search: true,
           options: Object.values(valueCategoriesMap),
-        }];
+        }, ];
 
         req.controllerData._children = [ los_transform_util._createApplicationDetailPage({
           applicationId: req.controllerData.application._id.toString(),
           application_status,
-          keyInfoLength: Object.keys(application.key_information).length
+          keyInfoLength: Object.keys(application.key_information).length,
         }), ];
       }
     }
@@ -824,7 +824,7 @@ async function formatApplicationSwimlane(req) {
             left: [ 'privilege_id', ],
             operation: 'eq',
             right: 103,
-          } ],
+          }, ],
           props: {
             className: '__re-bulma_button __re-bulma_is-success',
             text: 'CREATE APPLICATION',
@@ -1026,8 +1026,8 @@ async function formatApplicationSwimlane(req) {
 async function formatApplicationDataForUpdate(req) {
   try {
     if (req.query && req.query.type === 'patch_loan_info' || req.query.type === 'patch_key_information') {
-      const { name, value, value_type, value_category } = los_transform_util.coerceLoanDataType(req.body);
-      req.body = Object.assign({}, req.body, { name, value, value_type, value_category });
+      const { name, value, value_type, value_category, } = los_transform_util.coerceLoanDataType(req.body);
+      req.body = Object.assign({}, req.body, { name, value, value_type, value_category, });
     } else if (req.query.status) {
       const user = req.user || {};
       const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id.toString() : 'organization';
@@ -1061,7 +1061,7 @@ async function formatApplicationAttributeDetail(req) {
     if (req.controllerData.application) {
       const application = req.controllerData.application;
       req.controllerData.data = req.controllerData.data || {};
-      const loan_info = Object.entries(application.key_information).map(([ name, detail, ], idx) => ({ name, value: los_transform_util.formatByValueType(detail), idx, _id: application._id.toString(), value_type: detail.value_type, value_category: detail.value_category }));
+      const loan_info = Object.entries(application.key_information).map(([ name, detail, ], idx) => ({ name, value: los_transform_util.formatByValueType(detail), idx, _id: application._id.toString(), value_type: detail.value_type, value_category: detail.value_category, }));
       req.controllerData.data = Object.assign({}, req.controllerData.data, loan_info[ req.params.idx ]);
     }
     return req;
@@ -1157,16 +1157,16 @@ async function formatApplicationDocsIndexTable(req) {
             className: 'icon caret right',
           },
         }, {
-            component: 'Semantic.BreadcrumbSection',
-            children: [ {
-              component: 'ResponsiveButton',
-              props: {
-                onclickBaseUrl: `/los/applications/${req.params.id}/docs/${label.id}`,
-                onClick: 'func:this.props.reduxRouter.push',
-              },
-              children: label.name,
-            }, ],
-          });
+          component: 'Semantic.BreadcrumbSection',
+          children: [ {
+            component: 'ResponsiveButton',
+            props: {
+              onclickBaseUrl: `/los/applications/${req.params.id}/docs/${label.id}`,
+              onClick: 'func:this.props.reduxRouter.push',
+            },
+            children: label.name,
+          }, ],
+        });
       });
     }
     if (req.controllerData.application && req.controllerData.application.labels) {
@@ -1253,7 +1253,7 @@ async function formatApplicationDocsIndexTable(req) {
                   ? `url(${documents.document_icon[ 'folder' ]})`
                   : documents.document_icon[ row.file_extension ]
                     ? `url(${documents.document_icon[ row.file_extension ]})`
-                    : `url('/images/elements/text-document-color.svg')`,
+                    : 'url(\'/images/elements/text-document-color.svg\')',
               },
             },
           },
@@ -2726,7 +2726,7 @@ async function formatDocsIndexTable(req) {
                   ? `url(${documents.document_icon[ 'folder' ]})`
                   : documents.document_icon[ row.file_extension ]
                     ? `url(${documents.document_icon[ row.file_extension ]})`
-                    : `url('/images/elements/text-document-color.svg')`,
+                    : 'url(\'/images/elements/text-document-color.svg\')',
               },
             },
           };
@@ -3050,10 +3050,10 @@ async function formatApplicationStatusesIndexTable(req) {
             onClick: 'func:this.props.createModal',
             onclickProps: {
               pathname: `/los/applicationstatuses/${row._id.toString()}`,
-              title: 'Edit Status',
+              title: 'Status Configurations',
             },
           },
-        },];
+        }, ];
 
         if (row.name !== 'Approved' && row.name !== 'Rejected') {
           row.buttons.push({
@@ -3096,7 +3096,7 @@ async function formatApplicationStatusesIndexTable(req) {
                 ],
               }),
             },
-          })
+          });
         }
         if (orderedStatusMap[row._id.toString()] !== undefined) {
           let order = orderedStatusMap[row._id.toString()];
@@ -3108,11 +3108,11 @@ async function formatApplicationStatusesIndexTable(req) {
           orderedLength++;
         }
       });
-      req.controllerData = Object.assign({}, req.controllerData, { statusrows: ordered, numPages: Math.ceil(ordered.length / 50), numItems: ordered.length})
+      req.controllerData = Object.assign({}, req.controllerData, { statusrows: ordered, numPages: Math.ceil(ordered.length / 50), numItems: ordered.length ,  });
     }
 
-    const rejectionrows = organizationRejectionTypes.map((type, i) => ({ type , index: i, orgid: organization._id.toString() }));
-    req.controllerData = Object.assign({}, req.controllerData, { rejectionrows, rejectionNumPages: Math.ceil(rejectionrows.length / 50), rejectionNumItems: rejectionrows.length})
+    const rejectionrows = organizationRejectionTypes.map((type, i) => ({ type, index: i, orgid: organization._id.toString(), }));
+    req.controllerData = Object.assign({}, req.controllerData, { rejectionrows, rejectionNumPages: Math.ceil(rejectionrows.length / 50), rejectionNumItems: rejectionrows.length ,  });
     return req;
   } catch (e) {
     req.error = e.message;
@@ -3798,26 +3798,26 @@ async function formatIntermediaryApplicationSwimlane(req) {
         type: 'intermediary',
         title: true,
       }, {
-          component: 'ResponsiveButton',
-          props: {
-            onclickProps: {
-              title: 'Edit Name',
-              pathname: '/los/intermediaries/:id/rename',
-              params: [ {
-                key: ':id',
-                val: '_id',
-              }, ],
-            },
-            onClick: 'func:this.props.createModal',
-            spanProps: {
-              className: '__ra_rb button_page_title',
-            },
+        component: 'ResponsiveButton',
+        props: {
+          onclickProps: {
+            title: 'Edit Name',
+            pathname: '/los/intermediaries/:id/rename',
+            params: [ {
+              key: ':id',
+              val: '_id',
+            }, ],
           },
-          asyncprops: {
-            onclickPropObject: [ 'intermediarydata', 'intermediary', ],
-            children: [ 'intermediarydata', 'data', 'display_title', ],
+          onClick: 'func:this.props.createModal',
+          spanProps: {
+            className: '__ra_rb button_page_title',
           },
-        }),
+        },
+        asyncprops: {
+          onclickPropObject: [ 'intermediarydata', 'intermediary', ],
+          children: [ 'intermediarydata', 'data', 'display_title', ],
+        },
+      }),
       // simpleAsyncHeaderTitle({ type: 'intermediary' }),
       {
         component: 'div',
@@ -3847,7 +3847,7 @@ async function formatIntermediaryApplicationSwimlane(req) {
             left: [ 'privilege_id', ],
             operation: 'eq',
             right: 103,
-          } ],
+          }, ],
           props: {
             className: '__re-bulma_button __re-bulma_is-success',
             text: 'CREATE APPLICATION',
@@ -4085,7 +4085,7 @@ async function formatIntermediaryApplicationTablePage(req) {
             left: [ 'privilege_id', ],
             operation: 'eq',
             right: 103,
-          } ],
+          }, ],
           props: {
             className: '__re-bulma_button __re-bulma_is-success',
             text: 'CREATE APPLICATION',
@@ -4336,12 +4336,12 @@ async function formatDocuSignTemplates(req) {
     req.controllerData = req.controllerData || {};
     if (req.controllerData && req.controllerData.docusign_templates) {
       req.controllerData.formoptions = {
-        docusign_template: req.controllerData.docusign_templates.map(temp => ({ label: temp.name, value: temp.templateId })),
+        docusign_template: req.controllerData.docusign_templates.map(temp => ({ label: temp.name, value: temp.templateId, })),
       };
       req.controllerData._children = [{
         component: 'ResponsiveForm',
         asyncprops: {
-          __formOptions: [ 'docdata', 'formoptions' ],
+          __formOptions: [ 'docdata', 'formoptions', ],
         },
         props: {
           flattenFormData: true,
@@ -4378,7 +4378,7 @@ async function formatDocuSignTemplates(req) {
                 search: true,
                 selectOnBlur: false,
               },
-            },],
+            }, ],
           }, {
             gridProps: {
               key: randomKey(),
@@ -4396,7 +4396,7 @@ async function formatDocuSignTemplates(req) {
           },
           ],
         },
-      }];
+      }, ];
     } else {
       req.controllerData._children = [{
         component: 'p',
@@ -4450,8 +4450,8 @@ async function formatDocuSignTemplateDetail(req) {
       const coapplicant = req.controllerData.coapplicant;
       const intermediary = req.controllerData.intermediary;
       const autoPopulationFieldMap = los_transform_util._generateAutoPopulationMap({ application, customer, coapplicant, intermediary, isFormatted: true, });
-      let template_detail_form = los_transform_util._generateDocuSignTemplateDetailForm({ textTabs, templateId: req.params.id, docId: 'test', autoPopulationFieldMap });
-      req.controllerData._children = [ template_detail_form ];
+      let template_detail_form = los_transform_util._generateDocuSignTemplateDetailForm({ textTabs, templateId: req.params.id, docId: 'test', autoPopulationFieldMap, });
+      req.controllerData._children = [ template_detail_form, ];
     }
     return req;
   } catch (e) {
@@ -4485,9 +4485,9 @@ async function formatApplicationRejectionTypeDetail(req) {
   try {
     req.controllerData = req.controllerData || {};
     const user = req.user || {};
-    const { index, orgid } = req.params;
+    const { index, orgid, } = req.params;
     const organization = user && user.association && user.association.organization;
-    req.controllerData.rejectiontype = { index, orgid, value: organization.los && organization.los.rejection_types && organization.los.rejection_types[index] || '' };
+    req.controllerData.rejectiontype = { index, orgid, value: organization.los && organization.los.rejection_types && organization.los.rejection_types[index] || '', };
     return req;
   } catch (e) {
     req.error = e.message;
@@ -4501,8 +4501,8 @@ async function formatApplicationRejectionDetail(req) {
     const user = req.user || {};
     const organization = user && user.association && user.association.organization;
     let rejectionTypes = organization.los && organization.los.rejection_types || [];
-    rejectionTypes = ['', ...rejectionTypes];
-    req.controllerData.formoptions = { reason: rejectionTypes.map(type => ({ label: type, value: type})) }
+    rejectionTypes = ['', ...rejectionTypes, ];
+    req.controllerData.formoptions = { reason: rejectionTypes.map(type => ({ label: type, value: type ,  })), };
     req.controllerData._id = req.params.id;
     return req;
   } catch (e) {
@@ -4518,7 +4518,7 @@ async function generateLosStatusEditDetail(req) {
     req.controllerData._children = [ {
       component: 'ResponsiveForm',
       asyncprops: {
-        formdata: [ 'statusdata', 'losstatus' ],
+        formdata: [ 'statusdata', 'losstatus', ],
       },
       props: {
         flattenFormData: true,
@@ -4533,14 +4533,14 @@ async function generateLosStatusEditDetail(req) {
           params: [ {
             key: ':id',
             val: '_id',
-          } ],
+          }, ],
           responseCallback: 'func:window.setHeaders',
-          successCallback: [ 'func:window.closeModalAndCreateNotification', 'func:this.props.refresh' ],
+          successCallback: [ 'func:window.closeModalAndCreateNotification', 'func:this.props.refresh', ],
           successProps: [ {
             text: 'Changes saved successfully!',
             timeout: 10000,
             type: 'success',
-          }, {} ]
+          }, {}, ],
         },
         validations: [],
         formgroups: [ {
@@ -4551,9 +4551,9 @@ async function generateLosStatusEditDetail(req) {
             name: 'name',
             label: 'Status Name',
             passProps: {
-              state: (status.name === 'Approved' || status.name === 'Rejected') ? 'isDisabled' : null
+              state: (status.name === 'Approved' || status.name === 'Rejected') ? 'isDisabled' : null,
             },
-          },],
+          }, ],
         }, {
           gridProps: {
             key: randomKey(),
@@ -4561,27 +4561,43 @@ async function generateLosStatusEditDetail(req) {
           formElements: [{
             name: 'active',
             type: 'dropdown',
-            label: 'Active',
+            label: 'Pipeline display',
             passProps: {
               selection: true,
               fluid: true,
             },
             options: [{
               value: true,
-              label: 'True'
+              label: 'True',
             }, {
               value: false,
-              label: 'False'
-            }]
-          },],
+              label: 'False',
+            }, ],
+          }, ],
         }, {
           gridProps: {
             key: randomKey(),
           },
           formElements: [{
-            name: 'description',
-            label: 'Description',
-          },],
+            name: 'status_requirements',
+            label: 'Status Requirements',
+            type: 'combobox',
+          }, ],
+        }, {
+          gridProps: {
+            key: randomKey(),
+          },
+          formElements: [{
+            name: 'preselected_loan_information_filter_categories',
+            label: 'Pre-Selected Loan Information Filter Categories',
+            type: 'dropdown',
+            passProps: {
+              selection: true,
+              multiple: true,
+              fluid: true,
+              search: true,
+            }
+          }, ],
         }, {
           gridProps: {
             key: randomKey(),
@@ -4599,7 +4615,7 @@ async function generateLosStatusEditDetail(req) {
         },
         ],
       },
-    },];
+    }, ];
     return req;
   } catch(e) {
     req.error = e.message;
@@ -4620,7 +4636,7 @@ async function formatCustomerDocUploadModal(req) {
       email: customer.email || '',
       description: '',
       applicationId: application._id.toString(),
-    }
+    };
     return req;
   } catch (e) {
     req.error = e.message;
@@ -4655,98 +4671,92 @@ async function formatReportingPage(req) {
     const options = {
       measurement,
       frequency,
-      filterCategories: req.controllerData.filterCategories || [ 'Total' ],
+      filterCategories: req.controllerData.filterCategories || [ 'Total', ],
       filterCategoryMap: req.controllerData.filterCategoryMap || {},
-      data: req.controllerData.data || []
-    }
+      data: req.controllerData.data || [],
+    };
 
-    req.controllerData._children = [{
-      component: 'Semantic.Dropdown',
-      hasWindowFunc: true,
-      bindprops: true,
-      props: {
-        selection: true,
-        style: {
-          marginRight: '5px',
-          marginBottom: '20px',
-        },
-        value: measurement,
-        options: [{
-          text: 'APPLICATION VOLUME',
-          value: 'volume',
+    req.controllerData._children = [
+      plainGlobalButtonBar({
+        left: [{
+          component: 'Semantic.Dropdown',
+          hasWindowFunc: true,
+          bindprops: true,
+          props: {
+            className: '__re-bulma_button __re-bulma_is-success',
+            selection: true,
+            value: measurement,
+            options: [{
+              text: 'APPLICATION VOLUME',
+              value: 'volume',
+            }, {
+              text: 'APPLICATION COUNT',
+              value: 'count',
+            }, ],
+            onChange: 'func:window.reportingMeasurementOnDropdownClick',
+          },
         }, {
-          text: 'APPLICATION COUNT',
-          value: 'count',
-        }],
-        onChange: 'func:window.reportingMeasurementOnDropdownClick',
-      },
-    }, {
-      component: 'Semantic.Dropdown',
-      hasWindowFunc: true,
-      bindprops: true,
-      props: {
-        selection: true,
-        style: {
-          marginRight: '5px',
-          marginBottom: '20px',
-        },
-        value: frequency,
-        options: [{
-          text: 'DAILY',
-          value: 'daily',
+          component: 'Semantic.Dropdown',
+          hasWindowFunc: true,
+          bindprops: true,
+          props: {
+            className: '__re-bulma_button __re-bulma_is-success',
+            selection: true,
+            value: frequency,
+            options: [{
+              text: 'DAILY',
+              value: 'daily',
+            }, {
+              text: 'MONTHLY',
+              value: 'monthly',
+            }, {
+              text: 'YEARLY',
+              value: 'yearly',
+            }, ],
+            onChange: 'func:window.reportingFrequencyOnDropdownClick',
+          },
         }, {
-          text: 'MONTHLY',
-          value: 'monthly',
-        }, {
-          text: 'YEARLY',
-          value: 'yearly',
-        }],
-        onChange: 'func:window.reportingFrequencyOnDropdownClick',
-      },
-    }, {
-      component: 'Semantic.Dropdown',
-      hasWindowFunc: true,
-      bindprops: true,
-      props: {
-        selection: true,
-        style: {
-          marginRight: '5px',
-          marginBottom: '20px',
-        },
-        value: filterCategory,
-        options: [{
-          text: 'TOTAL',
-          value: 'total',
-        }, {
-          text: 'BY STATUS',
-          value: 'status',
-        },{
-          text: 'BY PRODUCT',
-          value: 'product',
-        }, 
-        // {
-        //   text: 'BY INTERMEDIARY',
-        //   value: 'intermediary',
-        // }
-        ],
-        onChange: 'func:window.reportingFilterCategoryOnDropdownClick',
-      },
-    }, {
-      component: 'ResponsiveButton',
-      children: 'EXPORT DATA',
-      props: {
-        'onclickBaseUrl': `/los/api/reporting/download/${orgId}?measurement=${measurement}&frequency=${frequency}&filterCategory=${filterCategory}`,
-        aProps: {
-          className: '__re-bulma_button __re-bulma_is-primary',
-        },
-      },
-    }, {
-      component: 'ResponsiveCard',
-      props: cardprops({
-        cardTitle: 'Selected Report',
-      }),
-      children: losReporting.generateReportingChart(options),
-    }]
+          component: 'Semantic.Dropdown',
+          hasWindowFunc: true,
+          bindprops: true,
+          props: {
+            className: '__re-bulma_button __re-bulma_is-success',
+            selection: true,
+            value: filterCategory,
+            options: [{
+              text: 'TOTAL',
+              value: 'total',
+            }, {
+              text: 'BY STATUS',
+              value: 'status',
+            }, {
+              text: 'BY PRODUCT',
+              value: 'product',
+            },
+            ],
+            onChange: 'func:window.reportingFilterCategoryOnDropdownClick',
+          },
+        }, ],
+        right: [{
+          component: 'ResponsiveButton',
+          children: 'EXPORT DATA',
+          props: {
+            'onclickBaseUrl': `/los/api/reporting/download/${orgId}?measurement=${measurement}&frequency=${frequency}&filterCategory=${filterCategory}`,
+            aProps: {
+              className: '__re-bulma_button __re-bulma_is-primary',
+            },
+          },
+        }, ],
+      }), {
+        component: 'Container',
+        children: [{
+          component: 'ResponsiveCard',
+          props: cardprops({
+            cardTitle: 'Selected Report',
+          }),
+          children: losReporting.generateReportingChart(options),
+        }, ]
+      }, ];
     return req;
   } catch(e) {
     req.error = e.message;
@@ -4761,7 +4771,7 @@ async function formatReportingDownloadData(req) {
     const measurement = query.measurement || 'volume';
     const frequency = query.frequency || 'daily';
     const filterCategory = query.filterCategory || 'total';
-    const filterCategories = req.controllerData.filterCategories || [ 'Total' ];
+    const filterCategories = req.controllerData.filterCategories || [ 'Total', ];
     const filterCategoryMap = req.controllerData.filterCategoryMap || {};
     const data = req.controllerData.data || [];
     const baseDataRow = {};
@@ -4769,14 +4779,14 @@ async function formatReportingDownloadData(req) {
     const dataMap = losReporting.generateDataMap(data, baseDataRow, filterCategoryMap);
     const dataRows = [];
     losReporting.generateApplicationDates(frequency).forEach((date, i) => {
-      dataRows.push([date]);
+      dataRows.push([date, ]);
       filterCategories.forEach((category) => {
         const val = dataMap[date] && dataMap[date][category] || 0;
         dataRows[i].push(val);
-      })
-    })
+      });
+    });
     filterCategories.unshift('Application Date');
-    req.controllerData.download_content = [filterCategories, ...dataRows].reduce(transformhelpers.createCSVString, '');
+    req.controllerData.download_content = [filterCategories, ...dataRows, ].reduce(transformhelpers.createCSVString, '');
     req.controllerData.name = `Application ${capitalize(measurement)} - ${capitalize(frequency)} - By ${capitalize(filterCategory)}`;
     return req;
   } catch(e) {

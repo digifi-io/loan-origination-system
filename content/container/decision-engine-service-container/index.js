@@ -35,7 +35,7 @@ require('convertjson2xml').singleton({
 function promisifyClientConnect(uri, db) {
   return new Promise((resolve, reject) => {
     try {
-      const client = new mongodb.MongoClient(THEMESETTINGS.gridfs.uri);
+      const client = new mongodb.MongoClient(THEMESETTINGS.gridfs.uri, { useNewUrlParser : true });
       client.connect(async function (err) {
         if (err) logger.warn(err);
         else {

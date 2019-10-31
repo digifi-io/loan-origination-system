@@ -545,6 +545,7 @@ function generateActivationManifest(req) {
         req.controllerData.form = [ {
           component: 'ResponsiveForm',
           props: {
+            blockPageUI: true,
             onSubmit: {
               url: '/integrations/activate',
               options: {
