@@ -683,12 +683,7 @@ async function batchInitializeStrategiesForCompilation(req, res, next) {
     const { org, } = req.controllerData;
     const orgId = (org && org._id) ? org._id.toString() : 'organization';
     let { uniqueStrategies, dataintegrations, } = req.controllerData;
-    const uniqueStrategyIds = Object.values(uniqueStrategies).reduce((acc, { testing, active }) => {
-      if (testing && testing._id) acc.push(testing._id);
-      if (active && active._id) acc.push(active._id);
-      return acc;
-    }, []);
-    const variableMap = await integration_helper.getAllOrgVariableFromCache(orgId, uniqueStrategyIds);
+    const variableMap = await integration_helper.getAllOrgVariableFromCache(orgId);
     let strategies = Object.keys(uniqueStrategies);
     for (let strat of strategies) {
       let statuses = Object.keys(uniqueStrategies[ strat ]);
