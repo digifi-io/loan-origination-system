@@ -39,6 +39,7 @@ const scheme = {
   strategies: [{
     type: ObjectId,
     ref: 'Strategy',
+    index: true
   },],
   user: Schema.Types.Mixed,
   organization: {
