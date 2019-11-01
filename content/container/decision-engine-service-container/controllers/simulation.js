@@ -71,28 +71,18 @@ function getCompiledStrategies(req, res, next) {
  * @param {Function} next Express next function
  * 
  */
-function getStrategies(req, res, next) {
+async function getStrategyDisplayNames(req, res, next) {
   try {
     req.controllerData = req.controllerData || {};
     let user = req.user;
     const Strategy = periodic.datas.get('standard_strategy');
     let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
     if (req.query.download === 'true') organization = req.params.id;
-    let queryOptions = ([ 'simulations', 'deleteTestCasesModal', ].indexOf(req.query.pagination) !== -1)
-      ? { fields: [ 'display_name', ], query: { organization, }, }
-      : { query: { organization, }, };
-    Strategy.query(queryOptions)
-      .then(strategies => {
-        strategies = strategies.map(strategy => strategy.toJSON ? strategy.toJSON() : strategy);
-        req.controllerData.strategies = strategies;
-        return next();
-      })
-      .catch(e => {
-        logger.error('Unable to query strategies', e);
-        return next(e);
-      });
+    const strategies = await Strategy.model.find({ organization, }, { display_name: 1 });
+    req.controllerData.strategies = strategies;
+    return next();
   } catch (e) {
-    logger.error('getStrategies error', e);
+    logger.error('getStrategyDisplayNames error', e);
     return next(e);
   }
 }
@@ -2971,7 +2961,7 @@ module.exports = {
   fetchAllDocumentTemplatesFromAWS,
   getCompiledStrategies,
   getCompiledStrategy,
-  getStrategies,
+  getStrategyDisplayNames,
   getTestCasesData,
   createNewTestCase,
   createNewTestCases,

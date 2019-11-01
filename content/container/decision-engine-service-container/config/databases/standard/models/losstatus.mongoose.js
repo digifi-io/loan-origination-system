@@ -31,6 +31,8 @@ const scheme = {
     type: ObjectId,
     ref: 'Organization',
   },
+  status_requirements: [String],
+  filter_categories: [String],
 };
 
 module.exports = {
