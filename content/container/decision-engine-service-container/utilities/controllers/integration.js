@@ -240,10 +240,10 @@ async function getVariableFromCache(variables, orgId) {
   }
 }
 
-async function getAllOrgVariableFromCache(orgId, strategyIdArr = null) {
+async function getAllOrgVariableFromCache(orgId, strategyIdArr = []) {
   try {
     const Variable = periodic.datas.get('standard_variable');
-    const query = (strategyIdArr) ? { organization: orgId, strategies: strategyIdArr } : { organization: orgId };
+    const query = (strategyIdArr.length) ? { organization: orgId, strategies: strategyIdArr } : { organization: orgId };
     const allOrganizationVariables = await Variable.model.find(query, { data_type: 1, type: 1, title: 1, display_title: 1, organization: 1, }).lean();
     const variableMap = {};
     if (Array.isArray(allOrganizationVariables)) {
