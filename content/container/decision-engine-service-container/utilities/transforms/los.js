@@ -1557,7 +1557,6 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
             name: 'status',
           }, ],
         },
-
         {
           gridProps: {
             key: randomKey(),
@@ -1567,6 +1566,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
               flexDirection: 'column',
               width: '50%',
               paddingRight: '10px',
+              marginBottom: 0
             },
           },
           card: {
@@ -1591,6 +1591,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
             rightCardProps: cardprops({
               cardTitle: 'Automation Results',
               cardStyle: {
+                marginBottom: 0,
               },
             }),
           },
@@ -1852,6 +1853,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
               flexDirection: 'column',
               width: '50%',
               paddingLeft: '10px',
+              marginBottom: 0,
             },
           },
           card: {
@@ -1877,12 +1879,176 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
             rightCardProps: cardprops({
               cardTitle: 'Loan Information',
               cardStyle: {
+                marginBottom: 0
               },
             }),
           },
           formElements: [{
             formGroupCardLeft: [{
-              name: 'PLACEHOLDER',
+              type: 'datatable',
+              name: 'data_source_variables',
+              // uniqueFormOptions: true,
+              'flattenRowData': false,
+              'addNewRows': false,
+              'rowButtons': false,
+              'useInputRows': true,
+              tableWrappingStyle: {
+                overflow: 'visible',
+              },
+              label: ' ',
+              labelProps: {
+                style: {
+                  flex: 1,
+                },
+              },
+              passProps: {
+                turnOffTableSort: true,
+                tableWrappingStyle: {
+                  overflow: 'visible',
+                },
+              },
+              layoutProps: {},
+              ignoreTableHeaders: ['_id',],
+              headers: [ {
+                label: 'Done',
+                sortid: 'done',
+                sortable: false,
+                headerColumnProps: {
+                },
+              }, {
+                label: 'Requirement',
+                sortid: 'requirement',
+                sortable: false,
+                headerColumnProps: {
+                },
+              }, {
+                label: ' ',
+                headerColumnProps: {
+                  style: {
+                    // width: '80px',
+                  },
+                },
+                columnProps: {
+                  style: styles.buttonCellStyle,
+                },
+                buttons: [{
+                  passProps: {
+                    buttonProps: {
+                      icon: 'fa fa-check',
+                      className: '__icon_button green',
+                    },
+                    onClick: 'func:this.props.fetchAction',
+                    onclickBaseUrl: '/los/api/tasks/:id?done=true',
+                    onclickLinkParams: [{ 'key': ':id', 'val': '_id', },],
+                    fetchProps: {
+                      method: 'PUT',
+                    },
+                    successProps: {
+                      success: {
+                        notification: {
+                          text: 'Changes saved successfully!',
+                          timeout: 10000,
+                          type: 'success',
+                        },
+                      },
+                      successCallback: 'func:this.props.refresh',
+                    },
+                  },
+                },],
+              },],
+            },
+              
+              
+              
+              {
+              type: 'layout',
+              value: {
+                component: 'ResponsiveTable',
+                asyncprops: {
+                  rows: ['taskdata', 'rows',],
+                  numItems: ['taskdata', 'numItems',],
+                  numPages: ['taskdata', 'numPages',],
+                },
+                props: {
+                  useRowProps: true,
+                  label: '',
+                  dataMap: [{
+                    'key': 'rows',
+                    value: 'rows',
+                  }, {
+                    'key': 'numItems',
+                    value: 'numItems',
+                  }, {
+                    'key': 'numPages',
+                    value: 'numPages',
+                  },
+                  ],
+                  limit: 50,
+                  // filterSearch: true,
+                  simplePagination: true,
+                  // useHeaderFilters: true,
+                  hasPagination: true,
+                  calculatePagination: true,
+                  baseUrl: '/los/api/tasks?paginate=true',
+                  flattenRowData: true,
+                  useInputRows: true,
+                  addNewRows: false,
+                  // 'tableSearch': true,
+                  // 'simpleSearchFilter': true,
+                  ignoreTableHeaders: ['_id',],
+                  headers: [{
+                    label: 'Done',
+                    formtype: 'checkbox',
+                    sortid: 'done',
+                    passProps: {
+                      style: {
+                        pointerEvents: 'none',
+                      },
+                    },
+                    sortable: false,
+                  }, {
+                    label: 'Requirement',
+                    sortid: 'requirement',
+                    sortable: false,                    
+                  },
+                  {
+                    label: ' ',
+                    headerColumnProps: {
+                      style: {
+                      },
+                    },
+                    columnProps: {
+                      // className: 'task-buttons',
+                      style: styles.buttonCellStyle,
+                    },
+                    buttons: [ {
+                      passProps: {
+                        buttonProps: {
+                          icon: 'fa fa-check',
+                          className: '__icon_button green',
+                        },
+                        onClick: 'func:this.props.fetchAction',
+                        onclickBaseUrl: '/los/api/tasks/:id?done=true',
+                        onclickLinkParams: [{ 'key': ':id', 'val': '_id', },],
+                        fetchProps: {
+                          method: 'PUT',
+                        },
+                        successProps: {
+                          success: {
+                            notification: {
+                              text: 'Changes saved successfully!',
+                              timeout: 10000,
+                              type: 'success',
+                            },
+                          },
+                          successCallback: 'func:this.props.refresh',
+                        },
+                      },
+                    }, ],
+                  },
+                  ],
+                },
+              },
             }, ],
             formGroupCardRight: [{
               type: 'layout',

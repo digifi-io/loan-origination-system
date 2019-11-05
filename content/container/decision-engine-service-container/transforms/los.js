@@ -356,7 +356,6 @@ async function formatApplicationDetail(req) {
         display_title: req.controllerData.application.title,
       };
       application.labels = application.labels || [];
-
       if (req.query && req.query.action_type === 'edit') {
         req.controllerData.formoptions = req.controllerData.formoptions || {};
         if (req.controllerData.labels) {
