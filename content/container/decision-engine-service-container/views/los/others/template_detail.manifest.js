@@ -11,7 +11,7 @@ let randomKey = Math.random;
 
 module.exports = {
   containers: {
-    '/los/others/templates/:id/:page': {
+    '/los/settings/templates/:id/:page': {
       layout: {
         component: 'div',
         privileges: [ 101, 102, 103],
@@ -19,7 +19,7 @@ module.exports = {
           style: styles.pageContainer,
         },
         children: [
-          losTabs('Other'),
+          losTabs('Settings'),
           simpleAsyncHeaderTitle({
             type: 'template',
             title: true,

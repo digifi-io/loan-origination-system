@@ -20,12 +20,6 @@ const radioButtonGroup = [
     icon: styles.moduleIcons[ 'machineLearning' ],
     title: 'MACHINE LEARNING',
     subtext: 'Run a predictive credit risk model',
-  }, {
-    name: 'type',
-    value: 'wizard',
-    icon: styles.moduleIcons[ 'artificialintelligence' ],
-    title: 'UNDERWRITING WIZARD',
-    subtext: 'Test pricing and ROE scenarios',
   },
 ];
 
@@ -169,7 +163,6 @@ module.exports = {
                     strategy: 'func:window.filterAutomationModuleName',
                     mlmodel: 'func:window.filterAutomationModuleName',
                     scenario: 'func:window.filterAutomationModuleName',
-                    type: 'func:window.testAutomationType',
                   },
                   form: {
                     useFormOptions: true,

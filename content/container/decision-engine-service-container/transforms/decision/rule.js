@@ -22,52 +22,61 @@ const ruleHelpers = utilities.transforms.rule;
  * @param {Object} req Express request object
  * @returns {Object} request object with populated variables dropdown on req.controllerData
   */
-function generateVariableDropdown(req) {
-  return new Promise((resolve, reject) => {
-    let { collection, core, tabname, parsedUrl, } = helpers.findCollectionNameFromReq({ req, });
-    const Variable = periodic.datas.get('standard_variable');
-    if ((req.query.modal !== 'true' || parsedUrl[ 0 ] === 'standard_variables') && (collection !== 'rules' || (tabname !== 'detail' && tabname !== 'update_history_detail'))) {
-      resolve(req);
-    } else {
-      let user = req.user;
-      let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
-      req.controllerData = req.controllerData || {};
-      req.controllerData.data = req.controllerData.data || {};
-      let ruleData = req.controllerData.standard_rule || req.controllerData.data;
-      ruleData = ruleData.toJSON ? ruleData.toJSON() : ruleData;
-      let creator = ruleData.user.creator || ruleData.after.user.creator;
-      let updater = ruleData.user.updater || ruleData.user;
-      ruleData.formattedCreatedAt = `${transformhelpers.formatDateNoTime(ruleData.createdat, user.time_zone)} by ${creator}`;
-      ruleData.formattedUpdatedAt = `${transformhelpers.formatDateNoTime(ruleData.updatedat, user.time_zone)} by ${updater}`;
-      req.controllerData.data = ruleData;
-      Variable.model.find({ organization, })
-        .then(variables => {
-          let outputDropdown = [];
-          let variableDropdown = variables.map(variable => ({ label: variable.display_title, value: variable._id, })).sort((a, b) => (a.label > b.label) ? 1 : -1);
-          variableDropdown.unshift({
-            label: ' ',
-            value: '',
-            disabled: true,
-          });
-          req.controllerData.data.variable_types = variables.reduce((collection, variable) => {
-            variable = variable.toJSON ? variable.toJSON() : variable;
-            if (variable.type === 'Output') outputDropdown.push({
-              label: variable.display_title,
-              value: variable._id,
-            });
-            collection[ variable._id.toString() ] = variable.data_type;
-            return collection;
-          }, {});
-          req.controllerData.data.variable_type = req.controllerData.data.state_property_attribute ? req.controllerData.data.variable_types[ req.controllerData.data.state_property_attribute ] : '';
-          req.controllerData.formoptions = {
-            state_property_attribute: variableDropdown,
-          };
-          if (ruleData.type === 'output') req.controllerData.formoptions.output_variables = outputDropdown;
-          resolve(req);
-        })
-        .catch(reject);
-    }
-  });
+async function generateVariableDropdown(req) {
+  let { collection, core, tabname, parsedUrl, } = helpers.findCollectionNameFromReq({ req, });
+  const Variable = periodic.datas.get('standard_variable');
+  if ((req.query.modal !== 'true' || parsedUrl[ 0 ] === 'standard_variables') && (collection !== 'rules' || (tabname !== 'detail' && tabname !== 'update_history_detail'))) {
+    return req;
+  } else {
+    let user = req.user;
+    let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
+    req.controllerData = req.controllerData || {};
+    req.controllerData.data = req.controllerData.data || {};
+    let rule = req.controllerData.standard_rule || req.controllerData.data;
+    rule = rule.toJSON ? rule.toJSON() : rule;
+    let creator = rule.user.creator || rule.after.user.creator;
+    let updater = rule.user.updater || rule.user;
+    rule.formattedCreatedAt = `${transformhelpers.formatDateNoTime(rule.createdat, user.time_zone)} by ${creator}`;
+    rule.formattedUpdatedAt = `${transformhelpers.formatDateNoTime(rule.updatedat, user.time_zone)} by ${updater}`;
+    req.controllerData.data = rule;
+    const variables = await Variable.model.find({ organization, }, { display_title: 1, title: 1, data_type: 1, type: 1, name: 1 }).lean();
+    const outputDropdown = [];
+    const variableDropdown = [{
+      label: ' ',
+      value: '',
+      disabled: true,
+    }]; 
+    req.controllerData.data.variable_types = variables.reduce((collection, variable) => {
+      variable = variable.toJSON ? variable.toJSON() : variable;
+      variableDropdown.push({
+        label: variable.display_title,
+        value: variable._id,
+      });
+      if (variable.type === 'Output') outputDropdown.push({
+        label: variable.display_title,
+        value: variable._id,
+      });
+      collection[ variable._id.toString() ] = variable.data_type;
+      return collection;
+    }, {});
+    req.controllerData.variableMap = variables.reduce((reduced, variable) => {
+      variable = variable.toJSON ? variable.toJSON() : variable;
+      reduced.byId[ variable._id.toString() ] = variable;
+      reduced.byName[ variable.name ] = variable;
+      return reduced;
+    }, {
+      byId: {},
+      byName: {},
+    });
+    req.controllerData.data.variable_type = req.controllerData.data.state_property_attribute 
+      ? req.controllerData.data.variable_types[ req.controllerData.data.state_property_attribute ] 
+      : '';
+    req.controllerData.formoptions = {
+      state_property_attribute: variableDropdown,
+    };
+    if (rule.type === 'output') req.controllerData.formoptions.output_variables = outputDropdown;
+    return req;
+  }
 }
 
 /**
@@ -76,40 +85,46 @@ function generateVariableDropdown(req) {
  * @param {Object} req Express request object
  * @returns {Object} request object with updated req body for rule update or create
  */
-function stageRuleReqBodyForUpdate(req) {
-  return new Promise((resolve, reject) => {
-    try {
-      req.body = unflatten(req.body);
-      req.controllerData = req.controllerData || {};
-      if (req.body.required_calculation_variables && req.body.required_calculation_variables.length) {
-        let inputVariableMap = req.controllerData.inputVariableMap || {};
-        req.body.required_calculation_variables = req.body.required_calculation_variables.filter(variable => !!variable);
-        req.body.calculation_inputs = req.body.required_calculation_variables.filter(variable => !!inputVariableMap[variable]);
-        req.body.calculation_outputs = req.body.required_calculation_variables.filter(variable => !inputVariableMap[variable]);
-        delete req.body.required_calculation_variables;
-      }
-      req.body = Object.keys(req.body).reduce((reduced, formname) => {
-        let formVal = req.body[ formname ];
-        formname = formname.replace(/\*/g, '.');
-        reduced[ formname ] = formVal;
-        return reduced;
-      }, {});
-      let user = req.user;
-      let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id.toString() : 'organization';
-      req.body = unflatten(req.body);
-      if (req.body.rule && Array.isArray(req.body.rule)) req.body.rule = req.body.rule.filter(el => !!el);
-      if (req.body && req.body.display_title && req.body.version) {
-        req.body.display_name = `${req.body.display_title} (v${req.body.version})`;
-      }
-      if (req.body && req.body.type) {
-        req.body = (req.query.method === 'addRule') ? ruleHelpers.cleanRuleForCreate(req) : ruleHelpers.cleanRuleForUpdate(req);
-      }
-      return resolve(req);
-    } catch (err) {
-      req.error = err.message;
-      return resolve(req);
+async function stageRuleReqBodyForUpdate(req) {
+  try {
+    req.body = unflatten(req.body);
+    req.controllerData = req.controllerData || {};
+    req.controllerData.variableMap = req.controllerData.variableMap || {};
+    const user = req.user;
+    const organization = (user && user.association && user.association.organization && user.association.organization._id)
+      ? user.association.organization._id.toString()
+      : 'organization';
+    if (req.body.required_calculation_variables && req.body.required_calculation_variables.length) {
+      const variables = req.body.required_calculation_variables || [];
+      const variableMapById = req.controllerData.variableMap && req.controllerData.variableMap.byId;
+      const [ calculationInputs, calculationOutputs ] = variables.reduce((acc, variableId) => {
+        if (variableMapById && variableMapById[variableId] && variableMapById[variableId].type === 'Input') acc[0].push(variableId);
+        if (variableMapById && variableMapById[variableId] && variableMapById[variableId].type === 'Output') acc[1].push(variableId);
+        return acc;
+      }, [[], []]);
+      req.body.calculation_inputs = calculationInputs;
+      req.body.calculation_outputs = calculationOutputs;
+      delete req.body.required_calculation_variables;
     }
-  });
+    req.body = Object.keys(req.body).reduce((reduced, formname) => {
+      const formVal = req.body[ formname ];
+      formname = formname.replace(/\*/g, '.');
+      reduced[ formname ] = formVal;
+      return reduced;
+    }, {});
+    req.body = unflatten(req.body);
+    if (req.body.rule && Array.isArray(req.body.rule)) req.body.rule = req.body.rule.filter(el => !!el);
+    if (req.body && req.body.display_title && req.body.version) {
+      req.body.display_name = `${req.body.display_title} (v${req.body.version})`;
+    }
+    if (req.body && req.body.type) {
+      req.body = (req.query.method === 'addRule') ? ruleHelpers.cleanRuleForCreate(req) : ruleHelpers.cleanRuleForUpdate(req);
+    }
+    return req;
+  } catch (err) {
+    req.error = err.message;
+    return req;
+  }
 }
 
 /**
@@ -185,7 +200,7 @@ function unflattenReqBody(req) {
 }
 
 function formatInnerRuleDetail(reduced, inner_rule, idx, variableTypeMap, outer_rule) {
-  let variable_type = (inner_rule.state_property_attribute && inner_rule.state_property_attribute._id) ? inner_rule.state_property_attribute.type : variableTypeMap[ inner_rule.state_property_attribute ];
+  const variable_type = (inner_rule.state_property_attribute && inner_rule.state_property_attribute._id && inner_rule.state_property_attribute.type) ? inner_rule.state_property_attribute.type : variableTypeMap[ inner_rule.state_property_attribute ];
   if (DECISION_CONSTANTS.SINGLE_RULE_MODULES[ outer_rule.type ]) {
     inner_rule = inner_rule.toJSON ? inner_rule.toJSON() : inner_rule;
     reduced[ `rule*${idx}` ] = inner_rule;
@@ -223,6 +238,7 @@ function formatRuleDetail(req) {
           req.controllerData = Object.assign({}, req.controllerData, {
             formoptions: {
               'rule*0*state_property_attribute': req.controllerData.formoptions.state_property_attribute,
+              required_calculation_variables: req.controllerData.formoptions.state_property_attribute
             },
           });
         }
@@ -292,7 +308,7 @@ function getVariableMap(req) {
       });
       resolve(req);
     } else {
-      Variable.model.find({ organization, })
+      Variable.model.find({ organization, }, { display_title: 1, name: 1, title: 1, data_type: 1, type: 1 })
         .then(variables => {
           req.controllerData.variableMap = variables.reduce((reduced, variable) => {
             variable = variable.toJSON ? variable.toJSON() : variable;

@@ -135,7 +135,7 @@ function create(req, res, next) {
             let mlmodelOptions = { childModel: 'standard_mlmodel', childId: mlmodels, parentId: newStrategyVersionDoc._id.toString(), collection, req: {}, childUpdate, };
             Promise.all([
               Model.update({ id: newStrategyVersionDoc._id.toString(), updatedoc: newStrategyVersionDoc, }),
-              controller_helper.addParentToChild(variableOptions),
+              controller_helper.addStrategyToVariable(variableOptions),
               controller_helper.addParentToChild(mlmodelOptions),
               controller_helper.handlePreviousLatestVersion({ title: newStrategyVersionDoc.title, collection, organization: newStrategyVersionDoc.organization.toString() }), ])
               .then(result => {
@@ -288,8 +288,8 @@ function update(req, res, next) {
         let changeOptions = controller_helper.createChangeOptions({ result, collection, req, strategy_title, strategy_display_title, strategy_display_name, strategyid: id, organization: (organization) ? organization.toString() : 'organization', });
         result.user = Object.assign({}, result.user, { updater: `${req.user.first_name} ${req.user.last_name}`, });
         let updatedoc = Object.assign({}, result, req.body, { updatedat: new Date(), });
-        await controller_helper.deleteParentFromChild(deleteOptions);
-        await controller_helper.addParentToChild(addOptions);
+        await controller_helper.deleteStrategyFromVariable(deleteOptions);
+        await controller_helper.addStrategyToVariable(addOptions);
         return Promise.all([
           ChangeModel.create(changeOptions),
           Model.update({
@@ -938,7 +938,8 @@ async function fetchVariableDropdown(req, res) {
     title: new RegExp(req.query.query.toLowerCase().replace(/\s+/g, '_'), 'gi'),
   }, ];
   if (req.query.type) query.type = req.query.type;
-  let variables = await Variable.query({ query, limit: req.query.limit, sort: 'title', });
+  const limit = req.query.limit ? Number(req.query.limit) : 100;
+  let variables = await Variable.model.find(query, { display_title: 1, title: 1, data_type: 1, type: 1}).limit(limit).sort('title');
   let variables_count = variables.length;
   let variables_to_add = req.query.limit - variables_count;
   if (variables_to_add > 0 && req.query.changed) {
@@ -946,7 +947,7 @@ async function fetchVariableDropdown(req, res) {
     let half_count_variables_to_add = Math.ceil(variables_to_add / 2);
     let queryOptions = { organization, };
     if (req.query.type) queryOptions.type = req.query.type;
-    let allVariables = await Variable.model.find(queryOptions).sort('title');
+    let allVariables = await Variable.model.find(queryOptions, { display_title: 1, title: 1, data_type: 1, type: 1}).sort('title');
     if (variables.length) {
       let first_variable_index = allVariables.map(variable => variable.toJSON().title).indexOf(variables[ 0 ].toJSON().title);
       front_start_slice_index = (half_count_variables_to_add > first_variable_index) ? 0 : first_variable_index - half_count_variables_to_add;
@@ -1217,8 +1218,8 @@ async function handleStrategyVariableDependencies(req, res, next) {
       parentId: req.controllerData.strategy._id.toString(),
     };
 
-    await controller_helper.addParentToChild(addOptions);
-    await controller_helper.deleteParentFromChild(deleteOptions);
+    await controller_helper.addStrategyToVariable(addOptions);
+    await controller_helper.deleteStrategyFromVariable(deleteOptions);
     return next();
   } catch (e) {
     res.status(500).send({ message: 'Error handling strategy variable dependencies', });

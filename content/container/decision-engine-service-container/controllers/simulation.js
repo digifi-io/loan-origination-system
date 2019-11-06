@@ -71,28 +71,18 @@ function getCompiledStrategies(req, res, next) {
  * @param {Function} next Express next function
  * 
  */
-function getStrategies(req, res, next) {
+async function getStrategyDisplayNames(req, res, next) {
   try {
     req.controllerData = req.controllerData || {};
     let user = req.user;
     const Strategy = periodic.datas.get('standard_strategy');
     let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
     if (req.query.download === 'true') organization = req.params.id;
-    let queryOptions = ([ 'simulations', 'deleteTestCasesModal', ].indexOf(req.query.pagination) !== -1)
-      ? { fields: [ 'display_name', ], query: { organization, }, }
-      : { query: { organization, }, };
-    Strategy.query(queryOptions)
-      .then(strategies => {
-        strategies = strategies.map(strategy => strategy.toJSON ? strategy.toJSON() : strategy);
-        req.controllerData.strategies = strategies;
-        return next();
-      })
-      .catch(e => {
-        logger.error('Unable to query strategies', e);
-        return next(e);
-      });
+    const strategies = await Strategy.model.find({ organization, }, { display_name: 1 });
+    req.controllerData.strategies = strategies;
+    return next();
   } catch (e) {
-    logger.error('getStrategies error', e);
+    logger.error('getStrategyDisplayNames error', e);
     return next(e);
   }
 }
@@ -1677,123 +1667,6 @@ function pullPopulationTags(req, res, next) {
   }
 }
 
-// old runBatchSimulations
-// async function runBatchSimulations(req, res, next) {
-//   try {
-//     req.controllerData = req.controllerData || {};
-//     let user = req.user;
-//     let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
-//     const Testcase = periodic.datas.get('standard_testcase');
-//     const Simulation = periodic.datas.get('standard_simulation');
-//     const PopulationTag = periodic.datas.get('standard_populationtag');
-//     let credit_pipeline = req.controllerData.credit_pipeline;
-//     let populationTagMap = req.controllerData.populationTagMap;
-//     let offset = 0;
-//     let limit = 500;
-//     let test_case_length;
-//     let query;
-//     res.status(200).send({ message: 'OK', });
-//     if (req.body && req.body.population_tags && req.body.population_tags.length) {
-//       let popTags = await PopulationTag.query({ query: { _id: { $in: req.body.population_tags, }, organization, }, });
-//       let totalCount = popTags.reduce((acc, curr) => {
-//         acc += curr.testcases.length;
-//         return acc;
-//       }, 0);
-//       await Promise.all(req.body.population_tags.map(async ptag => {
-//         ptag = await ptag;
-//         let max_index = populationTagMap[ ptag ].max_index;
-//         let index_tag_name = `indices.${ptag}`;
-//         return await Promisie.doWhilst(async () => {
-//           query = { $and: [{ [ `${index_tag_name}` ]: { $gte: offset, }, }, { [ `${index_tag_name}` ]: { $lt: offset + 500, }, },], };
-//           let testcases = await Testcase.model.find(query, { 'value': 1, name: 1, }).lean();
-//           if (testcases && testcases.length) {
-//             testcases = testcases.map(testcase => testcase.toJSON ? testcase.toJSON() : testcase);
-//             offset += limit;
-//             test_case_length = testcases.length;  
-//             return await addQueue({
-//               arrayOfPromises: testcases.map((tc) => {
-//                 return function () {
-//                   return new Promise((resolve, reject) => {
-//                     credit_pipeline(Object.assign({}, tc.value, { strategy_status: req.controllerData.strategy_status, }))
-//                       .then(result => {
-//                         result = formatSimulationResult(result);
-//                         resolve(Object.assign({ test_case_name: tc.name, }, result));
-//                       })
-//                       .catch(reject);
-//                   });
-//                 };
-//               }),
-//               mongodoc: req.controllerData.simulation,
-//               totalCount,
-//               currentCount: testcases.length,
-//               organization,
-//             });
-//           } else {
-//             offset += limit;
-//             return;
-//           }
-//         }, () => offset < max_index);
-//       }));
-//       return next();
-//     } else if (req.query.upload && req.body.testcase_file) {
-//       test_case_length = req.controllerData.testcases.length;
-//       let testcases = req.controllerData.testcases;
-//       await Promisie.doWhilst(async () => {
-//         await addQueue({
-//           arrayOfPromises: testcases.slice(offset, offset + limit).map((tc) => {
-//             return function () {
-//               return new Promise((resolve, reject) => {
-//                 credit_pipeline(Object.assign({}, tc.value, { strategy_status: req.controllerData.strategy_status, }))
-//                   .then(result => {
-//                     result = formatSimulationResult(result);
-//                     resolve(Object.assign({ test_case_name: tc.name, }, result));
-//                   })
-//                   .catch(reject);
-//               });
-//             };
-//           }),
-//           mongodoc: req.controllerData.simulation,
-//           currentCount: limit,
-//           totalCount: test_case_length,
-//           organization,
-//         });
-//         offset += limit;
-//         return offset;
-//       }, () => offset < test_case_length);
-//       return next();
-//     } else {
-//       query = { _id: { $in: req.body.testcases_dropdown, }, };
-//       let testcases = await Testcase.model.find(query, { 'value': 1, name: 1, }).lean();
-//       if (testcases && testcases.length) {
-//         testcases = testcases.map(testcase => testcase.toJSON ? testcase.toJSON() : testcase);
-//         test_case_length = testcases.length;
-//         await addQueue({
-//           arrayOfPromises: testcases.map((tc, idx) => {
-//             return function () {
-//               return new Promise((resolve, reject) => {
-//                 credit_pipeline(Object.assign({}, tc.value, { strategy_status: req.controllerData.strategy_status, }))
-//                   .then(result => {
-//                     result = formatSimulationResult(result);
-//                     resolve(Object.assign({ test_case_name: tc.name, }, result));
-//                   })
-//                   .catch(reject);
-//               });
-//             };
-//           }),
-//           mongodoc: req.controllerData.simulation,
-//           totalCount: 1,
-//           currentCount: 1,
-//           organization,
-//         });
-//       }
-//       return next();
-//     }
-//   } catch (e) {
-//     logger.error('runBatchSimulations error', e);
-//     return next(e);
-//   }
-// }
-
 /**
  * Run simulations.
  * 
@@ -1951,23 +1824,24 @@ async function runIndividualSimulation(req, res, next) {
     let user = req.user || {};
     let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
     let credit_pipeline = req.controllerData.credit_pipeline;
+    const Case = periodic.datas.get('standard_case');
     if (req.controllerData.testcase) {
       let result = await credit_pipeline(Object.assign({}, req.controllerData.testcase, { strategy_status: req.controllerData.strategy_status, }));
       result = formatSimulationResult(result);
-      let module_order = result.processing_detail || [];
-      let compiled_order = req.controllerData.compiled_order || [];
-      let emailModule = [];
-      let textmessageModule = [];
-      let documentcreationModule = [];
+      const module_order = result.processing_detail || [];
+      const compiled_order = req.controllerData.compiled_order || [];
+      const emailModule = [];
+      const textmessageModule = [];
+      const documentcreationModule = [];
       module_order.forEach((md) => {
         if (md.type === 'Email') emailModule.push(md);
         else if (md.type === 'Text Message') textmessageModule.push(md);
         else if (md.type === 'Document Creation') documentcreationModule.push(md);
       });
       redisClient = periodic.app.locals.redisClient;
-      let asyncRedisIncr = Bluebird.promisify(redisClient.incr, { context: redisClient, });
-      let case_count = await asyncRedisIncr('individual_case_count');
-      let case_name = req.body.case_name || `Individual Case ${case_count}`;
+      const asyncRedisIncr = Bluebird.promisify(redisClient.incr, { context: redisClient, });
+      const case_count = await asyncRedisIncr('individual_case_count');
+      const case_name = req.body.case_name || `Individual Case ${case_count}`;
       let files = [];
       if (result.data_sources && result.data_sources.length) {
         files = await saveFiles({ result: result, case_name, organization, user, });
@@ -1984,15 +1858,15 @@ async function runIndividualSimulation(req, res, next) {
         let templatefiles = await Promise.all(documentcreationModule.map(md => generateDocumentCreationFile({ md, case_name, organization, user, })));
         files.push(...templatefiles);
       }
-      let strategy_display_name = req.controllerData.compiledStrategy.display_name;
+      const strategy_display_name = req.controllerData.compiledStrategy.display_name;
       const application_id = (req.query && req.query.application_id) ? req.query.application_id : undefined;
-      const Case = periodic.datas.get('standard_case');
-      let newdoc = {
+      const moduleOrder = helpers.cleanModuleData(module_order);
+      const newdoc = {
         case_name,
         application: application_id,
         inputs: result.input_variables || {},
         outputs: result.output_variables || {},
-        module_order,
+        module_order: moduleOrder || [],
         compiled_order,
         passed: result.passed,
         decline_reasons: result.decline_reasons || [],
@@ -2007,7 +1881,7 @@ async function runIndividualSimulation(req, res, next) {
         },
         files: files.map(file => file._id.toString()),
       };
-      let created = await Case.create({ newdoc, skip_xss: true });
+      const created = await Case.create({ newdoc, skip_xss: true });
       req.controllerData.created = created.toJSON ? created.toJSON() : created;
       next();
     } else {
@@ -3087,7 +2961,7 @@ module.exports = {
   fetchAllDocumentTemplatesFromAWS,
   getCompiledStrategies,
   getCompiledStrategy,
-  getStrategies,
+  getStrategyDisplayNames,
   getTestCasesData,
   createNewTestCase,
   createNewTestCases,

@@ -97,29 +97,31 @@ function strategyVersionUpdateHistoryTable(options) {
               label: 'Status',
               sortid: 'status',
               sortable: false,
-            }, {
-              label: ' ',
-              headerColumnProps: {
-                style: {
-                  width: '40px',
-                }
-              },
-              columnProps: {
-                style: styles.buttonCellStyle,
-              },
-              buttons: [ {
-                passProps: {
-                  buttonProps: {
-                    icon: 'fa fa-pencil',
-                    className: '__icon_button'
-                  },
-                  onClick: 'func:this.props.reduxRouter.push',
-                  onclickBaseUrl: versionOnclickBaseUrl,
-                  onclickLinkParams: versionOnclickParams
-                },
-              },
-              ],
-            }, ],
+            }, 
+            // {
+            //   label: ' ',
+            //   headerColumnProps: {
+            //     style: {
+            //       width: '40px',
+            //     }
+            //   },
+            //   columnProps: {
+            //     style: styles.buttonCellStyle,
+            //   },
+            //   buttons: [ {
+            //     passProps: {
+            //       buttonProps: {
+            //         icon: 'fa fa-pencil',
+            //         className: '__icon_button'
+            //       },
+            //       onClick: 'func:this.props.reduxRouter.push',
+            //       onclickBaseUrl: versionOnclickBaseUrl,
+            //       onclickLinkParams: versionOnclickParams
+            //     },
+            //   },
+            //   ],
+            // }, 
+            ],
           }
         }
       }

@@ -3,6 +3,7 @@
 html {}
 
 body {
+  min-width: 1080px;
   overflow-y: scroll;
   overflow-x: auto;
   color: $color-default-text;
@@ -15,8 +16,6 @@ body {
   height: auto;
 }
 
-.__reactapp_overlay {}
-
 .reactapp__main {
   min-width: 1080px;
   min-height: calc(100vh - 130px);
@@ -26,6 +25,7 @@ body {
 }
 
 body[id^="_secure_customer_document_upload_"] {
+  min-width: 0;
   .reactapp__main {
     min-width: 0;
   }

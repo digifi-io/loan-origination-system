@@ -298,6 +298,64 @@ async function addParentToChild(options) {
 }
 
 /**
+ * Adds strategy to variable
+ * 
+ * @param {Boolean} options.earlyReturn set to true to skip function
+ * @param {String} options.childId id of child document
+ * @param {String} options.parentId id of parent document
+ * @param {Object} options.req Express request object
+ * @param {String} options.collection name of current collection
+ * @returns resolved Promise (update on the child's dependency array occurs in this function)
+ */
+async function addStrategyToVariable(options) {
+  try {
+    if (options.earlyReturn) {
+      return true;
+    } else {
+      let { childId, req, childModel, collection, parentId, } = options;
+      parentId = parentId || req.body._id;
+      if (childId && parentId && childModel) {
+        const Variable = periodic.datas.get('standard_variable');
+        if (Array.isArray(childId)) {
+          const variableInStrategyCountMap = childId.reduce((acc, variableId) => {
+            acc[variableId] = acc[variableId] || 0;
+            acc[variableId]++;
+            return acc;
+          }, {})
+          const uniqueVariableIds = Array.from(new Set(childId));
+          return await Promise.all(uniqueVariableIds.map(async variableId => {
+            const strategyPushArr = Array.from({ length: variableInStrategyCountMap[variableId] }, val => parentId);
+            return await Variable.model.updateOne(
+              { _id: variableId }, 
+              {
+                $push: {
+                  strategies: {
+                    $each: strategyPushArr,
+                  }
+                }
+              }
+            );
+          }));
+        } else {
+          return await Variable.model.updateOne(
+            { _id: childId }, 
+            {
+              $push: {
+                strategies: parentId
+              }
+            }
+          );
+        }
+      } else {
+        return true
+      }
+    }
+  } catch (err) {
+    return err;
+  }
+}
+
+/**
  * Deletes parent reference from child dependencies array (E.g. Deleting a rule from a variable's rules array, Deleting a ruleset from a rule's rulesets array, Deleting a strategy from a ruleset's strategies array)
  * 
  * @param {Object} options.diff diff object that contains child ids to modify
@@ -336,6 +394,60 @@ async function deleteParentFromChild(options) {
     }
   } catch (err) {
     return Promise.reject(err);
+  }
+}
+
+/**
+ * Deletes strategy reference from variable
+ * 
+ * @param {Object} options.diff diff object that contains child ids to modify
+ * @param {String} options.childModel child model string 
+ * @param {String} options.parentId id of parent document
+ * @param {Object} options.req Express request object
+ * @param {String} options.collection name of current collection
+ * @returns resolved Promise (update on the child's dependency array occurs in this function)
+ */
+async function deleteStrategyFromVariable(options) {
+  try {
+    if (options.earlyReturn) {
+      return true;
+    } else {
+      let { diff, req, childModel, collection, parentId, } = options;
+      parentId = parentId || req.body._id;
+      if (diff && diff.deletedIds.length && parentId && childModel && collection) {
+        const Variable = periodic.datas.get('standard_variable');
+        const variableInStrategyCountMap = diff.deletedIds.reduce((acc, variableId) => {
+          acc[variableId] = acc[variableId] || 0;
+          acc[variableId]++;
+          return acc;
+        }, {})
+        const uniqueVariableIds = Array.from(new Set(diff.deletedIds));
+        return await Promise.all(uniqueVariableIds.map(async variableId => {
+          for (let i = 0; i < variableInStrategyCountMap[variableId]; i++) {
+            await Variable.model.updateOne(
+              { _id: variableId, strategies: parentId }, 
+              {
+                $unset: {
+                  "strategies.$": true,
+                }
+              }
+            );
+          }
+          return await Variable.model.updateOne(
+            { _id: variableId }, 
+            {
+              $pull: {
+                strategies: null,
+              }
+            }
+          );
+        }));
+      } else {
+        return true;
+      }
+    }
+  } catch (err) {
+    return err;
   }
 }
 
@@ -721,7 +833,7 @@ async function handleOtherChanges(options) {
         parentId: req.params.id,
       };
 
-      await addParentToChild(addOptions);
+      await addStrategyToVariable(addOptions);
       return await addParentToChild(modelIntegrationAddOptions);
     } else if (!req.body.has_population && req.body.prev_conditions) {
       const deletedIds = req.body.prev_conditions.map(rule => rule._id);
@@ -732,7 +844,7 @@ async function handleOtherChanges(options) {
         collection: 'strategies',
         parentId: req.params.id,
       };
-      return await deleteParentFromChild(ruleDeleteOptions);
+      return await deleteStrategyFromVariable(ruleDeleteOptions);
     } else {
       return;
     }
@@ -762,7 +874,7 @@ async function handleSegmentDeletion(options) {
       collection: 'strategies',
       parentId: req.params.id,
     };
-    return await deleteParentFromChild(deleteOptions);
+    return await deleteStrategyFromVariable(deleteOptions);
   } else {
     return Promise.reject(new Error('could not delete segment'));
   }
@@ -828,9 +940,9 @@ async function handleModuleDeletion(options) {
       };
 
       if (modelIntegrationDeleteOptions && modelIntegrationDeleteOptions.childModel && modelIntegrationDeleteOptions.childModel !== 'standard_dataintegration') {
-        await deleteParentFromChild(deleteOptions);
+        await deleteStrategyFromVariable(deleteOptions);
         return await deleteParentFromChild(modelIntegrationDeleteOptions);
-      } else return await deleteParentFromChild(deleteOptions);
+      } else return await deleteStrategyFromVariable(deleteOptions);
     } else {
       return Promise.reject(new Error('could not delete module'));
     }
@@ -859,7 +971,7 @@ async function handleRuleDeletion(options) {
       collection: 'strategies',
       parentId: req.params.id,
     };
-    return await deleteParentFromChild(deleteOptions);
+    return await deleteStrategyFromVariable(deleteOptions);
   } else {
     return Promise.reject(new Error('could not delete segment'));
   }
@@ -887,7 +999,7 @@ async function handleSegmentAddition(options) {
       collection: 'strategies',
       parentId: req.params.id,
     };
-    return await addParentToChild(addOptions);
+    return await addStrategyToVariable(addOptions);
   } catch (e) {
     return Promise.reject(e);
   }
@@ -949,9 +1061,9 @@ async function handleModuleCopyChanges(options) {
       parentId: req.params.id,
     };
     if (modelIntegrationAddOptions && modelIntegrationAddOptions.childModel && modelIntegrationAddOptions.childModel !== 'standard_dataintegration') {
-      await addParentToChild(addOptions);
+      await addStrategyToVariable(addOptions);
       return await addParentToChild(modelIntegrationAddOptions);
-    } else return await addParentToChild(addOptions);
+    } else return await addStrategyToVariable(addOptions);
   } catch (e) {
     return Promise.reject(e);
   }
@@ -1000,8 +1112,8 @@ async function handleSegmentCopyChanges(options) {
       collection: 'strategies',
       parentId: req.params.id,
     };
-    await deleteParentFromChild(deleteOptions);
-    return await addParentToChild(addOptions);
+    await deleteStrategyFromVariable(deleteOptions);
+    return await addStrategyToVariable(addOptions);
   } catch (e) {
     return Promise.reject(e);
   }
@@ -1066,8 +1178,8 @@ async function handleRequiredVariablesEdit(options) {
       collection: 'strategies',
       parentId: req.params.id,
     };
-    await deleteParentFromChild(deleteOptions);
-    return await addParentToChild(addOptions);
+    await deleteStrategyFromVariable(deleteOptions);
+    return await addStrategyToVariable(addOptions);
   } catch (e) {
     return e;
   }
@@ -2761,8 +2873,37 @@ function getDeleteRulesArray(options) {
   }
 }
 
+function findRuleVariables(rule, includeCalculationVariables) {
+  try {
+    const variables = [];
+    if (includeCalculationVariables) {
+      const calcInputs = rule.calculation_inputs || [];
+      const calcOutputs = rule.calculation_outputs || [];
+      variables.push(...calcInputs.map(varId => varId.toString()), ...calcOutputs.map(varId => varId.toString()));
+    }
+    const multipleRules = rule.multiple_rules || [];
+    const conditionRules = rule.condition_output || [];
+    multipleRules.forEach((multRule) => {
+      if (multRule.state_property_attribute) variables.push(multRule.state_property_attribute);
+      if (multRule.state_property_attribute_value_comparison_type === 'variable' && multRule.state_property_attribute_value_comparison) variables.push(multRule.state_property_attribute_value_comparison);
+      if (multRule.state_property_attribute_value_minimum_type === 'variable' && multRule.state_property_attribute_value_minimum) variables.push(multRule.state_property_attribute_value_minimum);
+      if (multRule.state_property_attribute_value_maximum_type === 'variable' && multRule.state_property_attribute_value_maximum) variables.push(multRule.state_property_attribute_value_maximum);
+    })
+    conditionRules.forEach((condRule) => {
+      if (condRule.variable_id) variables.push(condRule.variable_id);
+      if (condRule.value_type === 'variable') variables.push(condRule.value);
+    })
+    return variables;
+  } catch(e) {
+    logger.warn(e.message);
+    return [];
+  }
+}
+
 module.exports = {
   addParentToChild,
+  addStrategyToVariable,
+  deleteStrategyFromVariable,
   changeParentOnChild,
   checkIfVariable,
   coerceNumericValues,
@@ -2803,4 +2944,5 @@ module.exports = {
   generateCalculationForm,
   getDeleteRulesArray,
   buildCodeTabs,
+  findRuleVariables,
 };

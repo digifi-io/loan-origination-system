@@ -23,151 +23,13 @@ exports.init = function () {
         let elInput = el.querySelector('input');
         if (elInput) {
           elInput.oninput = function () {
-            elInput.setAttribute('value', input.value)
+            elInput.setAttribute('value', elInput.value);
           };
         }
-      })
+      });
     }
   }
   window.updateGlobalSearchBar = updateGlobalSearchBar;
-
-  function initStrategyIcons() {
-    jQuery('.grid.livicon').addLiviconEvo({
-      name: 'grid.svg',
-      size: '80px',
-      autoPlay: true,
-      style: 'filled',
-      fillColor: '#68d7e3',
-      strokeColor: '#404041',
-    });
-    setTimeout(() => {
-      jQuery('.diagram.livicon').delay(2000).addLiviconEvo({
-        name: 'diagram.svg',
-        style: 'filled',
-        size: '80px',
-        autoPlay: true,
-        fillColor: '#68d7e3',
-        strokeColor: '#404041',
-      });
-    }, 1500);
-
-    setTimeout(() => {
-      jQuery('.bulb.livicon').addLiviconEvo({
-        name: 'bulb.svg',
-        style: 'filled',
-        size: '80px',
-        autoPlay: true,
-        fillColor: '#68d7e3',
-        strokeColor: '#404041',
-      });
-    }, 3000);
-  }
-  window.initStrategyIcons = initStrategyIcons;
-
-  function initIntegrationIcons() {
-    jQuery('.share.livicon').addLiviconEvo({
-      name: 'share.svg',
-      size: '80px',
-      autoPlay: true,
-      drawOnViewport: true,
-      style: 'filled',
-      fillColor: '#68d7e3',
-      strokeColor: '#404041',
-    });
-    setTimeout(() => {
-      jQuery('.notebook.livicon').delay(2000).addLiviconEvo({
-        name: 'notebook.svg',
-        style: 'filled',
-        size: '80px',
-        autoPlay: true,
-        drawOnViewport: true,
-        fillColor: '#68d7e3',
-        strokeColor: '#404041',
-      });
-    }, 1500);
-
-    setTimeout(() => {
-      jQuery('.servers.livicon').addLiviconEvo({
-        name: 'servers.svg',
-        style: 'filled',
-        size: '80px',
-        autoPlay: true,
-        drawOnViewport: true,
-        fillColor: '#68d7e3',
-        strokeColor: '#404041',
-      });
-    }, 3000);
-  }
-  window.initIntegrationIcons = initIntegrationIcons;
-
-  function initOptimizationIcons() {
-    jQuery('.cloud-upload.livicon').addLiviconEvo({
-      name: 'cloud-upload.svg',
-      style: 'filled',
-      size: '75px',
-      drawOnViewport: true,
-      autoPlay: true,
-      strokeColor: '#404041',
-      fillColor: '#68d7e3',
-    });
-    setTimeout(() => {
-      jQuery('.timer.livicon').addLiviconEvo({
-        name: 'timer.svg',
-        style: 'linesAlt',
-        size: '120px',
-        strokeColor: '#404041',
-        strokeColorAlt: '#68d7e3',
-        size: '75px',
-        autoPlay: true,
-        drawOnViewport: true,
-      });
-    }, 1800);
-    setTimeout(() => {
-      jQuery('.bar-chart.livicon').addLiviconEvo({
-        name: 'bar-chart.svg',
-        style: 'filled',
-        size: '75px',
-        autoPlay: true,
-        fillColor: '#68d7e3',
-        strokeColor: '#404041',
-      });
-    }, 3600);
-  }
-  window.initOptimizationIcons = initOptimizationIcons;
-
-  function initSimulationIcons() {
-    jQuery('.settings.livicon').addLiviconEvo({
-      name: 'settings.svg',
-      style: 'filled',
-      size: '75px',
-      drawOnViewport: true,
-      autoPlay: true,
-      fillColor: '#68d7e3',
-      strokeColor: '#404041',
-    });
-    setTimeout(() => {
-      jQuery('.lab.livicon').addLiviconEvo({
-        name: 'lab.svg',
-        style: 'filled',
-        size: '75px',
-        autoPlay: true,
-        drawOnViewport: true,
-        fillColor: '#68d7e3',
-        strokeColor: '#404041',
-      });
-    }, 1800);
-    setTimeout(() => {
-      jQuery('.bar-chart.livicon').addLiviconEvo({
-        name: 'bar-chart.svg',
-        style: 'filled',
-        size: '75px',
-        autoPlay: true,
-        fillColor: '#68d7e3',
-        strokeColor: '#404041',
-      });
-    }, 3600);
-  }
-  window.initSimulationIcons = initSimulationIcons;
 
   function dynamicModalHeight() {
     let modal = document.querySelector('.__re-bulma_modal-card-body');
@@ -302,7 +164,7 @@ exports.init = function () {
       console.log(e);
     }
     try {
-      grecaptcha.render('recaptcha_element', {
+      recaptcha.render('recaptcha_element', {
         sitekey: recaptcha.site_key,
         callback: recaptchaCallback(recaptcha.site_key),
       });
