@@ -5,7 +5,7 @@ const THEMESETTINGS = periodic.settings.container[ 'decision-engine-service-cont
 const logger = periodic.logger;
 const utilities = require('../../utilities');
 const helpers = utilities.helpers;
-const transformhelpers = utilities.transformhelpers;
+const transformhelpers = utilities.transformhelpers; 
 
 async function retrieveLosStatusesFromOrg(req, res, next) {
   try {
@@ -17,7 +17,6 @@ async function retrieveLosStatusesFromOrg(req, res, next) {
       let populatedStatuses = await Promise.all(organization.los.statuses.map(async (id) => {
         return await LosStatus.model.findOne({ _id: id.toString() });
       }))
-
       populatedStatuses = populatedStatuses.filter(status => Boolean(status.active));
       req.controllerData.los_statuses = populatedStatuses || [];
       next();
