@@ -95,7 +95,7 @@ async function redirectToProduct(req, res, next) {
   try {
     const product = req.controllerData.product;
     return res.status(200).send({
-      pathname: `/los/others/products/${product._id.toString()}`,
+      pathname: `/los/settings/products/${product._id.toString()}`,
     });
   } catch (e) {
     return res.status(500).send({ message: 'Error pulling the template', });

@@ -191,7 +191,7 @@ module.exports = {
                             className: '__icon_button'
                           },
                           onClick: 'func:this.props.reduxRouter.push',
-                          onclickBaseUrl: '/los/others/products/:id',
+                          onclickBaseUrl: '/los/settings/products/:id',
                           onclickLinkParams: [ { 'key': ':id', 'val': '_id', }, ],
                         },
                       }, {
