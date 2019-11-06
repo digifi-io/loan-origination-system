@@ -12,7 +12,7 @@ function generatePDFViewer(options) {
       let total = template.images.length;
       pageDropdown = template.images.map((file, idx) => ({
         label: `PAGE ${idx + 1} of ${total}`,
-        value: `/los/others/templates/${template._id}/${idx}`,
+        value: `/los/settings/templates/${template._id}/${idx}`,
       }));
     }
     return {
@@ -66,7 +66,7 @@ function generatePDFViewer(options) {
             }, {
               type: 'dropdown',
               name: 'page_num',
-              value: `/los/others/templates/${template._id}/${page}`,
+              value: `/los/settings/templates/${template._id}/${page}`,
               passProps: {
                 style: {
 
