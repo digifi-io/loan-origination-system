@@ -33,6 +33,10 @@ module.exports = function (tabname) {
       location: 'intermediaries',
       icon: 'fas fa-seedling',
     }, {
+      label: 'Emails',
+      location: 'emails',
+      icon: 'fas fa-envelope',
+    }, {
       label: 'Tasks',
       location: 'tasks',
       icon: 'check square',
