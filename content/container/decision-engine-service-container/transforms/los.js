@@ -464,7 +464,7 @@ async function formatApplicationDetail(req) {
         }
 
         req.controllerData.formoptions = req.controllerData.formoptions || {};
-
+        
         if (req.controllerData.products) {
           const productDropdown = req.controllerData.products.map(product => ({
             label: product.name,
@@ -567,11 +567,17 @@ async function formatApplicationDetail(req) {
           options: Object.values(valueCategoriesMap),
           defaultValue: application_status.filter_categories,
         }, ];
-
+        
+        const activeStatuses = req.controllerData.formoptions.status || [];
+        const currentStatusIdx = activeStatuses.findIndex(activeStatus => activeStatus.value === application_status._id.toString());
+        const finalStage = activeStatuses.length && currentStatusIdx === activeStatuses.length - 1;
+        const statusId = finalStage ? '' : activeStatuses[currentStatusIdx + 1].value;
         req.controllerData._children = [ los_transform_util._createApplicationDetailPage({
           applicationId: req.controllerData.application._id.toString(),
           application_status,
           keyInfoLength: Object.keys(application.key_information).length,
+          finalStage, 
+          statusId,
         }), ];
       }
     }
@@ -1068,16 +1074,20 @@ async function formatApplicationDataForUpdate(req) {
       req.body = Object.assign({}, req.body, { name, value, value_type, value_category, });
     } else if (req.query.status) {
       const user = req.user || {};
-      const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id.toString() : 'organization';
+      const organization = user && user.association && user.association.organization;
+      const organizationId = organization._id ? user.association.organization._id.toString() : 'organization';
+      const orgStatuses = organization.los && organization.los.statuses || [];
       const LosStatus = periodic.datas.get('standard_losstatus');
       if (req.query.status === 'approve') {
-        const approvedStatus = await LosStatus.model.findOne({ organization, name: 'Approved', }).lean();
+        const approvedStatus = await LosStatus.model.findOne({ organization: organizationId, name: 'Approved', }).lean();
         req.body.status = approvedStatus._id.toString();
         req.body.decision_date = new Date();
       } else if (req.query.status === 'reject') {
-        const rejectedStatus = await LosStatus.model.findOne({ organization, name: 'Rejected', }).lean();
+        const rejectedStatus = await LosStatus.model.findOne({ organization: organizationId, name: 'Rejected', }).lean();
         req.body.status = rejectedStatus._id.toString();
         req.body.decision_date = new Date();
+      } else if (req.query.status === 'move' && req.query.statusId) {
+        req.body.status = req.query.statusId;
       }
     }
     if (req.body && req.body.team_members) req.body.team_members = req.body.team_members.filter(Boolean);

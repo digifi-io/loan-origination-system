@@ -1369,7 +1369,7 @@ function _createMaskedFormElement({ value_type, name, }) {
   }
 }
 
-function _createApplicationDetailPage({ applicationId, application_status, keyInfoLength, }) {
+function _createApplicationDetailPage({ applicationId, application_status, keyInfoLength, finalStage = false, statusId = '' }) {
   const dateFormElementOptions = {
     estimated_close_date: {
       type: 'singleDatePicker',
@@ -1436,7 +1436,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
         formGlobalButtonBar({
           left: [ {
             component: 'ResponsiveButton',
-            children: 'MOVE TO NEXT STAGE',
+            children: finalStage ? 'APPROVE APPLICATION' : 'MOVE TO NEXT STAGE',
             thisprops: {
               onclickPropObject: [ 'formdata', ],
             },
@@ -1451,14 +1451,14 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
             }, ],
             props: {
               onClick: 'func:this.props.fetchAction',
-              onclickBaseUrl: '/los/api/applications/:id?status=approve',
+              onclickBaseUrl: finalStage ? '/los/api/applications/:id?status=approve' : `/los/api/applications/:id?status=move&statusId=${statusId}`,
               onclickLinkParams: [ { key: ':id', val: '_id', }, ],
               successProps: {
                 successCallback: 'func:this.props.refresh',
               },
               confirmModal: Object.assign({}, styles.defaultconfirmModalStyle, {
                 title: 'Approve Loan Application',
-                yesButtonText: 'YES, APPROVE!',
+                yesButtonText: finalStage ? 'YES, APPROVE!' : 'YES, MOVE TO NEXT STAGE!',
                 yesButtonProps: {
                   style: {
                     margin: '5px',
@@ -1470,7 +1470,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
                 noButtonText: 'NO, GO BACK',
                 textContent: [ {
                   component: 'p',
-                  children: 'Are you sure you want to approve this loan?',
+                  children: finalStage ? 'Are you sure you want to approve this loan?' : 'Are you sure you want to move this loan to the next stage?',
                   props: {
                     style: {
                       textAlign: 'left',
