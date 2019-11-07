@@ -87,10 +87,20 @@ module.exports = {
                 key: randomKey(),
               },
               formElements: [{
-                name: 'description',
-                label: 'Description',
-              },],
-            },{
+                name: 'status_requirements',
+                label: 'Status Requirements',
+                type: 'combobox',
+              }, ],
+            }, {
+              gridProps: {
+                key: randomKey(),
+              },
+              formElements: [{
+                name: 'filter_categories',
+                label: 'Pre-Selected Loan Information Filter Categories',
+                type: 'combobox',
+              }, ],
+            }, {
               gridProps: {
                 key: randomKey(),
                 className: 'modal-footer-btns',
