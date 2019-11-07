@@ -1911,6 +1911,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
               ignoreTableHeaders: ['_id',],
               headers: [ {
                 label: 'Done',
+                formtype: 'checkbox',
                 sortid: 'done',
                 sortable: false,
                 headerColumnProps: {
