@@ -556,6 +556,9 @@ async function formatApplicationDetail(req) {
           delete req.controllerData.intermediaries;
         }
 
+        application_status.filter_categories.forEach(category => {
+          if (!valueCategoriesMap[category]) valueCategoriesMap[category] = { value: category, text: category, };
+        })
         req.controllerData.application.filterButtons = [ {
           headername: 'value_category',
           placeholder: 'FILTER CATEGORIES',
