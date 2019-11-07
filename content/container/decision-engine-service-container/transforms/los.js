@@ -436,7 +436,7 @@ async function formatApplicationDetail(req) {
           if (application && application.processing && application.processing[requirement]) {
             return { 
               done: true, 
-              requirement: requirement, 
+              requirement, 
               application_id: application._id.toString(),
               rowProps: {
                 className: 'task-complete',
