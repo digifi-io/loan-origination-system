@@ -384,8 +384,11 @@ async function formatApplicationDetail(req) {
           delete req.controllerData.labels;
         }
       } else {
+        const application_status = req.controllerData.los_statuses.find(statusObj => statusObj && statusObj._id.toString() === application.status.toString());
+        req.controllerData.application.status_name = (application_status && application_status.name) ? application_status.name : '';
+        const createdat = `${transformhelpers.formatDateNoTime(application.createdat, req.user.time_zone)} by ${application.user.creator}`;
+        const updatedat = `${transformhelpers.formatDateNoTime(application.updatedat, req.user.time_zone)} by ${application.user.updater}`;
         const customer_baseurl = application.customer_type === 'company' ? `companies/${application.customer_id}` : `people/${application.customer_id}`;
-
         const customer = await Customer.model.findOne({
           _id: application.customer_id,
           organization,
@@ -404,18 +407,18 @@ async function formatApplicationDetail(req) {
           coapplicant = foundCoapplicant ? `${foundCoapplicant.name} (${capitalize(application.customer_type)})` : '';
         }
 
-        const createdat = `${transformhelpers.formatDateNoTime(application.createdat, req.user.time_zone)} by ${application.user.creator}`;
-        const updatedat = `${transformhelpers.formatDateNoTime(application.updatedat, req.user.time_zone)} by ${application.user.updater}`;
-
         application.key_information = application.key_information || {};
         const valueCategoriesMap = {};
-        const loan_info = Object.entries(application.key_information).map(([ name, detail, ], idx) => {
-          if (detail.value_category && !valueCategoriesMap[detail.value_category]) valueCategoriesMap[detail.value_category] = { value: detail.value_category.toLowerCase(), text: detail.value_category, };
+        const loan_info = Object.entries(application.key_information).reduce((acc, [ name, detail, ], idx) => {
+          if (detail.value_category && !valueCategoriesMap[detail.value_category]) valueCategoriesMap[detail.value_category] = { value: detail.value_category, text: detail.value_category, };
           let value;
           if (detail.value === null) value = '';
           else value = los_transform_util.formatByValueType({ value: detail.value, value_type: detail.value_type, });
-          return { name, value, idx, _id: application._id.toString(), value_type: detail.value_type, };
-        });
+          if (detail.value_category && application_status.filter_categories.includes(detail.value_category)) {
+            acc.push({ name, value, idx, _id: application._id.toString(), value_type: detail.value_type, });
+          }
+          return acc;
+        }, []);
 
         const loan_amount = (application && application.loan_amount !== undefined) ? numeral(application.loan_amount).format('$0,0') : undefined;
         req.controllerData.application = Object.assign({}, application, {
@@ -428,9 +431,6 @@ async function formatApplicationDetail(req) {
           loan_amount,
           loan_info,
         });
-
-        const application_status = req.controllerData.los_statuses.find(statusObj => statusObj && statusObj._id.toString() === application.status.toString());
-        req.controllerData.application.status_name = (application_status && application_status.name) ? application_status.name : '';
         
         const statusRequirements = application_status.status_requirements.map((requirement) => {
           if (application && application.processing && application.processing[requirement]) {
@@ -565,6 +565,7 @@ async function formatApplicationDetail(req) {
           fluid: true,
           search: true,
           options: Object.values(valueCategoriesMap),
+          defaultValue: application_status.filter_categories,
         }, ];
 
         req.controllerData._children = [ los_transform_util._createApplicationDetailPage({
@@ -609,7 +610,7 @@ async function formatApplicationLoanInformation(req) {
       
       const loan_info = Object.entries(application.key_information).reduce((aggregate, [ name, detail, ], idx) => {
         if (valueCategories.length && valueCategories[0] !== '') {
-          if (valueCategories.includes((detail.value_category || '').toLowerCase()) && name.match(new RegExp(searchString, 'gi'))) {
+          if (valueCategories.includes((detail.value_category || '')) && name.match(new RegExp(searchString, 'gi'))) {
             let value;
             if (detail.value === null) value = '';
             else value = los_transform_util.formatByValueType({ value: detail.value, value_type: detail.value_type, });
