@@ -4587,15 +4587,9 @@ async function generateLosStatusEditDetail(req) {
             key: randomKey(),
           },
           formElements: [{
-            name: 'preselected_loan_information_filter_categories',
+            name: 'filter_categories',
             label: 'Pre-Selected Loan Information Filter Categories',
-            type: 'dropdown',
-            passProps: {
-              selection: true,
-              multiple: true,
-              fluid: true,
-              search: true,
-            }
+            type: 'combobox',
           }, ],
         }, {
           gridProps: {
