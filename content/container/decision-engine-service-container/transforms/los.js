@@ -431,6 +431,29 @@ async function formatApplicationDetail(req) {
 
         const application_status = req.controllerData.los_statuses.find(statusObj => statusObj && statusObj._id.toString() === application.status.toString());
         req.controllerData.application.status_name = (application_status && application_status.name) ? application_status.name : '';
+        
+        const statusRequirements = application_status.status_requirements.map((requirement) => {
+          if (application && application.processing && application.processing[requirement]) {
+            return { 
+              done: true, 
+              requirement: requirement, 
+              application_id: application._id.toString(),
+              rowProps: {
+                className: 'task-complete',
+              }, 
+            } 
+          } else {
+            return { 
+              done: false, 
+              requirement,
+              application_id: application._id.toString(),
+              rowProps: {
+                className: 'task-overdue',
+              }, 
+            }
+          }
+        })
+        req.controllerData.application.status_requirements = statusRequirements;
 
         if (application_status && application_status.name === 'Approved' && req.controllerData.application.decision_date) {
           req.controllerData.application.decision_date_approved = transformhelpers.formatDateNoTime(req.controllerData.application.decision_date, req.user.time_zone);
@@ -558,6 +581,21 @@ async function formatApplicationDetail(req) {
   }
 }
 
+async function formatApplicationProcessingUpdate(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    if (req.controllerData.application && req.params && req.params.requirement) {
+      const applicationProcessing = req.controllerData.application.processing || {};
+      applicationProcessing[req.params.requirement] = Boolean(!applicationProcessing[req.params.requirement]);
+      req.body.processing = applicationProcessing;
+    }
+    return req;
+  } catch(e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
 async function formatApplicationLoanInformation(req) {
   try {
     if (req.controllerData && req.controllerData.application) {
@@ -568,7 +606,7 @@ async function formatApplicationLoanInformation(req) {
       }
       const searchString = req.query && req.query.query || '';
       application.key_information = application.key_information || {};
-
+      
       const loan_info = Object.entries(application.key_information).reduce((aggregate, [ name, detail, ], idx) => {
         if (valueCategories.length && valueCategories[0] !== '') {
           if (valueCategories.includes((detail.value_category || '').toLowerCase()) && name.match(new RegExp(searchString, 'gi'))) {
@@ -4863,6 +4901,7 @@ module.exports = {
   formatApplicationStatusesIndexTable,
   formatApplicationRejectionTypeDetail,
   formatApplicationRejectionDetail,
+  formatApplicationProcessingUpdate,
   formatReportingPage,
   formatReportingDownloadData,
   generateLosStatusEditDetail,

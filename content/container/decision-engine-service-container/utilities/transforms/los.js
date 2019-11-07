@@ -1886,7 +1886,7 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
           formElements: [{
             formGroupCardLeft: [{
               type: 'datatable',
-              name: 'data_source_variables',
+              name: 'status_requirements',
               // uniqueFormOptions: true,
               'flattenRowData': false,
               'addNewRows': false,
@@ -1938,8 +1938,8 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
                       className: '__icon_button green',
                     },
                     onClick: 'func:this.props.fetchAction',
-                    onclickBaseUrl: '/los/api/tasks/:id?done=true',
-                    onclickLinkParams: [{ 'key': ':id', 'val': '_id', },],
+                    onclickBaseUrl: '/los/api/applications/:id/processing/:requirement',
+                    onclickLinkParams: [{ 'key': ':id', 'val': 'application_id', }, { 'key': ':requirement', 'val': 'requirement', }],
                     fetchProps: {
                       method: 'PUT',
                     },
