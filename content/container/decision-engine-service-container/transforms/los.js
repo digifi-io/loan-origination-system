@@ -571,7 +571,7 @@ async function formatApplicationDetail(req) {
         const activeStatuses = req.controllerData.formoptions.status || [];
         const currentStatusIdx = activeStatuses.findIndex(activeStatus => activeStatus.value === application_status._id.toString());
         const finalStage = activeStatuses.length && currentStatusIdx === activeStatuses.length - 1;
-        const statusId = finalStage ? '' : activeStatuses[currentStatusIdx + 1].value;
+        const statusId = !finalStage && activeStatuses[currentStatusIdx + 1] && activeStatuses[currentStatusIdx + 1].value || '';
         req.controllerData._children = [ los_transform_util._createApplicationDetailPage({
           applicationId: req.controllerData.application._id.toString(),
           application_status,
