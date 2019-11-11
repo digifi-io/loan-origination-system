@@ -726,27 +726,29 @@ async function deleteStrategyFromVariables(req) {
       const Variable = periodic.datas.get('standard_variable');
       let strategy = req.controllerData.strategy;
       let removed_rules = Object.keys(strategy.modules).reduce((returnData, removed_module_name) => {
-        let module_rules = strategy.modules[ removed_module_name ].reduce((returnData, segment) => {
+        let module_rules = strategy.modules[ removed_module_name ].reduce((moduleRules, segment) => {
           let removed_conditions = segment.conditions || [];
           let removed_ruleset = segment.ruleset || [];
-          return returnData.concat(removed_conditions, removed_ruleset);
+          moduleRules.push(...removed_conditions, ...removed_ruleset);
+          return moduleRules;
         }, []);
-        return returnData.concat(module_rules);
+        returnData.push(...module_rules);
+        return returnData;
       }, []);
 
       let removedRuleDocs = await getRuleFromCache(removed_rules, organization);
       if (!Array.isArray(removedRuleDocs)) removedRuleDocs = [];
-      let removed_variables = removed_rules.reduce((returnData, rule, i) => {
+      const removed_variables = removed_rules.reduce((returnData, rule, i) => {
         rule = removedRuleDocs[ i ] || rule;
-        return returnData.concat(utilities.controllers.helper.compileRuleVariableIds({ result: rule, }));
+        returnData.push(...utilities.controllers.helper.compileRuleVariableIds({ result: rule, }));
+        return returnData;
       }, []);
-      let unique_variables = removed_variables.filter((v, i, a) => a.indexOf(v) === i);
-      let variables = await Variable.model.find({ _id: { $in: unique_variables, }, });
-      await Promise.all(variables.map(async (variable) => {
-        variable = variable.toJSON ? variable.toJSON() : variable;
-        variable.strategies = variable.strategies.filter(strategy_id => strategy_id.toString() !== strategy._id.toString());
-        await Variable.update({ id: variable._id.toString(), updatedoc: variable })
-      }))
+      const unique_variables = Array.from(new Set(removed_variables));
+      await Variable.model.updateMany({ _id: { $in: unique_variables, }, }, {
+        $pull: {
+          strategies: strategy._id,
+        }
+      });
       return req;
     } else {
       return req;
