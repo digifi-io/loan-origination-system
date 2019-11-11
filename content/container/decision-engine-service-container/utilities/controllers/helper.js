@@ -323,9 +323,9 @@ async function addStrategyToVariable(options) {
             return acc;
           }, {})
           const uniqueVariableIds = Array.from(new Set(childId));
-          return await Promise.all(uniqueVariableIds.map(async variableId => {
+          await Promise.all(uniqueVariableIds.map(variableId => {
             const strategyPushArr = Array.from({ length: variableInStrategyCountMap[variableId] }, val => parentId);
-            return await Variable.model.updateOne(
+            return Variable.model.updateOne(
               { _id: variableId }, 
               {
                 $push: {
@@ -422,9 +422,9 @@ async function deleteStrategyFromVariable(options) {
           return acc;
         }, {})
         const uniqueVariableIds = Array.from(new Set(diff.deletedIds));
-        return await Promise.all(uniqueVariableIds.map(async variableId => {
+        await Promise.all(uniqueVariableIds.map(variableId => {
           for (let i = 0; i < variableInStrategyCountMap[variableId]; i++) {
-            await Variable.model.updateOne(
+            return Variable.model.updateOne(
               { _id: variableId, strategies: parentId }, 
               {
                 $unset: {
@@ -433,7 +433,9 @@ async function deleteStrategyFromVariable(options) {
               }
             );
           }
-          return await Variable.model.updateOne(
+        }));
+        return await Promise.all(uniqueVariableIds.map(variableId => {
+          return Variable.model.updateOne(
             { _id: variableId }, 
             {
               $pull: {
@@ -441,7 +443,7 @@ async function deleteStrategyFromVariable(options) {
               }
             }
           );
-        }));
+        }))
       } else {
         return true;
       }
