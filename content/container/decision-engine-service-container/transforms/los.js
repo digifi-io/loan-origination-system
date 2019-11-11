@@ -414,7 +414,11 @@ async function formatApplicationDetail(req) {
           let value;
           if (detail.value === null) value = '';
           else value = los_transform_util.formatByValueType({ value: detail.value, value_type: detail.value_type, });
-          if (detail.value_category && application_status.filter_categories.includes(detail.value_category)) {
+          if (application_status.filter_categories && application_status.filter_categories.length) {
+            if (detail.value_category && application_status.filter_categories.includes(detail.value_category)) {
+              acc.push({ name, value, idx, _id: application._id.toString(), value_type: detail.value_type, });
+            }
+          } else {
             acc.push({ name, value, idx, _id: application._id.toString(), value_type: detail.value_type, });
           }
           return acc;
