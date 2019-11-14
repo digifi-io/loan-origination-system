@@ -606,7 +606,7 @@ function getVariableSystemNameToIdMap(req) {
         let organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id : 'organization';
         const Variable = periodic.datas.get('standard_variable')
         let variableMap = {};
-        Variable.model.find({ organization, })
+        Variable.model.find({ organization, }, { title: 1 })
           .then(variables => variables.forEach(variable => variableMap[ variable.title ] = variable._id.toString()))
           .then(() => {
             req.controllerData.variableMap = variableMap;
