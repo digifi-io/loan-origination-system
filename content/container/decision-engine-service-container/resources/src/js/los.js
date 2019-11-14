@@ -1348,9 +1348,6 @@ exports.init = function () {
         }
       },],
     };
-    // console.log("Im HEEERRRE!!!!! FOOTER WINDOW~!!!!", formElementsQueue, formElement);
-    // console.log("PREV", prevCheck, "CURRENT", currCheck, "STATE", currState)
-    // window.fan = formElementsQueue;
     if (currCheck === 'on' && formElementsQueue.length === 0) {
       formElementsQueue.unshift(dataTable);
       return formElement;
