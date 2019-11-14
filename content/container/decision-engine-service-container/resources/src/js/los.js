@@ -1247,4 +1247,120 @@ exports.init = function () {
   }
 
   window.provideAdditionalDependencyFilter = provideAdditionalDependencyFilter;
+  function showAllRequirements(currState, formElementsQueue, formElement, prevState) {
+    let prevCheck = prevState['show_all_requirements'];
+    let currCheck = currState['show_all_requirements'];
+    const dataTable = {
+      type: 'datatable',
+      order: 1,
+      name: 'all_status_requirements',
+      'flattenRowData': false,
+      'addNewRows': false,
+      'rowButtons': false,
+      'useInputRows': true,
+      tableWrappingStyle: {
+        overflow: 'visible',
+      },
+      passProps: {
+        turnOffTableSort: true,
+        tableWrappingStyle: {
+          overflow: 'visible',
+        },
+        tableProps: {
+          style: {
+            marginBottom: 0,
+          }
+        }
+      },
+      layoutProps: {
+        style: {
+          padding: 0,
+        }
+      },
+      ignoreTableHeaders: ['_id',],
+      headers: [{
+        label: 'Done',
+        formtype: 'checkbox',
+        sortid: 'done',
+        sortable: false,
+        passProps: {
+          style: {
+            pointerEvents: 'none',
+          },
+        },
+        headerColumnProps: {
+          style: {
+            display: 'none',
+          }
+        },
+      }, {
+        label: 'Requirement',
+        sortid: 'requirement',
+        sortable: false,
+        headerColumnProps: {
+          style: {
+            display: 'none',
+          }
+        },
+      }, {
+        label: 'Done',
+        formtype: 'checkbox',
+        sortid: 'done',
+        sortable: false,
+        customOnChange: 'func:window.customFetchAction',
+        customOnChangeProps: {
+          onclickBaseUrl: '/los/api/applications/:id/processing/:requirement',
+          onclickLinkParams: [{ 'key': ':id', 'val': 'application_id', }, { 'key': ':requirement', 'val': 'requirement', }],
+          fetchProps: {
+            method: 'PUT',
+          },
+          successProps: {
+            success: {
+              notification: {
+                text: 'Changes saved successfully!',
+                timeout: 10000,
+                type: 'success',
+              },
+            },
+            // successCallback: 'func:this.props.refresh',
+          },
+        },
+        passProps: {
+          checkboxLabel: {
+            component: 'ResponsiveButton',
+            props: {
+              buttonProps: {
+                icon: 'fa fa-check',
+                className: '__icon_button green',
+              },
+            }
+          },
+        },
+        headerColumnProps: {
+          style: {
+            display: 'none',
+          }
+        },
+        columnProps: {
+          style: {
+            textAlign: 'right'
+          }
+        }
+      },],
+    };
+    // console.log("Im HEEERRRE!!!!! FOOTER WINDOW~!!!!", formElementsQueue, formElement);
+    // console.log("PREV", prevCheck, "CURRENT", currCheck, "STATE", currState)
+    // window.fan = formElementsQueue;
+    if (currCheck === 'on' && formElementsQueue.length === 0) {
+      formElementsQueue.unshift(dataTable);
+      return formElement;
+    } else if (currCheck === 0 && formElementsQueue.length === 1) {
+      formElementsQueue.shift();
+      return formElement;
+    } else {
+      return formElement;
+    }
+  }
+
+  window.showAllRequirements = showAllRequirements;
 };
