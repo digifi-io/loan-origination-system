@@ -1414,8 +1414,6 @@ function _createApplicationDetailPage({ applicationId, application_status, keyIn
       casedata: [ 'casedata', ],
     },
     props: {
-      // ref: 'func:window.addRef',
-      // FANNIEEE!!
       form: {
         flattenFormData: true,
         footergroups: false,
