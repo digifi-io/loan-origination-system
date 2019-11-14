@@ -384,7 +384,9 @@ async function formatApplicationDetail(req) {
           delete req.controllerData.labels;
         }
       } else {
-        const application_status = req.controllerData.los_statuses.find(statusObj => statusObj && statusObj._id.toString() === application.status.toString());
+        const los_statuses = req.controllerData.los_statuses;
+        let application_status = los_statuses.find(statusObj => statusObj && statusObj._id.toString() === application.status.toString());
+
         req.controllerData.application.status_name = (application_status && application_status.name) ? application_status.name : '';
         const createdat = `${transformhelpers.formatDateNoTime(application.createdat, req.user.time_zone)} by ${application.user.creator}`;
         const updatedat = `${transformhelpers.formatDateNoTime(application.updatedat, req.user.time_zone)} by ${application.user.updater}`;
@@ -431,7 +433,7 @@ async function formatApplicationDetail(req) {
           loan_amount,
           loan_info,
         });
-        
+
         const statusRequirements = application_status.status_requirements.map((requirement) => {
           if (application && application.processing && application.processing[requirement]) {
             return { 
@@ -441,7 +443,7 @@ async function formatApplicationDetail(req) {
               rowProps: {
                 className: 'task-complete',
               }, 
-            } 
+            }; 
           } else {
             return { 
               done: false, 
@@ -450,10 +452,39 @@ async function formatApplicationDetail(req) {
               rowProps: {
                 className: 'task-overdue',
               }, 
-            }
+            };
+          }
+        });
+        
+        const allStatusRequirements = [];
+        los_statuses.forEach(status => {
+          if (status.active && status.name !== application_status.name) {
+            status.status_requirements.forEach(requirement => {
+              if (application && application.processing && application.processing[requirement]) {
+                allStatusRequirements.push({
+                  done: true,
+                  requirement: requirement,
+                  application_id: application._id.toString(),
+                  rowProps: {
+                    className: 'task-complete',
+                  },
+                });
+              } else {
+                allStatusRequirements.push({
+                  done: false,
+                  requirement: requirement,
+                  application_id: application._id.toString(),
+                  rowProps: {
+                    className: 'task-overdue',
+                  },
+                });
+              }
+            });
           }
         })
+          
         req.controllerData.application.status_requirements = statusRequirements;
+        req.controllerData.application.all_status_requirements = allStatusRequirements;
 
         if (application_status && application_status.name === 'Approved' && req.controllerData.application.decision_date) {
           req.controllerData.application.decision_date_approved = transformhelpers.formatDateNoTime(req.controllerData.application.decision_date, req.user.time_zone);
@@ -558,7 +589,7 @@ async function formatApplicationDetail(req) {
 
         application_status.filter_categories.forEach(category => {
           if (!valueCategoriesMap[category]) valueCategoriesMap[category] = { value: category, text: category, };
-        })
+        });
         req.controllerData.application.filterButtons = [ {
           headername: 'value_category',
           placeholder: 'FILTER CATEGORIES',
@@ -1794,7 +1825,6 @@ async function formatPersonTasksIndexTable(req) {
 
 async function formatCreateTask(req) {
   try {
-
     return req;
   } catch (e) {
     req.error = e.message;
@@ -3159,11 +3189,11 @@ async function formatApplicationStatusesIndexTable(req) {
           orderedLength++;
         }
       });
-      req.controllerData = Object.assign({}, req.controllerData, { statusrows: ordered, numPages: Math.ceil(ordered.length / 50), numItems: ordered.length ,  });
+      req.controllerData = Object.assign({}, req.controllerData, { statusrows: ordered, numPages: Math.ceil(ordered.length / 50), numItems: ordered.length,  });
     }
 
     const rejectionrows = organizationRejectionTypes.map((type, i) => ({ type, index: i, orgid: organization._id.toString(), }));
-    req.controllerData = Object.assign({}, req.controllerData, { rejectionrows, rejectionNumPages: Math.ceil(rejectionrows.length / 50), rejectionNumItems: rejectionrows.length ,  });
+    req.controllerData = Object.assign({}, req.controllerData, { rejectionrows, rejectionNumPages: Math.ceil(rejectionrows.length / 50), rejectionNumItems: rejectionrows.length,  });
     return req;
   } catch (e) {
     req.error = e.message;
@@ -4553,7 +4583,7 @@ async function formatApplicationRejectionDetail(req) {
     const organization = user && user.association && user.association.organization;
     let rejectionTypes = organization.los && organization.los.rejection_types || [];
     rejectionTypes = ['', ...rejectionTypes, ];
-    req.controllerData.formoptions = { reason: rejectionTypes.map(type => ({ label: type, value: type ,  })), };
+    req.controllerData.formoptions = { reason: rejectionTypes.map(type => ({ label: type, value: type,  })), };
     req.controllerData._id = req.params.id;
     return req;
   } catch (e) {
@@ -4801,11 +4831,11 @@ async function formatReportingPage(req) {
             cardContentProps: {
               style: {
                 overflowX: 'auto',
-              }
-            }
+              },
+            },
           }),
           children: losReporting.generateReportingChart(options),
-        }, ]
+        }, ],
       }, ];
     return req;
   } catch(e) {
