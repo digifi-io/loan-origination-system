@@ -12,6 +12,15 @@ exports.init = function () {
     'CustomDot': require('./CustomDot'),
   };
 
+  function customFetchAction(props) {
+    let baseURL = props.onclickBaseUrl;
+    props.onclickLinkParams.forEach(param => {
+      baseURL = baseURL.replace(param.key, props.onclickPropObject[param.val])
+    })
+    window.overlayProps.fetchAction.call(this, baseURL, props.fetchProps, props.successProps)
+  }
+  window.customFetchAction = customFetchAction;
+
   function updateGlobalSearchBar() {
     let search = document.querySelectorAll('.global-table-search');
     let wrapper = document.querySelector('.global-search-bar');
