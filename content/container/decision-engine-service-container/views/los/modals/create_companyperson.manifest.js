@@ -19,6 +19,8 @@ module.exports = {
             formdata: [ 'companydata', 'formdata', ],
           },
           props: {
+            blockPageUI: true,
+            blockPageUILayout: styles.modalBlockPageUILayout,
             setInitialValues: false,
             flattenFormData: true,
             footergroups: false,

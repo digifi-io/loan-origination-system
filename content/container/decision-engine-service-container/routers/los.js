@@ -361,6 +361,13 @@ LosRouter.put('/applications/:id/key_information/:idx',
   losController.application.updateApplication,
   losController.handleControllerDataResponse);
 
+LosRouter.put('/applications/:id/processing/:requirement',
+  ensureApiAuthenticated,
+  losController.application.getApplication,
+  transformController.pretransform,
+  losController.application.updateApplication,
+  losController.handleControllerDataResponse);
+
 LosRouter.put('/applications/:id/cases/:caseid/output_variables/',
   ensureApiAuthenticated,
   losController.application.addOutputVariableToApplicationInfo,

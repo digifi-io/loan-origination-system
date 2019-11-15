@@ -217,6 +217,11 @@ module.exports = {
   modalBlockPageUILayout: {
     layout: {
       component: 'div',
+      props: {
+        style: {
+          // marginBottom: '60px',
+        }
+      },
       children: [{
         component: 'Image',
         props: {
@@ -243,9 +248,11 @@ module.exports = {
     },
     wrapperstyle: {
       zIndex: 100001,
+      // marginTop: '60px',
     },
   }, 
   defaultconfirmModalStyle: {
+    blockPageUI: true,
     yesButtonText: 'DELETE',
     yesButtonProps: {
       style: {
@@ -271,6 +278,7 @@ module.exports = {
     },
   },
   newVersionConfirmModalStyle: {
+    blockPageUI: true,
     title: 'Create New Version',
     textContent: [{
       component: 'p',
