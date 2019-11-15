@@ -102,6 +102,8 @@ module.exports = {
                 'value': 'func:window.losProductItemValueFilter',
               },
               form: {
+                blockPageUI: true,
+                blockPageUILayout: styles.modalBlockPageUILayout,
                 flattenFormData: true,
                 footergroups: false,
                 setInitialValues: false,
