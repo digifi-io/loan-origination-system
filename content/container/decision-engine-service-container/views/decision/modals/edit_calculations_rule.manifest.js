@@ -20,6 +20,8 @@ module.exports = {
           },
           hasWindowFunc: true,
           props: {
+            blockPageUI: true,
+            blockPageUILayout: styles.modalBlockPageUILayout,
             footergroups: false,
             useFormOptions: false,
             useDynamicData: true,

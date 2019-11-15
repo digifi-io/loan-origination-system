@@ -19,6 +19,8 @@ module.exports = {
             __formOptions: ['applicationdata', 'formoptions',],
           },
           props: {
+            blockPageUI: true,
+            blockPageUILayout: styles.modalBlockPageUILayout,
             flattenFormData: true,
             footergroups: false,
             setInitialValues: false,

@@ -20,6 +20,8 @@ module.exports = {
             // __formOptions: [ 'dynamic', 'init_rule_data', 'formoptions' ],
           },
           props: {
+            blockPageUI: true,
+            blockPageUILayout: styles.modalBlockPageUILayout,
             flattenFormData: true,
             footergroups: false,
             useFormOptions: true,

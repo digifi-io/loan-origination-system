@@ -15,6 +15,8 @@ module.exports = {
           children: [{
             component: 'ResponsiveForm',
             props: {
+              blockPageUI: true,
+              blockPageUILayout: styles.modalBlockPageUILayout,
               flattenFormData: true,
               footergroups: false,
               useFormOptions: true,

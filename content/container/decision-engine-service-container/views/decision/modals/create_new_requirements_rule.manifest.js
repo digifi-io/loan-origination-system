@@ -809,6 +809,8 @@ module.exports = {
                     'condition_output*0*value': 'func:window.adverseFilter',
                   }),
                   form: {
+                    blockPageUI: true,
+                    blockPageUILayout: styles.modalBlockPageUILayout,
                     useDynamicData: true,
                     "cardForm": false,
                     cardFormTitle: 'Rule Detail',
