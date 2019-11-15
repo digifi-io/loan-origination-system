@@ -284,6 +284,9 @@ module.exports = {
     '/ml/api/models/:id': [
       ml.stageModelSelection,
     ],
+    '/los/api/applications/:id/processing/:requirement': [
+      los.formatApplicationProcessingUpdate,
+    ],
     '/los/api/applications/:id': [
       los.formatApplicationDataForUpdate,
     ],

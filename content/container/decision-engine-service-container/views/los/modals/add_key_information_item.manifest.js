@@ -106,6 +106,8 @@ module.exports = {
                 'value': 'func:window.losKeyInfoValueFilter',
               },
               form: {
+                blockPageUI: true,
+                blockPageUILayout: styles.modalBlockPageUILayout,
                 flattenFormData: true,
                 footergroups: false,
                 setInitialValues: false,

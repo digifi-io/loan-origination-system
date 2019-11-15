@@ -384,8 +384,13 @@ async function formatApplicationDetail(req) {
           delete req.controllerData.labels;
         }
       } else {
-        const customer_baseurl = application.customer_type === 'company' ? `companies/${application.customer_id}` : `people/${application.customer_id}`;
+        const los_statuses = req.controllerData.los_statuses;
+        let application_status = los_statuses.find(statusObj => statusObj && statusObj._id.toString() === application.status.toString());
 
+        req.controllerData.application.status_name = (application_status && application_status.name) ? application_status.name : '';
+        const createdat = `${transformhelpers.formatDateNoTime(application.createdat, req.user.time_zone)} by ${application.user.creator}`;
+        const updatedat = `${transformhelpers.formatDateNoTime(application.updatedat, req.user.time_zone)} by ${application.user.updater}`;
+        const customer_baseurl = application.customer_type === 'company' ? `companies/${application.customer_id}` : `people/${application.customer_id}`;
         const customer = await Customer.model.findOne({
           _id: application.customer_id,
           organization,
@@ -404,18 +409,22 @@ async function formatApplicationDetail(req) {
           coapplicant = foundCoapplicant ? `${foundCoapplicant.name} (${capitalize(application.customer_type)})` : '';
         }
 
-        const createdat = `${transformhelpers.formatDateNoTime(application.createdat, req.user.time_zone)} by ${application.user.creator}`;
-        const updatedat = `${transformhelpers.formatDateNoTime(application.updatedat, req.user.time_zone)} by ${application.user.updater}`;
-
         application.key_information = application.key_information || {};
         const valueCategoriesMap = {};
-        const loan_info = Object.entries(application.key_information).map(([ name, detail, ], idx) => {
-          if (detail.value_category && !valueCategoriesMap[detail.value_category]) valueCategoriesMap[detail.value_category] = { value: detail.value_category.toLowerCase(), text: detail.value_category, };
+        const loan_info = Object.entries(application.key_information).reduce((acc, [ name, detail, ], idx) => {
+          if (detail.value_category && !valueCategoriesMap[detail.value_category]) valueCategoriesMap[detail.value_category] = { value: detail.value_category, text: detail.value_category, };
           let value;
           if (detail.value === null) value = '';
           else value = los_transform_util.formatByValueType({ value: detail.value, value_type: detail.value_type, });
-          return { name, value, idx, _id: application._id.toString(), value_type: detail.value_type, };
-        });
+          if (application_status.filter_categories && application_status.filter_categories.length) {
+            if (detail.value_category && application_status.filter_categories.includes(detail.value_category)) {
+              acc.push({ name, value, idx, _id: application._id.toString(), value_type: detail.value_type, });
+            }
+          } else {
+            acc.push({ name, value, idx, _id: application._id.toString(), value_type: detail.value_type, });
+          }
+          return acc;
+        }, []);
 
         const loan_amount = (application && application.loan_amount !== undefined) ? numeral(application.loan_amount).format('$0,0') : undefined;
         req.controllerData.application = Object.assign({}, application, {
@@ -429,8 +438,57 @@ async function formatApplicationDetail(req) {
           loan_info,
         });
 
-        const application_status = req.controllerData.los_statuses.find(statusObj => statusObj && statusObj._id.toString() === application.status.toString());
-        req.controllerData.application.status_name = (application_status && application_status.name) ? application_status.name : '';
+        const statusRequirements = application_status.status_requirements.map((requirement) => {
+          if (application && application.processing && application.processing[requirement]) {
+            return { 
+              done: true, 
+              requirement, 
+              application_id: application._id.toString(),
+              rowProps: {
+                className: 'task-complete',
+              }, 
+            }; 
+          } else {
+            return { 
+              done: false, 
+              requirement,
+              application_id: application._id.toString(),
+              rowProps: {
+                className: 'task-overdue',
+              }, 
+            };
+          }
+        });
+        
+        const allStatusRequirements = [];
+        los_statuses.forEach(status => {
+          if (status.active && status.name !== application_status.name) {
+            status.status_requirements.forEach(requirement => {
+              if (application && application.processing && application.processing[requirement]) {
+                allStatusRequirements.push({
+                  done: true,
+                  requirement: requirement,
+                  application_id: application._id.toString(),
+                  rowProps: {
+                    className: 'task-complete',
+                  },
+                });
+              } else {
+                allStatusRequirements.push({
+                  done: false,
+                  requirement: requirement,
+                  application_id: application._id.toString(),
+                  rowProps: {
+                    className: 'task-overdue',
+                  },
+                });
+              }
+            });
+          }
+        })
+          
+        req.controllerData.application.status_requirements = statusRequirements;
+        req.controllerData.application.all_status_requirements = allStatusRequirements;
 
         if (application_status && application_status.name === 'Approved' && req.controllerData.application.decision_date) {
           req.controllerData.application.decision_date_approved = transformhelpers.formatDateNoTime(req.controllerData.application.decision_date, req.user.time_zone);
@@ -441,7 +499,7 @@ async function formatApplicationDetail(req) {
         }
 
         req.controllerData.formoptions = req.controllerData.formoptions || {};
-
+        
         if (req.controllerData.products) {
           const productDropdown = req.controllerData.products.map(product => ({
             label: product.name,
@@ -533,6 +591,9 @@ async function formatApplicationDetail(req) {
           delete req.controllerData.intermediaries;
         }
 
+        application_status.filter_categories.forEach(category => {
+          if (!valueCategoriesMap[category]) valueCategoriesMap[category] = { value: category, text: category, };
+        });
         req.controllerData.application.filterButtons = [ {
           headername: 'value_category',
           placeholder: 'FILTER CATEGORIES',
@@ -542,17 +603,39 @@ async function formatApplicationDetail(req) {
           fluid: true,
           search: true,
           options: Object.values(valueCategoriesMap),
+          defaultValue: application_status.filter_categories,
         }, ];
-
+        
+        const activeStatuses = req.controllerData.formoptions.status || [];
+        const currentStatusIdx = activeStatuses.findIndex(activeStatus => activeStatus.value === application_status._id.toString());
+        const finalStage = activeStatuses.length && currentStatusIdx === activeStatuses.length - 1;
+        const statusId = !finalStage && activeStatuses[currentStatusIdx + 1] && activeStatuses[currentStatusIdx + 1].value || '';
         req.controllerData._children = [ los_transform_util._createApplicationDetailPage({
           applicationId: req.controllerData.application._id.toString(),
           application_status,
           keyInfoLength: Object.keys(application.key_information).length,
+          finalStage, 
+          statusId,
         }), ];
       }
     }
     return req;
   } catch (e) {
+    req.error = e.message;
+    return req;
+  }
+}
+
+async function formatApplicationProcessingUpdate(req) {
+  try {
+    req.controllerData = req.controllerData || {};
+    if (req.controllerData.application && req.params && req.params.requirement) {
+      const applicationProcessing = req.controllerData.application.processing || {};
+      applicationProcessing[req.params.requirement] = Boolean(!applicationProcessing[req.params.requirement]);
+      req.body.processing = applicationProcessing;
+    }
+    return req;
+  } catch(e) {
     req.error = e.message;
     return req;
   }
@@ -568,10 +651,10 @@ async function formatApplicationLoanInformation(req) {
       }
       const searchString = req.query && req.query.query || '';
       application.key_information = application.key_information || {};
-
+      
       const loan_info = Object.entries(application.key_information).reduce((aggregate, [ name, detail, ], idx) => {
         if (valueCategories.length && valueCategories[0] !== '') {
-          if (valueCategories.includes((detail.value_category || '').toLowerCase()) && name.match(new RegExp(searchString, 'gi'))) {
+          if (valueCategories.includes((detail.value_category || '')) && name.match(new RegExp(searchString, 'gi'))) {
             let value;
             if (detail.value === null) value = '';
             else value = los_transform_util.formatByValueType({ value: detail.value, value_type: detail.value_type, });
@@ -1029,16 +1112,20 @@ async function formatApplicationDataForUpdate(req) {
       req.body = Object.assign({}, req.body, { name, value, value_type, value_category, });
     } else if (req.query.status) {
       const user = req.user || {};
-      const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id.toString() : 'organization';
+      const organization = user && user.association && user.association.organization;
+      const organizationId = organization._id ? user.association.organization._id.toString() : 'organization';
+      const orgStatuses = organization.los && organization.los.statuses || [];
       const LosStatus = periodic.datas.get('standard_losstatus');
       if (req.query.status === 'approve') {
-        const approvedStatus = await LosStatus.model.findOne({ organization, name: 'Approved', }).lean();
+        const approvedStatus = await LosStatus.model.findOne({ organization: organizationId, name: 'Approved', }).lean();
         req.body.status = approvedStatus._id.toString();
         req.body.decision_date = new Date();
       } else if (req.query.status === 'reject') {
-        const rejectedStatus = await LosStatus.model.findOne({ organization, name: 'Rejected', }).lean();
+        const rejectedStatus = await LosStatus.model.findOne({ organization: organizationId, name: 'Rejected', }).lean();
         req.body.status = rejectedStatus._id.toString();
         req.body.decision_date = new Date();
+      } else if (req.query.status === 'move' && req.query.statusId) {
+        req.body.status = req.query.statusId;
       }
     }
     if (req.body && req.body.team_members) req.body.team_members = req.body.team_members.filter(Boolean);
@@ -1742,7 +1829,6 @@ async function formatPersonTasksIndexTable(req) {
 
 async function formatCreateTask(req) {
   try {
-
     return req;
   } catch (e) {
     req.error = e.message;
@@ -3107,11 +3193,11 @@ async function formatApplicationStatusesIndexTable(req) {
           orderedLength++;
         }
       });
-      req.controllerData = Object.assign({}, req.controllerData, { statusrows: ordered, numPages: Math.ceil(ordered.length / 50), numItems: ordered.length ,  });
+      req.controllerData = Object.assign({}, req.controllerData, { statusrows: ordered, numPages: Math.ceil(ordered.length / 50), numItems: ordered.length,  });
     }
 
     const rejectionrows = organizationRejectionTypes.map((type, i) => ({ type, index: i, orgid: organization._id.toString(), }));
-    req.controllerData = Object.assign({}, req.controllerData, { rejectionrows, rejectionNumPages: Math.ceil(rejectionrows.length / 50), rejectionNumItems: rejectionrows.length ,  });
+    req.controllerData = Object.assign({}, req.controllerData, { rejectionrows, rejectionNumPages: Math.ceil(rejectionrows.length / 50), rejectionNumItems: rejectionrows.length,  });
     return req;
   } catch (e) {
     req.error = e.message;
@@ -4501,7 +4587,7 @@ async function formatApplicationRejectionDetail(req) {
     const organization = user && user.association && user.association.organization;
     let rejectionTypes = organization.los && organization.los.rejection_types || [];
     rejectionTypes = ['', ...rejectionTypes, ];
-    req.controllerData.formoptions = { reason: rejectionTypes.map(type => ({ label: type, value: type ,  })), };
+    req.controllerData.formoptions = { reason: rejectionTypes.map(type => ({ label: type, value: type,  })), };
     req.controllerData._id = req.params.id;
     return req;
   } catch (e) {
@@ -4587,15 +4673,9 @@ async function generateLosStatusEditDetail(req) {
             key: randomKey(),
           },
           formElements: [{
-            name: 'preselected_loan_information_filter_categories',
+            name: 'filter_categories',
             label: 'Pre-Selected Loan Information Filter Categories',
-            type: 'dropdown',
-            passProps: {
-              selection: true,
-              multiple: true,
-              fluid: true,
-              search: true,
-            }
+            type: 'combobox',
           }, ],
         }, {
           gridProps: {
@@ -4755,11 +4835,11 @@ async function formatReportingPage(req) {
             cardContentProps: {
               style: {
                 overflowX: 'auto',
-              }
-            }
+              },
+            },
           }),
           children: losReporting.generateReportingChart(options),
-        }, ]
+        }, ],
       }, ];
     return req;
   } catch(e) {
@@ -4869,6 +4949,7 @@ module.exports = {
   formatApplicationStatusesIndexTable,
   formatApplicationRejectionTypeDetail,
   formatApplicationRejectionDetail,
+  formatApplicationProcessingUpdate,
   formatReportingPage,
   formatReportingDownloadData,
   generateLosStatusEditDetail,

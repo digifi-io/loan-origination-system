@@ -18,6 +18,8 @@ module.exports = {
             formdata: [ 'templatedata', 'data', ],
           },
           props: {
+            blockPageUI: true,
+            blockPageUILayout: styles.modalBlockPageUILayout,
             flattenFormData: true,
             footergroups: false,
             setInitialValues: false,

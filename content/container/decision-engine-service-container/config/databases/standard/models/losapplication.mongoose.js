@@ -79,6 +79,7 @@ const scheme = {
   }],
   docs: Schema.Types.Mixed,
   key_information: Schema.Types.Mixed,
+  processing: Schema.Types.Mixed,
 };
 
 module.exports = {

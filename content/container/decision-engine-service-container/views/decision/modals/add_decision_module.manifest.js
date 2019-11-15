@@ -100,6 +100,8 @@ module.exports = {
                   __formOptions: [ `moduledata`, 'formoptions' ],
                 },
                 props: {
+                  blockPageUI: true,
+                  blockPageUILayout: styles.modalBlockPageUILayout,
                   validations: {
                     name: {
                       name: 'name',
