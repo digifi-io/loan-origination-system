@@ -18,6 +18,8 @@ module.exports = {
             formdata: [ 'peopledata', 'person' ],
           },
           props: {
+            blockPageUI: true,
+            blockPageUILayout: styles.modalBlockPageUILayout,
             flattenFormData: true,
             footergroups: false,
             onSubmit: {

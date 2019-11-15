@@ -18,6 +18,8 @@ module.exports = {
             formdata: [ 'notedata', 'formdata' ],
           },
           props: {
+            blockPageUI: true,
+            blockPageUILayout: styles.modalBlockPageUILayout,
             setInitialValues: false,
             flattenFormData: false,
             footergroups: false,

@@ -647,6 +647,8 @@ module.exports = {
                   }, ],
                   renderFormElements: Object.assign({}, getStandardFields(0, standardFilterReducer)),
                   form: {
+                    blockPageUI: true,
+                    blockPageUILayout: styles.modalBlockPageUILayout,
                     "cardForm": false,
                     cardFormTitle: 'Rule Detail',
                     "cardFormProps": styles.cardFormProps,

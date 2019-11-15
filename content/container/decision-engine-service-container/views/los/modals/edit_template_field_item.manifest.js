@@ -92,6 +92,8 @@ module.exports = {
                 'value': 'func:window.losTemplateFieldValueFilter',
               },
               form: {
+                blockPageUI: true,
+                blockPageUILayout: styles.modalBlockPageUILayout,
                 flattenFormData: true,
                 footergroups: false,
                 useFormOptions: true,
