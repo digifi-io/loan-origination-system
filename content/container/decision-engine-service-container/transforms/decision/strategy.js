@@ -534,10 +534,7 @@ async function populateArtificialIntelligenceAndDataIntegrationSegment(req) {
             }, []));
           }
           if (currentSegment.outputs && currentSegment.outputs.length) {
-            variableIds.push(...currentSegment.outputs.reduce((acc, output) => {
-              if (output && output.output_type === 'variable' && output.output_variable) acc.push(output.output_variable);
-              return acc;
-            }, []));
+            variableIds.push(...currentSegment.outputs.map(output => output.output_variable));
           }
         }
 
@@ -549,10 +546,7 @@ async function populateArtificialIntelligenceAndDataIntegrationSegment(req) {
             }, []));
           }
           if (currentSegment.outputs && currentSegment.outputs.length) {
-            variableIds.push(...currentSegment.outputs.reduce((acc, output) => {
-              if (output && output.output_type === 'variable' && output.output_variable) acc.push(output.output_variable);
-              return acc;
-            }, []));
+            variableIds.push(...currentSegment.outputs.map(output => output.output_variable));
           }
         }
         variableIds = variableIds.filter((v, i, a) => v && a.indexOf(v) === i);
