@@ -356,6 +356,8 @@ module.exports = {
               'coapplicant': 'func:window.losNewCustomerCoApplicantFilter',
             },
             form: {
+              blockPageUI: true,
+              blockPageUILayout: styles.modalBlockPageUILayout,
               flattenFormData: true,
               footergroups: false,
               useFormOptions: true,

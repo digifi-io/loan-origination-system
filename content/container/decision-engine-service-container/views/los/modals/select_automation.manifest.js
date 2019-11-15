@@ -165,6 +165,8 @@ module.exports = {
                     scenario: 'func:window.filterAutomationModuleName',
                   },
                   form: {
+                    blockPageUI: true,
+                    blockPageUILayout: styles.modalBlockPageUILayout,
                     useFormOptions: true,
                     flattenFormData: true,
                     footergroups: false,

@@ -19,6 +19,8 @@ module.exports = {
             __formOptions: [ 'communicationdata', 'formoptions' ],
           },
           props: {
+            blockPageUI: true,
+            blockPageUILayout: styles.modalBlockPageUILayout,
             setInitialValues: false,
             flattenFormData: false,
             footergroups: false,

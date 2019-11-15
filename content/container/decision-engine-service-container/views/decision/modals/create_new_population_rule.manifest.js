@@ -711,6 +711,8 @@ module.exports = {
                     'minus_counter': 'func:window.minusCounterFilter',
                   }),
                   form: {
+                    blockPageUI: true,
+                    blockPageUILayout: styles.modalBlockPageUILayout,
                     "cardForm": false,
                     cardFormTitle: 'Rule Detail',
                     "cardFormProps": styles.cardFormProps,

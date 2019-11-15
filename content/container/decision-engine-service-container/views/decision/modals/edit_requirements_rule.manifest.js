@@ -791,6 +791,8 @@ module.exports = {
                   }),
                   form: {
                     // useDynamicData: true,
+                    blockPageUI: true,
+                    blockPageUILayout: styles.modalBlockPageUILayout,
                     "cardForm": false,
                     cardFormTitle: 'Rule Detail',
                     "cardFormProps": styles.cardFormProps,

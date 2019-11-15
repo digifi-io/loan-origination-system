@@ -1014,6 +1014,8 @@ module.exports = {
                       'minus_output_counter': 'func:window.minusOutputCounterFilter',
                     }),
                   form: {
+                    blockPageUI: true,
+                    blockPageUILayout: styles.modalBlockPageUILayout,
                     "cardForm": false,
                     cardFormTitle: 'Rule Detail',
                     "cardFormProps": styles.cardFormProps,
