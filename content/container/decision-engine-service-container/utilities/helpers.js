@@ -756,11 +756,11 @@ function formatFileSize(size, nospace, one, places, numOnly) {
 function cleanModuleData(moduleOrder) {
   try {
     return moduleOrder.map((module) => {
-      if (module.type === 'requirements') {
+      if (module.type === 'Requirements Rules') {
         return { name: module.name, display_name: module.display_name, type: module.type, segment: module.segment, passed: module.passed }
-      } else if (module.type === 'dataintegration') {
+      } else if (module.type === 'Data Integration') {
         return { name: module.name, display_name: module.display_name, type: module.type, segment: module.segment, status: module.status };
-      } else if (module.type === 'artificialintelligence') {
+      } else if (module.type === 'Artificial Intelligence') {
         return { name: module.name, display_name: module.display_name, type: module.type, segment: module.segment, predicted_classification: module.predicted_classification };
       } else { 
         return { name: module.name, display_name: module.display_name, type: module.type, segment: module.segment };
