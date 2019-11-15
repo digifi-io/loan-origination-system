@@ -252,6 +252,7 @@ module.exports = {
     },
   }, 
   defaultconfirmModalStyle: {
+    blockPageUI: true,
     yesButtonText: 'DELETE',
     yesButtonProps: {
       style: {
@@ -277,6 +278,7 @@ module.exports = {
     },
   },
   newVersionConfirmModalStyle: {
+    blockPageUI: true,
     title: 'Create New Version',
     textContent: [{
       component: 'p',
