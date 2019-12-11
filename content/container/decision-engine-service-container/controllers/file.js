@@ -6,6 +6,7 @@ const periodic = require('periodicjs');
 const logger = periodic.logger;
 const utilities = require('../utilities');
 const helpers = utilities.helpers;
+const uniqid = require('uniqid');
 
 /**
  * 
@@ -21,15 +22,15 @@ function createFiles(req, res, next) {
   const File = periodic.datas.get('standard_file');
   req.controllerData.creditEngineResponse.forEach(async result => {
     if (result.data_sources && result.data_sources.length) {
-      result.data_sources.forEach(async (data_source, i) => {
+      result.data_sources.forEach(async (data_source) => {
         let { name, data, } = data_source;
         let Key, filetype;
         try {
           JSON.parse(data);
-          Key = `dataintegrations/api_response_${new Date()}_${i}/${name.replace(/\//g, '_')}.json`;
+          Key = `dataintegrations/api_response_${new Date()}_${uniqid()}/${name.replace(/\//g, '_')}.json`;
           filetype = 'json';
         } catch (e) {
-          Key = `dataintegrations/api_response_${new Date()}_${i}/${name.replace(/\//g, '_')}.xml`;
+          Key = `dataintegrations/api_response_${new Date()}_${uniqid()}/${name.replace(/\//g, '_')}.xml`;
           filetype = 'xml';
         }
         await helpers.uploadAWS({ Key, Body: data, });
