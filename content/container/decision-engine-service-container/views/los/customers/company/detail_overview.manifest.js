@@ -287,7 +287,7 @@ module.exports = {
                           groupElements: [ {
                             type: 'text',
                             name: 'primary_contact_phone',
-                            leftIcon: 'fas fa-phone-alt',
+                            leftIcon: 'phone rotated',
                             label: '',
                             passProps: {
                               readOnly: true,
