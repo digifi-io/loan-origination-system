@@ -13,7 +13,7 @@ const isClientAuthenticated = periodic.controllers.extension.get('periodicjs.ext
 const CompanyRouter = periodic.express.Router();
 
 /**
- * Create Company
+ * Create Compnay
  */
 CompanyRouter.post('/',
   isClientAuthenticated,

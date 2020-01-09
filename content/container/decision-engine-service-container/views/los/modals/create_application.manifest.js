@@ -57,7 +57,7 @@ module.exports = {
                             pathname: '/los/products/new',
                           },
                           style: {
-                            display: 'none',
+                            display: 'inline-block',
                             lineHeight: 1,
                             fontWeight: 'normal',
                             cursor: 'pointer',
@@ -498,7 +498,7 @@ module.exports = {
                             pathname: '/los/products/new',
                           },
                           style: {
-                            display: 'none',
+                            display: 'inline-block',
                             lineHeight: 1,
                             fontWeight: 'normal',
                             cursor: 'pointer',
