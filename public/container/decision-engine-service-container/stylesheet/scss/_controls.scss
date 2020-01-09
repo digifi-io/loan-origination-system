@@ -115,11 +115,11 @@
     }
 
     &.active {
-      background-color: $color-green;
+      background-color: #008039;
       color: white;
 
       &:after {
-        background-color: $color-green;
+        background-color: #008039;
       }
 
       &~.step {
