@@ -1638,10 +1638,10 @@ a {
     width: 20px;
     height: 20px; }
   .ui.steps .step.active {
-    background-color: #00b050;
+    background-color: #008039;
     color: white; }
     .ui.steps .step.active:after {
-      background-color: #00b050; }
+      background-color: #008039; }
     .ui.steps .step.active ~ .step {
       background-color: white;
       color: #404040;
@@ -2907,7 +2907,8 @@ button:active {
       text-decoration: none;
       padding: 0 20px !important;
       height: 36px;
-      line-height: 36px; }
+      line-height: 36px;
+      white-space: nowrap; }
       .global-button-bar .ui.dropdown.selection.__re-bulma_is-success.__re-bulma_button .menu .item:not(:last-child) {
         border-bottom: 1px solid rgba(34, 36, 38, 0.15); }
 
