@@ -548,6 +548,7 @@ button:active {
         padding: 0 20px !important;
         height: 36px;
         line-height: 36px;
+        white-space: nowrap;
         &:not(:last-child) {
           border-bottom: 1px solid rgba(34, 36, 38, 0.15);
         }

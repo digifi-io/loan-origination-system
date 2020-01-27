@@ -20,6 +20,8 @@ const scheme = {
     type: ObjectId,
     ref: 'Parser',
   },
+  custom_query_params: Schema.Types.Mixed,
+  url_encode_format: String,
   raw_data_parse: Boolean,
   raw_data_traversal_path: String,
   xml_configs: Schema.Types.Mixed,
