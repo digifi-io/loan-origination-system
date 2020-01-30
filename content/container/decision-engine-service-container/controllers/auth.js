@@ -406,8 +406,8 @@ async function forgotAccountPassword(req, res, next) {
     if (!emailResult || !emailResult.email) return next('Invalid credentials. Please confirm your organization and email.');
     return next();
   } catch(e) {
-    logger.error('forgot password error', err);
-    next(err);
+    logger.error('forgot password error', e);
+    next(e);
   }
 }
 
