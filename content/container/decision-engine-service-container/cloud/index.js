@@ -11,11 +11,11 @@ const Promisie = require('promisie');
 class AmazonCloud {
   constructor() {
     this.AWS = AWS;
-    this.updateConfigs();
+    this.configure();
     this.useMLCrons();
   }
   
-  updateConfigs() {
+  configure() {
     const aws_configs = periodic.settings.extensions['periodicjs.ext.packagecloud'].client;
     AWS.config.update({
       region: aws_configs.region,
@@ -23,16 +23,16 @@ class AmazonCloud {
     AWS.config.setPromisesDependency(require('promisie'));
     periodic.aws = {};
     AWS.config.credentials = new AWS.Credentials(THEMESETTINGS.sagemaker.key, THEMESETTINGS.sagemaker.secret, null);
+    AWS.config.credentials = new AWS.Credentials(aws_configs.accessKeyId, aws_configs.accessKey, null);
+    periodic.aws.s3 = new AWS.S3();
+  }
+  
+  useMLCrons() {
+    if (!machineLearningSettings.use_mlcrons) return;
     periodic.aws.sagemaker = new AWS.SageMaker();
     periodic.aws.sagemakerruntime = new AWS.SageMakerRuntime();
     periodic.aws.sagemaker_bucket = THEMESETTINGS.sagemaker.bucket;
-    AWS.config.credentials = new AWS.Credentials(aws_configs.accessKeyId, aws_configs.accessKey, null);
-    periodic.aws.s3 = new AWS.S3();
     periodic.aws.machinelearning = new AWS.MachineLearning();
-  }
-
-  useMLCrons() {
-    if (!machineLearningSettings.use_mlcrons) return;
     const machinelearning = periodic.aws.machinelearning;
     const s3 = periodic.aws.s3;
     mlcrons.sageMaker();
@@ -99,6 +99,16 @@ class AmazonCloud {
       });
     }, machineLearningSettings.cron_interval || 60000);
   }  
+
+  async downloadDocument({ file, }) {
+    const s3 = periodic.aws.s3;
+    const container_name = periodic.settings.extensions['periodicjs.ext.packagecloud'].container.name;
+    const s3Params = {
+      Bucket: `${container_name}`,
+      Key: file.fileurl,
+    };
+    return await s3.getObject(s3Params).promise();
+  }
 }
 
 module.exports = {

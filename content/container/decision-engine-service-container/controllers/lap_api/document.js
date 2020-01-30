@@ -159,14 +159,9 @@ async function downloadDocument(req, res, next) {
     const user = req.user || {};
     const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id.toString() : 'organization';
     const los_file = await LosDoc.model.findOne({ _id: req.params.id, organization }).lean();
-    const s3 = periodic.aws.s3;
+    const { cloud } = periodic;
     if (los_file && los_file.doc_type === 'file') {
-      const container_name = periodic.settings.extensions[ 'periodicjs.ext.packagecloud' ].container.name;
-      const s3Params = {
-        Bucket: `${container_name}`,
-        Key: los_file.fileurl,
-      };
-      const fileData = await s3.getObject(s3Params).promise();
+      const fileData = await cloud.downloadDocument({ file: los_file, });
       const fileString = fileData.Body.toString(req.query && req.query.encoding_format || 'utf8');
       req.controllerData.fileBuffer = fileData.Body;
       req.controllerData.file = fileString;
