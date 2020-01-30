@@ -175,22 +175,17 @@ async function downloadDocument(req, res, next) {
 async function deleteDocument(req, res, next) {
   try {
     const LosDoc = periodic.datas.get('standard_losdoc');
-    const s3 = periodic.aws.s3;
-    const container_name = periodic.settings.extensions[ 'periodicjs.ext.packagecloud' ].container.name;
     req.controllerData = req.controllerData || {};
     const user = req.user || {};
     const organization = (user && user.association && user.association.organization && user.association.organization._id) ? user.association.organization._id.toString() : 'organization';
     const currentDocument = await LosDoc.model.findOne({ _id: req.params.id, doc_type: 'file', organization, }).lean();
     if (currentDocument) {
-      const s3Params = {
-        Bucket: `${container_name}`,
-        Key: currentDocument.fileurl,
-      };
-      await s3.deleteObject(s3Params).promise();
+      const { cloud } = periodic;
+      await cloud.deleteDocument({ file: currentDocument });
       await LosDoc.model.deleteOne({ _id: req.params.id, organization, });
       req.controllerData = {
         document_id: req.params.id,
-      }
+      };
     }
     next();
   } catch (e) {

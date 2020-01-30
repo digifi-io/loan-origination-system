@@ -109,6 +109,16 @@ class AmazonCloud {
     };
     return await s3.getObject(s3Params).promise();
   }
+
+  async deleteDocument({ file, }) {
+    const s3 = periodic.aws.s3;
+    const container_name = periodic.settings.extensions['periodicjs.ext.packagecloud'].container.name;
+    const s3Params = {
+      Bucket: `${container_name}`,
+      Key: file.fileurl,
+    };
+    return await s3.deleteObject(s3Params).promise();
+  }
 }
 
 module.exports = {
