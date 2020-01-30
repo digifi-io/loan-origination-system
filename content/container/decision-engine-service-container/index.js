@@ -69,6 +69,10 @@ module.exports = () => {
     periodic.app.locals.THEMESETTINGS = Object.assign(THEMESETTINGS, {
       basename,
     });
+    const cloudProviders = {
+      AWS: AmazonCloud,
+      Azure: null,
+    };
     periodic.app.locals.strategiesCache = {};
 
     let servers = periodic.servers;
@@ -78,10 +82,8 @@ module.exports = () => {
     httpsServer.keepAliveTimeout = 0;
     periodic.servers.set('http', httpServer);
     periodic.servers.set('https', httpsServer);
-    const configs = JSON.parse(process.env.DB_CONFIG);
-    if (configs.cloud === 'AWS') {
-      periodic.cloud = new AmazonCloud();
-    }
+    const cloudProvider = cloudProviders[process.env.CLOUD || 'AWS'];
+    periodic.cloud = new cloudProvider();
 
     let googleVisionSettings = periodic.settings.container[ 'decision-engine-service-container' ].googlevision;
     window.process = global.process;
