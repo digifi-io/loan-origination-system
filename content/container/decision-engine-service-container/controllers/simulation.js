@@ -522,7 +522,6 @@ function registerSimulation(req, res, next) {
       progress: 0,
       strategy_name: req.controllerData.compiledStrategy.name,
       strategy_version: req.controllerData.compiledStrategy.version,
-      compiledstrategy: req.controllerData.compiledStrategy,
       organization,
     })
       .then(simulation => {
