@@ -119,6 +119,24 @@ class AmazonCloud {
     };
     return await s3.deleteObject(s3Params).promise();
   }
+
+  async uploadDocument({ Key, Body }) {
+    return new Promise((resolve, reject) => {
+      const { logger, } = periodic;
+      const s3 = periodic.aws.s3;
+      const Bucket = periodic.settings.extensions['periodicjs.ext.packagecloud'].container.name;
+      const params = { Bucket, Key, Body, };
+      s3.putObject(params, function (err, data) {
+        if (err) {
+          logger.error(err);
+          return reject(err);
+        } else {
+          logger.silly(`Successfully uploaded data to ${Key}`);
+          return resolve(data);
+        }
+      });
+    });
+  }
 }
 
 module.exports = {

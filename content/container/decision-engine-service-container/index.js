@@ -74,6 +74,8 @@ module.exports = () => {
       Azure: null,
     };
     periodic.app.locals.strategiesCache = {};
+    const cloudProvider = cloudProviders[process.env.CLOUD || 'AWS'];
+    periodic.cloud = new cloudProvider();
 
     let servers = periodic.servers;
     let httpServer = servers.get('http')
@@ -82,8 +84,6 @@ module.exports = () => {
     httpsServer.keepAliveTimeout = 0;
     periodic.servers.set('http', httpServer);
     periodic.servers.set('https', httpsServer);
-    const cloudProvider = cloudProviders[process.env.CLOUD || 'AWS'];
-    periodic.cloud = new cloudProvider();
 
     let googleVisionSettings = periodic.settings.container[ 'decision-engine-service-container' ].googlevision;
     window.process = global.process;
