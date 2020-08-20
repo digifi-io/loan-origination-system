@@ -40,7 +40,7 @@
     "babel-preset-es2016": "^6.24.1",
     "babel-preset-es2017": "^6.24.1",
     "babel-preset-react": "^6.24.1",
-    "bcrypt": "^3.0.3",
+    "bcrypt": "^5.0.0",
     "brain.js": "^1.6.1",
     "chai": "^4.2.0",
     "convertjson2xml": "^0.1.10",
