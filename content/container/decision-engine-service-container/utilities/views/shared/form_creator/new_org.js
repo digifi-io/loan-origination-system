@@ -276,36 +276,6 @@ function signInSubmit() {
 }
 
 /**
- * This function returns the create account link for formCreator.
- * @returns {Object} Returns the create account link for formCreator.
- */
-function createAccountLink() {
-  return {
-    gridProps: {
-      style: {
-        textAlign: 'center',
-      },
-    },
-    createAccountLink: {
-      'type': 'layout',
-      'value': {
-        component: 'ResponsiveLink',
-        props: {
-          location: '/auth/create-account',
-        },
-        children: 'Create Account',
-      },
-      'name': 'register',
-      'layoutProps': {
-        style: {
-          color: styles.colors.primary,
-        },
-      },
-    },
-  };
-}
-
-/**
  * This function returns the reset password link for formCreator.
  * @returns {Object} Returns the reset password link for formCreator.
  */
@@ -481,7 +451,6 @@ module.exports = {
   password,
   createAccount,
   signIn,
-  createAccountLink,
   signInSubmit,
   resetPassword,
   consentBox,

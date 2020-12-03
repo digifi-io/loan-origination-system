@@ -68,10 +68,6 @@ module.exports = {
     ],
   },
   POST: {
-    '/auth/organization/new': [
-      auth.transformEmailtoLowerCase,
-      auth.orgTrimWhitespace,
-    ],
     '/auth/change_email': [
       auth.transformEmailtoLowerCase,
     ],

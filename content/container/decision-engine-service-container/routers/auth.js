@@ -62,23 +62,6 @@ AuthRouter.get('/reset_token/:token', //pretransform puts token on the enter new
   transformController.pretransform,
   authController.handleControllerDataResponse);
 
-AuthRouter.post('/organization/new',
-  transformController.pretransform, //transform email to lowercase
-  authController.findOrCreateUserPrivilegesAndRoles,
-  authController.checkOrgExists,
-  authController.blockProtectedUsernames,
-  userController.createUser,
-  organizationController.createOrg,
-  clientController.createClient,
-  userController.activateUser,
-  userController.updateUser,
-  // paymentController.addTrialCredit,
-  organizationController.activateOrg,
-  organizationController.updateOrg,
-  organizationController.seedNewOrganization,
-  organizationController.createLosDependencies,
-  organizationController.sendCreateOrgResponse);
-
 AuthRouter.post('/forgot_password',
   transformController.pretransform,
   authController.forgotAccountPassword,

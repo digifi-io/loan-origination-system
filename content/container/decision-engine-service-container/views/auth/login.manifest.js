@@ -25,7 +25,6 @@ module.exports = (options = {}) => {
   form.addFormElements(formElement.signInSubmit());
   form.addFormElements(Object.assign({}, formElement.text('Forgot Password?'), formElement.resetPassword()));
   (defaultAccountSettings && defaultAccountSettings.forgot_organization) ? form.addFormElements(Object.assign({}, formElement.text('Forgot Organization?'), formElement.recoverOrganization())) : null;
-  (defaultAccountSettings && defaultAccountSettings.new_user) ? form.addFormElements(Object.assign({}, formElement.text('New User?'), formElement.createAccountLink())) : null;
   let loginForm = form.getForm();
   const innerFormLayout = (formLayout) ? formLayout : loginForm;
   return {
